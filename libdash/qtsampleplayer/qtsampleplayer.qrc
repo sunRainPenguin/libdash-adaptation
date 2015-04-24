@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="QtSamplePlayer">
+    <file>start3.png</file>
+  </qresource>
+</RCC>
