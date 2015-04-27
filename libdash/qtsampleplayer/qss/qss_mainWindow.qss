@@ -1,0 +1,54 @@
+QMainWindow#QtSamplePlayerClass
+{
+	background-image: url(:/QtSamplePlayer/pic/backGround.jpg);
+}
+QPushButton
+{
+	background-color: rgb(0, 170, 127);
+	background-image: url(:/QtSamplePlayer/pic/backGround.jpg);
+    font-family: "Aharoni";
+    font-size: 14px;
+    text-align: center;
+    font-weight:100
+}
+QPushButton:hover, QPushButton:pressed , QPushButton:checked
+{
+    background-color: rgb(85, 170, 255);
+    font-size: 16px;
+    font-weight:200
+}
+QPushButton:disabled
+{
+	color: rgb(240, 240, 240);
+	background-color: rgb(240, 240, 240);
+	background-image: url(:/QtSamplePlayer/pic/backGround.jpg);
+    font-family: "Aharoni";
+    font-size: 14px;
+    text-align: center;
+    font-weight:100
+}
+QComboBox
+{
+	 font-family: "Arial";
+     font-size: 9pt;
+}
+QComboBox#cb_mpd
+{
+	background:transparent;
+}
+QLineEdit#lineEdit_mpd
+{
+	background:transparent;
+	font-family: "Arial";
+    font-size: 9pt;
+}
+QLabel
+{
+	 font-family: "Arial";
+     font-size: 9pt;
+}
+QProgressBar
+{
+	 font-family: "Arial";
+     font-size: 9pt;
+}

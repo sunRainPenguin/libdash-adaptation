@@ -1,0 +1,7 @@
+        border:none;
+    padding: 3px;
+    background-color: rgb(167, 205, 255);
+
+
+        padding-right: 20px;
+            text-align: right;

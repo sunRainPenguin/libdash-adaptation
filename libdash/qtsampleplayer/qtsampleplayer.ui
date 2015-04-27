@@ -9,12 +9,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1075</width>
-    <height>688</height>
+    <width>1085</width>
+    <height>702</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>libdash player</string>
+  </property>
+  <property name="accessibleDescription">
+   <string/>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -29,16 +35,13 @@
         <height>0</height>
        </size>
       </property>
-      <property name="styleSheet">
-       <string notr="true"/>
-      </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>9</x>
          <y>9</y>
-         <width>801</width>
-         <height>611</height>
+         <width>781</width>
+         <height>591</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -209,13 +212,37 @@
             <height>100</height>
            </size>
           </property>
-          <property name="autoFillBackground">
-           <bool>true</bool>
+          <property name="font">
+           <font>
+            <stylestrategy>PreferDefault</stylestrategy>
+           </font>
           </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <widget class="QSlider" name="progressSlider_2">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>540</y>
+             <width>799</width>
+             <height>19</height>
+            </rect>
+           </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
          </widget>
         </item>
         <item>
          <widget class="QSlider" name="progressSlider">
+          <property name="styleSheet">
+           <string notr="true">background: transparent;</string>
+          </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -223,34 +250,142 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QPushButton" name="button_stop">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>620</y>
-         <width>171</width>
-         <height>25</height>
+         <x>173</x>
+         <y>623</y>
+         <width>75</width>
+         <height>23</height>
         </rect>
        </property>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="text">
+        <string>stop</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="button_start">
+       <property name="geometry">
+        <rect>
+         <x>11</x>
+         <y>623</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>start</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="button_pause">
+       <property name="geometry">
+        <rect>
+         <x>92</x>
+         <y>623</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>pause</string>
+       </property>
+      </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>570</x>
+         <y>620</y>
+         <width>141</width>
+         <height>32</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QPushButton" name="button_start">
+         <widget class="QLabel" name="bitmovinLogo">
+          <property name="maximumSize">
+           <size>
+            <width>182</width>
+            <height>49</height>
+           </size>
+          </property>
           <property name="text">
-           <string>start</string>
+           <string>Video Segment Index :</string>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="button_pause">
+         <widget class="QLabel" name="libdashLogo">
+          <property name="maximumSize">
+           <size>
+            <width>182</width>
+            <height>62</height>
+           </size>
+          </property>
           <property name="text">
-           <string>pause</string>
+           <string>Audio Segment Index :</string>
+          </property>
+          <property name="scaledContents">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>450</x>
+         <y>620</y>
+         <width>98</width>
+         <height>32</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Current profile:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="button_stop">
+         <widget class="QLabel" name="label_profile">
           <property name="text">
-           <string>stop</string>
+           <string>default</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>261</x>
+         <y>621</y>
+         <width>171</width>
+         <height>36</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Downloading segment speed:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_segment_speed">
+          <property name="text">
+           <string>0</string>
           </property>
          </widget>
         </item>
@@ -265,6 +400,12 @@
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <property name="topMargin">
@@ -290,6 +431,9 @@
           </property>
           <item>
            <widget class="QPushButton" name="button_mpd">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
             <property name="text">
              <string>Download MPD</string>
             </property>
@@ -408,84 +552,11 @@
             </property>
            </widget>
           </item>
-          <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="bitmovinLogo">
-            <property name="maximumSize">
-             <size>
-              <width>182</width>
-              <height>49</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="scaledContents">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="libdashLogo">
-            <property name="maximumSize">
-             <size>
-              <width>182</width>
-              <height>62</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="scaledContents">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Downloading segment speed:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_segment_speed">
-         <property name="text">
-          <string>0</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Current profile:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_profile">
-         <property name="text">
-          <string>default</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="verticalSpacer_2">
+        <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -506,9 +577,6 @@
    <property name="accessibleDescription">
     <string/>
    </property>
-   <property name="styleSheet">
-    <string notr="true">background-image: url(:/QtSamplePlayer/start_2.png);</string>
-   </property>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -523,56 +591,7 @@
  <resources>
   <include location="qtsampleplayer.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>progressSlider</sender>
-   <signal>sliderReleased()</signal>
-   <receiver>QtSamplePlayerClass</receiver>
-   <slot>on_progressSlider_sliderReleased()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>752</x>
-     <y>627</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>787</x>
-     <y>655</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>progressSlider</sender>
-   <signal>sliderPressed()</signal>
-   <receiver>QtSamplePlayerClass</receiver>
-   <slot>on_progressSlider_sliderPressed()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>416</x>
-     <y>627</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>509</x>
-     <y>342</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>button_stop</sender>
-   <signal>clicked()</signal>
-   <receiver>QtSamplePlayerClass</receiver>
-   <slot>on_button_stop_clicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>161</x>
-     <y>645</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>214</x>
-     <y>663</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
  <slots>
   <slot>on_progressSlider_sliderReleased()</slot>
   <slot>on_progressSlider_sliderPressed()</slot>

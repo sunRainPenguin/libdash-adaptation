@@ -32,8 +32,21 @@ QtSamplePlayerGui::QtSamplePlayerGui    (QWidget *parent) :
     this->SetAudioSegmentBufferFillState(0);
     this->SetAudioBufferFillState(0);
     this->ui->button_pause->setEnabled(false);
+	this->ui->button_stop->setEnabled(false);
     this->ui->button_start->setEnabled(false);
 	this->ui->progressSlider->setEnabled(false);			//2015.4.14 - php
+
+	//2015.4.26 - php
+	QString qss_mainWindow;
+	QFile qssFile(":/qss/qss_mainWindow.qss");
+	qssFile.open(QFile::ReadOnly);
+
+	if(qssFile.isOpen())
+	{
+		qss_mainWindow = QLatin1String(qssFile.readAll());
+		this->setStyleSheet(qss_mainWindow);
+		qssFile.close();
+	}
 }
 QtSamplePlayerGui::~QtSamplePlayerGui   ()
 {
@@ -375,6 +388,7 @@ void            QtSamplePlayerGui::on_button_start_clicked                      
 {
     this->ui->button_start->setEnabled(false);
     this->ui->button_pause->setEnabled(true);
+	this->ui->button_stop->setEnabled(true);
 	this->ui->progressSlider->setEnabled(true);				//2015.4.14 - php
     this->ui->cb_mpd->setDisabled(true);
     this->ui->lineEdit_mpd->setDisabled(true);
@@ -386,6 +400,7 @@ void            QtSamplePlayerGui::on_button_pause_clicked                      
 {
     this->ui->button_start->setEnabled(true);
     this->ui->button_pause->setEnabled(false);
+	this->ui->button_stop->setEnabled(false);
 	this->ui->progressSlider->setEnabled(false);			//2015.4.14 - php
     this->ui->cb_mpd->setDisabled(false);
     this->ui->lineEdit_mpd->setDisabled(false);
@@ -398,6 +413,7 @@ void            QtSamplePlayerGui::on_button_stop_clicked                       
 {
 	this->ui->button_start->setEnabled(true);
 	this->ui->button_pause->setEnabled(false);
+	this->ui->button_stop->setEnabled(false);
 	this->ui->progressSlider->setEnabled(false);			//2015.4.14 - php
 	this->ui->cb_mpd->setDisabled(false);
 	this->ui->lineEdit_mpd->setDisabled(false);

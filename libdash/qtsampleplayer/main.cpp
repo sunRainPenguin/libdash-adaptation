@@ -11,17 +11,45 @@
 
 #include <QApplication>
 #include "UI/DASHPlayer.h"
-
+#include "ondemandgui.h"
 using namespace sampleplayer;
+
+#include <QSqlDatabase> 
+#include <QStringList>  
+#include <QString>
+#include <QDebug> 
+#include  <QSqlError>
+#include <QMessageBox>
+#include <QSqlQuery>
+
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QtSamplePlayerGui w;
 
-    DASHPlayer p(w);
+	QStringList drivers = QSqlDatabase::drivers();    
+	foreach(QString driver, drivers) 
+		qDebug() << "\t" << driver;    
+	QSqlDatabase data_base = QSqlDatabase::addDatabase("QMYSQL");
+	data_base.setHostName("localhost");  //设置主机地址192.168.23.3
+	data_base.setPort(3306);  //设置端口
+	data_base.setDatabaseName("test");  //设置数据库名称
+	data_base.setUserName("root");  //设置用户名
+	data_base.setPassword("qwe123");  //设置密码
+	if(!data_base.open())
+		qDebug()<<"failed to connect to mysql";
+	else
+		qDebug()<<"success";
+	
 
-    w.show();
+	OnDemandGui onDemandWindow;
+	onDemandWindow.show();	
+
+	/*QtSamplePlayerGui player;
+
+	DASHPlayer p(player);
+
+	player.show();*/
 
     return a.exec();
 }

@@ -1,5 +1,9 @@
 <RCC>
-  <qresource prefix="QtSamplePlayer">
-    <file>start3.png</file>
-  </qresource>
+    <qresource prefix="/QtSamplePlayer">
+        <file>pic/backGround.jpg</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>qss/qss_mainWindow.qss</file>
+        <file>qss/qss_loginDialog.qss</file>
+    </qresource>
 </RCC>
