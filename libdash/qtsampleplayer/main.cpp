@@ -14,13 +14,9 @@
 #include "ondemandgui.h"
 using namespace sampleplayer;
 
-#include <QSqlDatabase> 
 #include <QStringList>  
 #include <QString>
 #include <QDebug> 
-#include  <QSqlError>
-#include <QMessageBox>
-#include <QSqlQuery>
 
 
 int main(int argc, char *argv[])
@@ -33,7 +29,7 @@ int main(int argc, char *argv[])
 	QSqlDatabase data_base = QSqlDatabase::addDatabase("QMYSQL");
 	data_base.setHostName("localhost");  //设置主机地址192.168.23.3
 	data_base.setPort(3306);  //设置端口
-	data_base.setDatabaseName("test");  //设置数据库名称
+	data_base.setDatabaseName("videomanagement");  //设置数据库名称
 	data_base.setUserName("root");  //设置用户名
 	data_base.setPassword("qwe123");  //设置密码
 	if(!data_base.open())

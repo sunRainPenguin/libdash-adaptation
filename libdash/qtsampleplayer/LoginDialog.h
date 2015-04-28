@@ -4,6 +4,8 @@
 #include <QDialog>
 #include "ui_LoginDialog.h"
 
+#include "sqlconfig.h"
+
 class LoginDialog : public QDialog
 {
 	Q_OBJECT
@@ -18,8 +20,8 @@ private:
 	bool QueryUserFromDb(QString username);
 	bool AddUserToDb(QString username, QString password);
 
-protected:
-	bool  eventFilter(QObject * object, QEvent * event);
+public slots:
+	 bool  eventFilter(QObject * object, QEvent * event);
 
 private slots:
 	void on_button_ok_clicked();

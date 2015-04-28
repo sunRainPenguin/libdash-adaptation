@@ -1,6 +1,6 @@
 QMainWindow#QtSamplePlayerClass
 {
-	background-image: url(:/QtSamplePlayer/pic/backGround.jpg);
+	background-image: url(:/QtSamplePlayer/pic/88.jpg);
 }
 QPushButton
 {

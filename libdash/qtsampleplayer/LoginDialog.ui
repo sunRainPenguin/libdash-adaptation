@@ -53,7 +53,7 @@
       <item>
        <widget class="MyLineEdit" name="lineEdit_password">
         <property name="echoMode">
-         <enum>QLineEdit::Password</enum>
+         <enum>QLineEdit::Normal</enum>
         </property>
        </widget>
       </item>
@@ -103,6 +103,13 @@
    <header location="global">MyLineEdit.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>lineEdit_userName</tabstop>
+  <tabstop>lineEdit_password</tabstop>
+  <tabstop>button_ok</tabstop>
+  <tabstop>button_cancel</tabstop>
+  <tabstop>button_register</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

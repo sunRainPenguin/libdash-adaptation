@@ -3,7 +3,11 @@
 
 #include <QWidget>
 #include "ui_ondemandgui.h"
+
+#include "sqlconfig.h"
 #include "LoginDialog.h"
+#include <QMessageBox>
+#include <QtGui/QPainter>
 
 class OnDemandGui : public QWidget
 {
@@ -20,6 +24,7 @@ private:
 
 private slots:
 	void on_button_login_clicked();
+	bool ShowAvailableMediaFromDb();
 
 public slots:
 	void SetLoginState(QString username);

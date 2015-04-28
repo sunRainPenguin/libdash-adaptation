@@ -192,6 +192,7 @@
     <ClInclude Include="libdashframework\MPD\SegmentListStream.h" />
     <ClInclude Include="libdashframework\MPD\SegmentTemplateStream.h" />
     <ClInclude Include="libdashframework\MPD\TimeResolver.h" />
+    <ClInclude Include="sqlconfig.h" />
     <CustomBuild Include="MyLineEdit.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing MyLineEdit.h...</Message>
@@ -339,6 +340,8 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
+    <None Include="pic\88.jpg" />
+    <None Include="pic\93.jpg" />
     <None Include="pic\backGround.jpg" />
     <None Include="qss\qss_loginDialog.qss" />
     <None Include="qss\qss_mainWindow.qss" />

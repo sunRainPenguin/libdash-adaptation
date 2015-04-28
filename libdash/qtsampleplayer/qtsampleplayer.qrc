@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/QtSamplePlayer">
         <file>pic/backGround.jpg</file>
+        <file>pic/88.jpg</file>
+        <file>pic/93.jpg</file>
     </qresource>
     <qresource prefix="/">
         <file>qss/qss_mainWindow.qss</file>
