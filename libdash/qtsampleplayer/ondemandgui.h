@@ -7,7 +7,8 @@
 #include "sqlconfig.h"
 #include "LoginDialog.h"
 #include <QMessageBox>
-#include <QtGui/QPainter>
+#include <QtGui>
+#include <QMap>
 
 class OnDemandGui : public QWidget
 {
@@ -28,7 +29,7 @@ private slots:
 
 public slots:
 	void SetLoginState(QString username);
-
+	bool SetMediaLayout(QString valMI_ShowPicUrl, QString valMI_Name, QString valMI_UploadAuthor, QString valMI_InsertTime, QString valMI_ClickThroughRate, int row, int column);
 };
 
 #endif // ONDEMANDGUI_H

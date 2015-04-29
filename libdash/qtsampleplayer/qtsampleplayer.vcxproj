@@ -159,6 +159,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DebugLog.h" />
     <ClInclude Include="GeneratedFiles\ui_LoginDialog.h" />
     <ClInclude Include="GeneratedFiles\ui_ondemandgui.h" />
     <ClInclude Include="GeneratedFiles\ui_qtsampleplayer.h" />

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>873</width>
+    <height>670</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QPushButton" name="button_login">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>10</y>
+     <x>710</x>
+     <y>20</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -25,6 +25,21 @@
    <property name="text">
     <string>Log in</string>
    </property>
+  </widget>
+  <widget class="QWidget" name="gridLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>80</y>
+     <width>831</width>
+     <height>571</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout" rowstretch="0">
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+   </layout>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

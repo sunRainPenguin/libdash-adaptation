@@ -10,18 +10,26 @@
  *****************************************************************************/
 
 #include <QApplication>
+#include <qapplication.h>
 #include "UI/DASHPlayer.h"
 #include "ondemandgui.h"
 using namespace sampleplayer;
 
 #include <QStringList>  
 #include <QString>
-#include <QDebug> 
+#include "DebugLog.h"
 
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+	if (!ClearDebugLog())
+	{
+		qDebug() << "\t" <<"Clear debug log failed! exit(1).";
+		exit(1);
+	}
+
+	qInstallMessageHandler(CustomMessageHandler);
 
 	QStringList drivers = QSqlDatabase::drivers();    
 	foreach(QString driver, drivers) 
@@ -33,9 +41,9 @@ int main(int argc, char *argv[])
 	data_base.setUserName("root");  //设置用户名
 	data_base.setPassword("qwe123");  //设置密码
 	if(!data_base.open())
-		qDebug()<<"failed to connect to mysql";
+		qDebug() << "\t" <<"Failed to connect to mysql";
 	else
-		qDebug()<<"success";
+		qDebug() << "\t" <<"Success";
 	
 
 	OnDemandGui onDemandWindow;
