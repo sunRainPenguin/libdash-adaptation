@@ -1,15 +1,18 @@
 #include "ondemandgui.h"
+#include <QAccessibleWidget>
 
 OnDemandGui::OnDemandGui(QWidget *parent)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
+	loginDialog = NULL;
+	playerGui    = NULL;
+	player = NULL;
 	if (!this->ShowAvailableMediaFromDb())
 	{
 		qDebug() << "\t" << "Failed to get media from Db ! exit(-1).";
 		exit(-1);
 	}
-	
 }
 
 OnDemandGui::~OnDemandGui()
@@ -79,7 +82,7 @@ bool OnDemandGui::ShowAvailableMediaFromDb()
 
 			mpdUrlMap.insert(valMI_Name, valMI_MPDUrl);
 			qDebug() << "\t" <<QString("Succeed Query! MI_MPDUrl:  %1   MI_ShowPicUrl:   %2  MI_Name:  %3   MI_UploadAuthor:  %4  MI_InsertTime:  %5 MI_ClickThroughRate:  %6").arg(valMI_MPDUrl).arg(valMI_ShowPicUrl).arg(valMI_Name).arg(valMI_UploadAuthor).arg(valMI_InsertTime).arg(valMI_ClickThroughRate);
-			if (!this->SetMediaLayout(valMI_ShowPicUrl, valMI_Name, valMI_UploadAuthor, valMI_InsertTime, valMI_ClickThroughRate, recCount/4, recCount%4))
+			if (!this->SetMediaLayout(valMI_MPDUrl, valMI_ShowPicUrl, valMI_Name, valMI_UploadAuthor, valMI_InsertTime, valMI_ClickThroughRate, recCount/4, recCount%4))
 			{
 				return false;
 			}
@@ -90,7 +93,7 @@ bool OnDemandGui::ShowAvailableMediaFromDb()
 	return true;
 }
 
-bool OnDemandGui::SetMediaLayout(QString valMI_ShowPicUrl, QString valMI_Name, QString valMI_UploadAuthor, QString valMI_InsertTime, QString valMI_ClickThroughRate, int row, int column)
+bool OnDemandGui::SetMediaLayout(QString valMI_MPDUrl, QString valMI_ShowPicUrl, QString valMI_Name, QString valMI_UploadAuthor, QString valMI_InsertTime, QString valMI_ClickThroughRate, int row, int column)
 {
 	QImage* img=new QImage;
 	if(! ( img->load(valMI_ShowPicUrl) ) ) //¼ÓÔØÍ¼Ïñ
@@ -103,7 +106,7 @@ bool OnDemandGui::SetMediaLayout(QString valMI_ShowPicUrl, QString valMI_Name, Q
 	QPixmap pixmapToShow = QPixmap::fromImage( img->scaled(size(), Qt::KeepAspectRatio) );
 	painter.drawPixmap(0,0, pixmapToShow);
 	QIcon *icon = new QIcon(pixmapToShow);
-	QPushButton *imgButton = new QPushButton(*icon, "", this);
+	MyPushButton *imgButton = new MyPushButton(*icon, "", this);
 	imgButton->setIconSize(QSize(190, 150));   
 	imgButton->setFixedSize(200, 150); 
 
@@ -119,7 +122,26 @@ bool OnDemandGui::SetMediaLayout(QString valMI_ShowPicUrl, QString valMI_Name, Q
 	verticalLayout->addWidget(labelUploadTime);
 	verticalLayout->addWidget(labelClickThroughRate);
 
+	imgButton->setAccessibleDescription(valMI_MPDUrl);
 
 	this->ui.gridLayout->addLayout(verticalLayout, row, column);
+	connect(imgButton, SIGNAL(ButtonClicked(QString)), this, SLOT(StartPlayer(QString)));
 	return true;
 }
+
+void OnDemandGui::StartPlayer(QString currMpdUrl)
+{
+	if (!playerGui)
+	{
+		playerGui = new QtSamplePlayerGui(currMpdUrl, this);
+		player =new DASHPlayer(*playerGui);
+		playerGui->show();
+		std::string strCurrMpdUrl  = currMpdUrl.toStdString();
+		player->OnDownloadMPDPressed(strCurrMpdUrl);
+	}
+	else
+	{
+		playerGui->SetMpdUrl(currMpdUrl);
+	}
+}
+

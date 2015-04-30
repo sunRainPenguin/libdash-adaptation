@@ -49,11 +49,12 @@ int main(int argc, char *argv[])
 	OnDemandGui onDemandWindow;
 	onDemandWindow.show();	
 
-	/*QtSamplePlayerGui player;
 
-	DASHPlayer p(player);
+	//QtSamplePlayerGui player;
 
-	player.show();*/
+	//DASHPlayer p(player);
+
+	//player.show();
 
     return a.exec();
 }

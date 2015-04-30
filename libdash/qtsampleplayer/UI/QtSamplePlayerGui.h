@@ -29,7 +29,7 @@ namespace sampleplayer
         Q_OBJECT
 
         public:
-            QtSamplePlayerGui           (QWidget *parent = 0);
+            QtSamplePlayerGui           (QString mpdUrl, QWidget *parent = 0);
             virtual ~QtSamplePlayerGui  ();
 
             void                                    SetGuiFields            (dash::mpd::IMPD* mpd);
@@ -37,7 +37,7 @@ namespace sampleplayer
             virtual void                            SetStatusBar            (const std::string& text);
             virtual std::string                     GetUrl                  ();
             sampleplayer::renderer::QTGLRenderer*   GetVideoElement         ();
-			//QSlider*   GetProgressSlider();			//2015.4.12 - php
+			void									SetMpdUrl(QString mpdUrl);				//2015.4.30 - php
 
         private slots:
             void on_cb_mpd_currentTextChanged                   (const QString &arg1);
@@ -77,6 +77,7 @@ namespace sampleplayer
             Ui::QtSamplePlayerClass                 *ui;
             std::vector<IDASHPlayerGuiObserver *>   observers;
             dash::mpd::IMPD                         *mpd;
+			QString										mpdUrl;			//2015.4.30 - php
 
             void LockUI                     ();
             void UnLockUI                   ();

@@ -20,30 +20,34 @@ void LoginDialog::on_button_ok_clicked()
 {
 	QString username = this->ui.lineEdit_userName->text();
 	QString password = this->ui.lineEdit_password->text();
-
-	if (username == "")
+	if (username == "" || password == "")
 	{
-		QMessageBox::warning(this, QString("Warning"), QString("Please enter username!"), QMessageBox::Yes);
-		this->ui.lineEdit_userName->setFocus();
-	}
-	if (password == "")
-	{
-		QMessageBox::warning(this, QString("Warning"), QString("Please enter password!"), QMessageBox::Yes);
-		this->ui.lineEdit_password->setFocus();
-	}
-
-	if (this->QueryUserFromDb(username, password))
-	{
-		QMessageBox::information(this, QString("Welcome"), QString("Log in successfully!"), QMessageBox::Yes); 
-		emit enterSuccessfully(username);
-		this->accept();
+		if (username == "")
+		{
+			QMessageBox::warning(this, QString("Warning"), QString("Please enter username!"), QMessageBox::Yes);
+			this->ui.lineEdit_userName->setFocus();
+		}
+		if (password == "")
+		{
+			QMessageBox::warning(this, QString("Warning"), QString("Please enter password!"), QMessageBox::Yes);
+			this->ui.lineEdit_password->setFocus();
+		}
 	} 
 	else
 	{
-		QMessageBox::warning(this, QString("Warning"), QString("Invalid username or password!"), QMessageBox::Yes);
-		this->ui.lineEdit_userName->setFocus();
+		if (this->QueryUserFromDb(username, password))
+		{
+			QMessageBox::information(this, QString("Welcome"), QString("Log in successfully!"), QMessageBox::Yes); 
+			emit enterSuccessfully(username);
+			this->accept();
+		} 
+		else
+		{
+			QMessageBox::warning(this, QString("Warning"), QString("Invalid username or password!"), QMessageBox::Yes);
+			this->ui.lineEdit_userName->setFocus();
+		}
 	}
-
+	
 }
 bool LoginDialog::QueryUserFromDb(QString username, QString password)
 {

@@ -21,12 +21,13 @@ using namespace sampleplayer::renderer;
 using namespace dash::mpd;
 using namespace libdash::framework::mpd;
 
-QtSamplePlayerGui::QtSamplePlayerGui    (QWidget *parent) : 
+QtSamplePlayerGui::QtSamplePlayerGui    (QString mpdUrl, QWidget *parent) : 
                    QMainWindow          (parent),
                    ui                   (new Ui::QtSamplePlayerClass),
                    mpd                  (NULL)
 {
     this->ui->setupUi(this);
+	this->mpdUrl = mpdUrl;
     this->SetVideoSegmentBufferFillState(0);
     this->SetVideoBufferFillState(0);
     this->SetAudioSegmentBufferFillState(0);
@@ -422,12 +423,6 @@ void            QtSamplePlayerGui::on_button_stop_clicked                       
 	this->NotifyStopButtonPressed();
 }
 
-//2015.4.13 - php
-//void  QtSamplePlayerGui::on_progressSlider_valueChanged   (int progress)
-//{
-//	this->NotifyProgressSliderMoved (progress);
-//}
-
 void QtSamplePlayerGui::on_progressSlider_sliderReleased()
 {
 	int progress = this->ui->progressSlider->value();
@@ -437,4 +432,9 @@ void QtSamplePlayerGui::on_progressSlider_sliderReleased()
 void  QtSamplePlayerGui::on_progressSlider_sliderPressed()
 {
 	this->NotifyProgressSliderPressed();
+}
+
+void QtSamplePlayerGui::SetMpdUrl(QString mpdUrl)
+{
+	this->mpdUrl = mpdUrl;
 }
