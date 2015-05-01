@@ -35,18 +35,22 @@ namespace sampleplayer
             void                                    SetGuiFields            (dash::mpd::IMPD* mpd);
             virtual void                            AddWidgetObserver       (IDASHPlayerGuiObserver* observer);
             virtual void                            SetStatusBar            (const std::string& text);
-            virtual std::string                     GetUrl                  ();
+           // virtual std::string                     GetUrl                  ();
             sampleplayer::renderer::QTGLRenderer*   GetVideoElement         ();
 			void									SetMpdUrl(QString mpdUrl);				//2015.4.30 - php
+			void									ClearMpd();					//2015.5.1 - php
+			void									ClickButtonStop();			//2015.5.1 - php
+			void									ClickButtonStart();		//2015.5.1 - php
+			bool									IsStarted();					//2015.5.1 - php
 
         private slots:
-            void on_cb_mpd_currentTextChanged                   (const QString &arg1);
+            //void on_cb_mpd_currentTextChanged                   (const QString &arg1);
             void on_cb_period_currentIndexChanged               (int index);
             void on_cb_video_adaptationset_currentIndexChanged  (int index);
             void on_cb_video_representation_currentIndexChanged (int index);
             void on_cb_audio_adaptationset_currentIndexChanged  (int index);
             void on_cb_audio_representation_currentIndexChanged (int index);
-            void on_button_mpd_clicked                          ();
+//             void on_button_mpd_clicked                          ();
             void on_button_start_clicked                        ();
             void on_button_pause_clicked                         ();
 			 void on_button_stop_clicked                         ();
@@ -67,6 +71,7 @@ namespace sampleplayer
 			virtual void    SetEndOfProgressSlider  ();			//2015.4.15 - php
 			virtual void    SetRateChangedLabel		        (int segmentNumber, unsigned int downloadRate);
 			virtual void    SetBWChangedLabel		        (unsigned int BW);
+			void closeEvent( QCloseEvent * event );
 
         private:
             std::map<std::string, std::string>                  keyValues;
@@ -78,7 +83,6 @@ namespace sampleplayer
             std::vector<IDASHPlayerGuiObserver *>   observers;
             dash::mpd::IMPD                         *mpd;
 			QString										mpdUrl;			//2015.4.30 - php
-
             void LockUI                     ();
             void UnLockUI                   ();
 
@@ -97,6 +101,9 @@ namespace sampleplayer
 			void NotifyStopButtonPressed		();
 			void NotifyProgressSliderReleased  (int progress);			//2015.4.13 - php
 			void NotifyProgressSliderPressed   ();			//2015.4.13 - php
+
+	signals:
+			void ClosePlayerGui();			//2015.5.1 - php
     };
 }
 

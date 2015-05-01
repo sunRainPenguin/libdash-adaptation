@@ -32,16 +32,6 @@ QComboBox
 	 font-family: "Arial";
      font-size: 9pt;
 }
-QComboBox#cb_mpd
-{
-	background:transparent;
-}
-QLineEdit#lineEdit_mpd
-{
-	background:transparent;
-	font-family: "Arial";
-    font-size: 9pt;
-}
 QLabel
 {
 	 font-family: "Arial";

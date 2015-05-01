@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QtGui>
 #include <QMap>
+#include <QVector>
 
 #include "UI/DASHPlayer.h"
 using namespace sampleplayer;
@@ -27,9 +28,11 @@ private:
 	LoginDialog*  loginDialog;
 	QtSamplePlayerGui* playerGui;
 	DASHPlayer* player;
+	QVBoxLayout* verticalLayout;
 
 	bool SetMediaLayout(QString valMI_MPDUrl, QString valMI_ShowPicUrl, QString valMI_Name, QString valMI_UploadAuthor, QString valMI_InsertTime, QString valMI_ClickThroughRate, int row, int column);
 	bool ShowAvailableMediaFromDb();
+	QPushButton* FindButtonByNameIndex(int number);
 
 private slots:
 	void on_button_login_clicked();
@@ -37,6 +40,7 @@ private slots:
 public slots:
 	void SetLoginState(QString username);
 	void StartPlayer(QString currMpdUrl);
+	void on_playgui_closed();
 
 };
 

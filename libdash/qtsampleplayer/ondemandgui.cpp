@@ -1,6 +1,9 @@
 #include "ondemandgui.h"
 #include <QAccessibleWidget>
 
+#define COUNT_ROWCONTAIN 4
+#define COUNT_COLUMNCONTAIN 3
+
 OnDemandGui::OnDemandGui(QWidget *parent)
 	: QWidget(parent)
 {
@@ -8,20 +11,41 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 	loginDialog = NULL;
 	playerGui    = NULL;
 	player = NULL;
+
 	if (!this->ShowAvailableMediaFromDb())
 	{
 		qDebug() << "\t" << "Failed to get media from Db ! exit(-1).";
 		exit(-1);
 	}
+
 }
 
 OnDemandGui::~OnDemandGui()
 {
-
+	if (loginDialog)
+	{
+		delete(loginDialog);
+		loginDialog = NULL;
+	}
+	if (player)
+	{
+		delete(player);
+		player = NULL;
+	}
+	if (playerGui)
+	{
+		delete(playerGui);
+		playerGui =NULL;
+	}
+	if (verticalLayout)
+	{
+		delete(verticalLayout);
+		verticalLayout = NULL;
+	}
 }
 void OnDemandGui::on_button_login_clicked()
 {
-	loginDialog = new LoginDialog();
+	loginDialog = new LoginDialog(this);
 	QObject::connect(loginDialog, SIGNAL(enterSuccessfully(QString)),this, SLOT(SetLoginState(QString)));
 	loginDialog->exec();
 }
@@ -42,7 +66,7 @@ bool OnDemandGui::ShowAvailableMediaFromDb()
 
 	this->ui.gridLayout->setRowStretch(0, 1);
 	this->ui.gridLayout->setRowStretch(1, 1);
-	this->ui.gridLayout->setRowStretch(3, 1);
+	this->ui.gridLayout->setRowStretch(2, 1);
 	this->ui.gridLayout->setColumnStretch(0, 1);
 	this->ui.gridLayout->setColumnStretch(1, 1);
 	this->ui.gridLayout->setColumnStretch(2, 1);
@@ -82,11 +106,17 @@ bool OnDemandGui::ShowAvailableMediaFromDb()
 
 			mpdUrlMap.insert(valMI_Name, valMI_MPDUrl);
 			qDebug() << "\t" <<QString("Succeed Query! MI_MPDUrl:  %1   MI_ShowPicUrl:   %2  MI_Name:  %3   MI_UploadAuthor:  %4  MI_InsertTime:  %5 MI_ClickThroughRate:  %6").arg(valMI_MPDUrl).arg(valMI_ShowPicUrl).arg(valMI_Name).arg(valMI_UploadAuthor).arg(valMI_InsertTime).arg(valMI_ClickThroughRate);
-			if (!this->SetMediaLayout(valMI_MPDUrl, valMI_ShowPicUrl, valMI_Name, valMI_UploadAuthor, valMI_InsertTime, valMI_ClickThroughRate, recCount/4, recCount%4))
+			if (!this->SetMediaLayout(valMI_MPDUrl, valMI_ShowPicUrl, valMI_Name, valMI_UploadAuthor, valMI_InsertTime, valMI_ClickThroughRate, recCount/COUNT_ROWCONTAIN, recCount%COUNT_ROWCONTAIN))
 			{
 				return false;
 			}
 			recCount++;
+		}
+		for (int i = recCount; i<=11; i++)
+		{
+			QPushButton* imgButton = this->FindButtonByNameIndex(i);
+			imgButton->setEnabled(false);
+			imgButton->setVisible(false);
 		}
 	}
 
@@ -99,49 +129,93 @@ bool OnDemandGui::SetMediaLayout(QString valMI_MPDUrl, QString valMI_ShowPicUrl,
 	if(! ( img->load(valMI_ShowPicUrl) ) ) //加载图像
 	{
 		qDebug() << "\t" <<"Load image failed ! ";
-		delete img;
+		delete(img);
+		img = NULL;
 		return false;
 	}
 	QPainter painter(this);
 	QPixmap pixmapToShow = QPixmap::fromImage( img->scaled(size(), Qt::KeepAspectRatio) );
 	painter.drawPixmap(0,0, pixmapToShow);
+
 	QIcon *icon = new QIcon(pixmapToShow);
-	MyPushButton *imgButton = new MyPushButton(*icon, "", this);
+	QPushButton* imgButton = this->FindButtonByNameIndex(COUNT_ROWCONTAIN*row+column);  //为了connect连接一直保持，这里的pushbutton在界面上添加
+
+	imgButton->setIcon(*icon);
+	imgButton->setText("");
+	imgButton->setParent(this);
 	imgButton->setIconSize(QSize(190, 150));   
 	imgButton->setFixedSize(200, 150); 
+	imgButton->setAccessibleDescription(valMI_MPDUrl);
 
 	QLabel*  labelMediaName = new QLabel(valMI_Name, this);
 	QLabel*  labelAuthor = new QLabel(QString("Author: ")+valMI_UploadAuthor, this);
 	QLabel*  labelUploadTime = new QLabel(valMI_InsertTime, this);
 	QLabel*  labelClickThroughRate = new QLabel(valMI_ClickThroughRate, this);
 
-	QVBoxLayout* verticalLayout = new QVBoxLayout();
+	verticalLayout = new QVBoxLayout();
 	verticalLayout->addWidget(imgButton);
 	verticalLayout->addWidget(labelMediaName);
 	verticalLayout->addWidget(labelAuthor);
 	verticalLayout->addWidget(labelUploadTime);
 	verticalLayout->addWidget(labelClickThroughRate);
 
-	imgButton->setAccessibleDescription(valMI_MPDUrl);
-
 	this->ui.gridLayout->addLayout(verticalLayout, row, column);
 	connect(imgButton, SIGNAL(ButtonClicked(QString)), this, SLOT(StartPlayer(QString)));
+
+	delete(img);
+	img = NULL;
+	delete(icon);
+	icon = NULL;
 	return true;
 }
 
 void OnDemandGui::StartPlayer(QString currMpdUrl)
 {
+
 	if (!playerGui)
 	{
 		playerGui = new QtSamplePlayerGui(currMpdUrl, this);
 		player =new DASHPlayer(*playerGui);
 		playerGui->show();
-		std::string strCurrMpdUrl  = currMpdUrl.toStdString();
-		player->OnDownloadMPDPressed(strCurrMpdUrl);
+		QObject::connect(playerGui, SIGNAL(ClosePlayerGui()), this, SLOT(on_playgui_closed()));
+
+		playerGui->ClearMpd();
+		player->OnDownloadMPDPressed(currMpdUrl.toStdString());
+		playerGui->ClickButtonStart();
 	}
 	else
-	{
+	{		
+		if (playerGui->IsStarted())
+		{
+			playerGui->ClickButtonStop();
+		}
+
 		playerGui->SetMpdUrl(currMpdUrl);
+		playerGui->ClearMpd();
+
+		player->OnDownloadMPDPressed(currMpdUrl.toStdString());
+		playerGui->ClickButtonStart();
 	}
 }
+QPushButton*  OnDemandGui::FindButtonByNameIndex(int number)
+{
+	QString buttonName = QString("imageButton_") + QString::number(number, 10);
+	QPushButton* button = this->findChild<QPushButton*>(buttonName) ;
+	if (button)
+	{
+		return button;
+	} 
+	else
+	{
+		return NULL;
+	}
 
+}
+void OnDemandGui::on_playgui_closed()
+{
+	delete(player);
+	player = NULL;
+	delete(playerGui);
+	this->playerGui = NULL;
+
+}

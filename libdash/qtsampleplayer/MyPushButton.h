@@ -9,11 +9,11 @@ class MyPushButton : public QPushButton
 	Q_OBJECT
 
 public:
-	explicit MyPushButton(const QIcon &icon, const QString &text,  QWidget *parent):
-			QPushButton(icon, text, parent)
-	{
-		connect(this, SIGNAL(clicked()), this, SLOT(OnClicked()));
-	}
+			explicit MyPushButton( QWidget *parent):
+			QPushButton(parent)
+			{
+				connect(this, SIGNAL(clicked()), this, SLOT(OnClicked()));
+			}
 
 signals:
 	void ButtonClicked(const QString& msg);

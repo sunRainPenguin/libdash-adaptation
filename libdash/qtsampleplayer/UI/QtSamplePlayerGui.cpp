@@ -247,15 +247,15 @@ void            QtSamplePlayerGui::UnLockUI                                     
 {
     this->setEnabled(true);
 }
-std::string     QtSamplePlayerGui::GetUrl                                           ()
-{
-    this->LockUI();
-
-    std::string ret  = this->ui->lineEdit_mpd->text().toStdString();
-
-    this->UnLockUI();
-    return ret;
-}
+//std::string     QtSamplePlayerGui::GetUrl                                           ()
+//{
+//    this->LockUI();
+//
+//    std::string ret  = this->ui->lineEdit_mpd->text().toStdString();
+//
+//    this->UnLockUI();
+//    return ret;
+//}
 
 /* Notifiers */
 void            QtSamplePlayerGui::NotifySettingsChanged                            ()
@@ -317,11 +317,11 @@ void QtSamplePlayerGui::NotifyProgressSliderPressed  ()
 }
 
 /* UI Slots */
-void            QtSamplePlayerGui::on_button_mpd_clicked                            ()
-{
-    this->mpd = NULL;
-    this->NotifyMPDDownloadPressed(this->GetUrl());
-}
+// void            QtSamplePlayerGui::on_button_mpd_clicked                            ()
+// {
+//     this->mpd = NULL;
+//     this->NotifyMPDDownloadPressed(this->GetUrl());
+// }
 void            QtSamplePlayerGui::on_cb_period_currentIndexChanged                 (int index)
 {
     if(index == -1 || this->mpd == NULL)
@@ -336,11 +336,11 @@ void            QtSamplePlayerGui::on_cb_period_currentIndexChanged             
 
     this->UnLockUI();
 }
-void            QtSamplePlayerGui::on_cb_mpd_currentTextChanged                     (const QString &arg1)
-{
-    this->ui->button_start->setDisabled(true);
-    this->ui->lineEdit_mpd->setText(arg1);
-}
+//void            QtSamplePlayerGui::on_cb_mpd_currentTextChanged                     (const QString &arg1)
+//{
+//    this->ui->button_start->setDisabled(true);
+//    this->ui->lineEdit_mpd->setText(arg1);
+//}
 void            QtSamplePlayerGui::on_cb_video_adaptationset_currentIndexChanged    (int index)
 {
     if(index == -1 || this->mpd == NULL)
@@ -391,9 +391,9 @@ void            QtSamplePlayerGui::on_button_start_clicked                      
     this->ui->button_pause->setEnabled(true);
 	this->ui->button_stop->setEnabled(true);
 	this->ui->progressSlider->setEnabled(true);				//2015.4.14 - php
-    this->ui->cb_mpd->setDisabled(true);
-    this->ui->lineEdit_mpd->setDisabled(true);
-    this->ui->button_mpd->setDisabled(true);
+    //this->ui->cb_mpd->setDisabled(true);
+   /* this->ui->lineEdit_mpd->setDisabled(true);*/
+//     this->ui->button_mpd->setDisabled(true);
 
     this->NotifyStartButtonPressed();
 }
@@ -403,9 +403,9 @@ void            QtSamplePlayerGui::on_button_pause_clicked                      
     this->ui->button_pause->setEnabled(false);
 	this->ui->button_stop->setEnabled(false);
 	this->ui->progressSlider->setEnabled(false);			//2015.4.14 - php
-    this->ui->cb_mpd->setDisabled(false);
-    this->ui->lineEdit_mpd->setDisabled(false);
-    this->ui->button_mpd->setDisabled(false);
+    //this->ui->cb_mpd->setDisabled(false);
+    /*this->ui->lineEdit_mpd->setDisabled(false);*/
+    //this->ui->button_mpd->setDisabled(false);
 
     this->NotifyPauseButtonPressed();
 }
@@ -416,9 +416,9 @@ void            QtSamplePlayerGui::on_button_stop_clicked                       
 	this->ui->button_pause->setEnabled(false);
 	this->ui->button_stop->setEnabled(false);
 	this->ui->progressSlider->setEnabled(false);			//2015.4.14 - php
-	this->ui->cb_mpd->setDisabled(false);
-	this->ui->lineEdit_mpd->setDisabled(false);
-	this->ui->button_mpd->setDisabled(false);
+	//this->ui->cb_mpd->setDisabled(false);
+	//this->ui->lineEdit_mpd->setDisabled(false);
+// 	this->ui->button_mpd->setDisabled(false);
 
 	this->NotifyStopButtonPressed();
 }
@@ -437,4 +437,65 @@ void  QtSamplePlayerGui::on_progressSlider_sliderPressed()
 void QtSamplePlayerGui::SetMpdUrl(QString mpdUrl)
 {
 	this->mpdUrl = mpdUrl;
+}
+
+void QtSamplePlayerGui::ClearMpd()
+{
+	this->mpd = NULL;
+}
+void QtSamplePlayerGui::ClickButtonStop()
+{
+	this->ui->button_start->setEnabled(true);
+	this->ui->button_pause->setEnabled(false);
+	this->ui->button_stop->setEnabled(false);
+	this->ui->progressSlider->setEnabled(false);			//2015.4.14 - php
+	//this->ui->cb_mpd->setDisabled(false);
+	//this->ui->lineEdit_mpd->setDisabled(false);
+// 	this->ui->button_mpd->setDisabled(false);
+
+	this->NotifyStopButtonPressed();
+}
+bool QtSamplePlayerGui::IsStarted()
+{
+	if (!this->ui->button_start->isEnabled())
+	{
+		return true;
+	} 
+	else
+	{
+		return false;
+	}
+}
+void QtSamplePlayerGui::ClickButtonStart()
+{
+	this->ui->button_start->setEnabled(false);
+	this->ui->button_pause->setEnabled(true);
+	this->ui->button_stop->setEnabled(true);
+	this->ui->progressSlider->setEnabled(true);				//2015.4.14 - php
+	//this->ui->cb_mpd->setDisabled(true);
+	/* this->ui->lineEdit_mpd->setDisabled(true);*/
+	//     this->ui->button_mpd->setDisabled(true);
+
+	this->NotifyStartButtonPressed();
+}
+
+void QtSamplePlayerGui::closeEvent( QCloseEvent * event )
+{
+	/*	switch( QMessageBox::information( this, tr("CT Control View"),
+	tr("Do you really want to log out CT Control View?"),
+	tr("Yes"), tr("No"),
+	0, 1 ) ) 
+	{
+	case 0:
+	event->accept();
+	break;
+	case 1:
+	default: 
+	event->ignore();
+	break; 
+	}  */ 
+
+	this->ClickButtonStop();
+	emit ClosePlayerGui();
+	event->accept();
 }
