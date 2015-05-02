@@ -21,13 +21,19 @@ using namespace sampleplayer::renderer;
 using namespace dash::mpd;
 using namespace libdash::framework::mpd;
 
-QtSamplePlayerGui::QtSamplePlayerGui    (QString mpdUrl, QWidget *parent) : 
+QtSamplePlayerGui::QtSamplePlayerGui    (bool hasLogedIn, QString userName, QString mediaID, QString mediaName, QString mpdUrl, QWidget *parent) : 
                    QMainWindow          (parent),
                    ui                   (new Ui::QtSamplePlayerClass),
                    mpd                  (NULL)
 {
     this->ui->setupUi(this);
+	this->hasLogedIn = hasLogedIn;
+	this->userName = userName;
+	this->mediaID = mediaID;
+	this->mediaName = mediaName;
 	this->mpdUrl = mpdUrl;
+	this->ui->label_userName->setText(userName);
+	this->ui->label_mediaName->setText(mediaName);
     this->SetVideoSegmentBufferFillState(0);
     this->SetVideoBufferFillState(0);
     this->SetAudioSegmentBufferFillState(0);
@@ -36,6 +42,9 @@ QtSamplePlayerGui::QtSamplePlayerGui    (QString mpdUrl, QWidget *parent) :
 	this->ui->button_stop->setEnabled(false);
     this->ui->button_start->setEnabled(false);
 	this->ui->progressSlider->setEnabled(false);			//2015.4.14 - php
+
+	this->ShowCommentsFromDb(this->mediaID);
+
 
 	//2015.4.26 - php
 	QString qss_mainWindow;
@@ -438,7 +447,13 @@ void QtSamplePlayerGui::SetMpdUrl(QString mpdUrl)
 {
 	this->mpdUrl = mpdUrl;
 }
-
+void QtSamplePlayerGui::SetCurrMediaInfo(QString mediaID, QString mediaName)
+{
+	this->mediaID = mediaID;
+	this->mediaName = mediaName;
+	this->ui->label_mediaName->setText(mediaName);
+	this->ShowCommentsFromDb(mediaID);
+}
 void QtSamplePlayerGui::ClearMpd()
 {
 	this->mpd = NULL;
@@ -481,21 +496,61 @@ void QtSamplePlayerGui::ClickButtonStart()
 
 void QtSamplePlayerGui::closeEvent( QCloseEvent * event )
 {
-	/*	switch( QMessageBox::information( this, tr("CT Control View"),
-	tr("Do you really want to log out CT Control View?"),
-	tr("Yes"), tr("No"),
-	0, 1 ) ) 
-	{
-	case 0:
-	event->accept();
-	break;
-	case 1:
-	default: 
-	event->ignore();
-	break; 
-	}  */ 
-
 	this->ClickButtonStop();
 	emit ClosePlayerGui();
 	event->accept();
+}
+
+void QtSamplePlayerGui::on_button_comment_clicked()
+{
+	if (!hasLogedIn)
+	{
+		emit LoginBeforeComment();
+	} 
+	else
+	{
+// 		this->ui->label_comment->setText(QString("Comment Successfully!"));
+
+	}
+}
+
+void QtSamplePlayerGui::SetLoginState(QString userName)
+{
+	this->hasLogedIn = true;
+	this->userName = userName;
+	this->ui->label_userName->setText(userName);
+}
+
+void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
+{
+	int indexUsername, indexCommentTime, indexCommentText;
+	QString userName, commentTime, commentText, comment;
+
+	QSqlQuery sql_query; 
+	QString select_sql;
+	QSqlRecord rec;
+
+	select_sql =QString("SELECT user.username, uc.UC_CommentTime, uc.UC_CommentText FROM user, usercomment AS uc WHERE uc.MI_ID = ") + MI_ID + QString(" and uc.User_ID = user.ID ORDER BY uc.UC_ID DESC LIMIT 5");
+	sql_query.prepare(select_sql);
+	if (!sql_query.exec() || sql_query.size()==0)
+	{
+		qDebug() << "\t" <<"Select comment failed! ";
+		return;
+	} 
+
+	rec = sql_query.record();
+	while (sql_query.next())
+	{
+		indexUsername = rec.indexOf(QString("username"));
+		userName = sql_query.value(indexUsername).toString();
+
+		indexCommentTime = rec.indexOf(QString("UC_CommentTime"));
+		commentTime = sql_query.value(indexCommentTime).toString();
+
+		indexCommentText = rec.indexOf(QString("UC_CommentText"));
+		commentText = sql_query.value(indexCommentText).toString();
+
+		comment = comment + userName + commentTime + commentText + QString( "\r\n");
+	}
+	this->ui->label_comment->setText(comment);
 }

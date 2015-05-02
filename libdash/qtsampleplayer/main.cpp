@@ -25,8 +25,7 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 	if (!ClearDebugLog())
 	{
-		qDebug() << "\t" <<"Clear debug log failed! exit(1).";
-		exit(1);
+		qDebug() << "\t" <<"Clear debug log failed!";
 	}
 
 	qInstallMessageHandler(CustomMessageHandler);
@@ -41,7 +40,10 @@ int main(int argc, char *argv[])
 	data_base.setUserName("root");  //设置用户名
 	data_base.setPassword("qwe123");  //设置密码
 	if(!data_base.open())
-		qDebug() << "\t" <<"Failed to connect to mysql";
+	{
+		qCritical() << "\t" <<"Failed to connect to database! exit(1).";
+		exit(1);
+	}
 	else
 		qDebug() << "\t" <<"Success";
 	

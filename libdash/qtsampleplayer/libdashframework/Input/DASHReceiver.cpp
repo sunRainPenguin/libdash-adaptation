@@ -253,7 +253,7 @@ void*                       DASHReceiver::DoBuffering               (void *recei
     dashReceiver->DownloadInitSegment(dashReceiver->GetRepresentation());
 
     MediaObject *media = dashReceiver->GetNextSegment();
-	media = dashReceiver->GetNextSegment();
+	//media = dashReceiver->GetNextSegment();
 
     while(media != NULL && dashReceiver->isBuffering)
     {

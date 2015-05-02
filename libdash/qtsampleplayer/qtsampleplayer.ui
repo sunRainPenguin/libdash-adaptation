@@ -219,6 +219,45 @@
         </item>
        </layout>
       </widget>
+      <widget class="QLabel" name="label_mediaName">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>0</y>
+         <width>671</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="button_comment">
+       <property name="geometry">
+        <rect>
+         <x>720</x>
+         <y>620</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Comment</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_userName">
+       <property name="geometry">
+        <rect>
+         <x>693</x>
+         <y>1</y>
+         <width>151</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>TextLabel</string>
+       </property>
+      </widget>
      </widget>
     </item>
     <item>
@@ -374,9 +413,19 @@
         </widget>
        </item>
        <item>
+        <widget class="QLabel" name="label_comment">
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>

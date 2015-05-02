@@ -1,18 +1,18 @@
-周五 五月 1 22:04:07 2015 Debug:  File:(main.cpp) Line:(36) 	 "QSQLITE"
-周五 五月 1 22:04:07 2015 Debug:  File:(main.cpp) Line:(36) 	 "QMYSQL"
-周五 五月 1 22:04:07 2015 Debug:  File:(main.cpp) Line:(36) 	 "QMYSQL3"
-周五 五月 1 22:04:07 2015 Debug:  File:(main.cpp) Line:(36) 	 "QODBC"
-周五 五月 1 22:04:07 2015 Debug:  File:(main.cpp) Line:(36) 	 "QODBC3"
-周五 五月 1 22:04:07 2015 Debug:  File:(main.cpp) Line:(36) 	 "QPSQL"
-周五 五月 1 22:04:07 2015 Debug:  File:(main.cpp) Line:(36) 	 "QPSQL7"
-周五 五月 1 22:04:09 2015 Debug:  File:(main.cpp) Line:(46) 	 Success
-周五 五月 1 22:04:09 2015 Warning:  File:(kernel\qobject.cpp) Line:(3512) QMetaObject::connectSlotsByName: No matching signal for on_playgui_closed()
-周五 五月 1 22:04:09 2015 Debug:  File:(ondemandgui.cpp) Line:(108) 	 "Succeed Query! MI_MPDUrl:  D:/apache-tomcat-7.0.52/webapps/ROOT/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   D:/apache-tomcat-7.0.52/webapps/ROOT/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-17-28 15:17:01 MI_ClickThroughRate:  10"
-周五 五月 1 22:04:09 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
-周五 五月 1 22:04:09 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
-周五 五月 1 22:04:09 2015 Debug:  File:(ondemandgui.cpp) Line:(108) 	 "Succeed Query! MI_MPDUrl:  D:/apache-tomcat-7.0.52/webapps/ROOT/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   D:/apache-tomcat-7.0.52/webapps/ROOT/chendian/沉淀.png  MI_Name:  沉淀   MI_UploadAuthor:  php  MI_InsertTime:  2015-04-29 15:04:46 MI_ClickThroughRate:  12"
-周五 五月 1 22:04:10 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
-周五 五月 1 22:04:10 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
-周五 五月 1 22:04:10 2015 Debug:  File:(ondemandgui.cpp) Line:(108) 	 "Succeed Query! MI_MPDUrl:  http://localhost:8081/mp4-main-multi/mp4-main-multi-mpd-AV-NBS.mpd   MI_ShowPicUrl:   D:/apache-tomcat-7.0.52/webapps/ROOT/mp4-main-multi/mp4-main-multi.png  MI_Name:  mp4-main-multi   MI_UploadAuthor:  php  MI_InsertTime:  2015-16-29 15:16:09 MI_ClickThroughRate:  16"
-周五 五月 1 22:04:10 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
-周五 五月 1 22:04:10 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周六 五月 2 23:29:50 2015 Debug:  File:(main.cpp) Line:(35) 	 "QSQLITE"
+周六 五月 2 23:29:50 2015 Debug:  File:(main.cpp) Line:(35) 	 "QMYSQL"
+周六 五月 2 23:29:50 2015 Debug:  File:(main.cpp) Line:(35) 	 "QMYSQL3"
+周六 五月 2 23:29:50 2015 Debug:  File:(main.cpp) Line:(35) 	 "QODBC"
+周六 五月 2 23:29:50 2015 Debug:  File:(main.cpp) Line:(35) 	 "QODBC3"
+周六 五月 2 23:29:50 2015 Debug:  File:(main.cpp) Line:(35) 	 "QPSQL"
+周六 五月 2 23:29:50 2015 Debug:  File:(main.cpp) Line:(35) 	 "QPSQL7"
+周六 五月 2 23:29:51 2015 Debug:  File:(main.cpp) Line:(48) 	 Success
+周六 五月 2 23:29:51 2015 Warning:  File:(kernel\qobject.cpp) Line:(3512) QMetaObject::connectSlotsByName: No matching signal for on_playgui_closed()
+周六 五月 2 23:29:51 2015 Debug:  File:(ondemandgui.cpp) Line:(123) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  D:/apache-tomcat-7.0.52/webapps/ROOT/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   D:/apache-tomcat-7.0.52/webapps/ROOT/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-17-28 15:17:01 MI_ClickThroughRate:  10"
+周六 五月 2 23:29:52 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周六 五月 2 23:29:52 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周六 五月 2 23:29:52 2015 Debug:  File:(ondemandgui.cpp) Line:(123) 	 "Succeed Query! MI_ID:  2  MI_MPDUrl:  D:/apache-tomcat-7.0.52/webapps/ROOT/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   D:/apache-tomcat-7.0.52/webapps/ROOT/chendian/沉淀.png  MI_Name:  沉淀   MI_UploadAuthor:  php  MI_InsertTime:  2015-04-29 15:04:46 MI_ClickThroughRate:  12"
+周六 五月 2 23:29:53 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周六 五月 2 23:29:53 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周六 五月 2 23:29:53 2015 Debug:  File:(ondemandgui.cpp) Line:(123) 	 "Succeed Query! MI_ID:  3  MI_MPDUrl:  http://localhost:8081/mp4-main-multi/mp4-main-multi-mpd-AV-NBS.mpd   MI_ShowPicUrl:   D:/apache-tomcat-7.0.52/webapps/ROOT/mp4-main-multi/mp4-main-multi.png  MI_Name:  mp4-main-multi   MI_UploadAuthor:  php  MI_InsertTime:  2015-16-29 15:16:09 MI_ClickThroughRate:  16"
+周六 五月 2 23:29:53 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周六 五月 2 23:29:53 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1

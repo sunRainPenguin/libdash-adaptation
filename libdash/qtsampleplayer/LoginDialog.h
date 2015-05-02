@@ -30,7 +30,7 @@ private slots:
 	void on_button_register_clicked();
 
 signals:
-	void enterSuccessfully(QString username);
+	void enterSuccessfully(QString userName);
 };
 
 #endif // LOGINDIALOG_H

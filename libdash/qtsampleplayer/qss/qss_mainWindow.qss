@@ -5,7 +5,7 @@ QMainWindow#QtSamplePlayerClass
 QPushButton
 {
 	background-color: rgb(0, 170, 127);
-	background-image: url(:/QtSamplePlayer/pic/backGround.jpg);
+	background-image: url(:/QtSamplePlayer/pic/88.jpg);
     font-family: "Aharoni";
     font-size: 14px;
     text-align: center;
@@ -21,7 +21,7 @@ QPushButton:disabled
 {
 	color: rgb(240, 240, 240);
 	background-color: rgb(240, 240, 240);
-	background-image: url(:/QtSamplePlayer/pic/backGround.jpg);
+	background-image: url(:/QtSamplePlayer/pic/88.jpg);
     font-family: "Aharoni";
     font-size: 14px;
     text-align: center;
@@ -36,6 +36,12 @@ QLabel
 {
 	 font-family: "Arial";
      font-size: 9pt;
+}
+QLabel#label_mediaName
+{
+	font-family: "Arial";
+     font-size: 14pt;
+	 font-weight: bold;
 }
 QProgressBar
 {
