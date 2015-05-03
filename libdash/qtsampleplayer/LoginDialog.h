@@ -16,7 +16,7 @@ public:
 
 private:
 	Ui::LoginDialog ui;
-	bool QueryUserFromDb(QString username, QString password);
+	QString QueryUserFromDb(QString username, QString password);
 	bool QueryUserFromDb(QString username);
 	bool AddUserToDb(QString username, QString password);
 
@@ -26,11 +26,11 @@ public slots:
 private slots:
 	void on_button_ok_clicked();
 	void on_button_cancel_clicked();
-	void on_lineEdit_userName_returnPressed();
+/*	void on_lineEdit_userName_returnPressed();*/
 	void on_button_register_clicked();
 
 signals:
-	void enterSuccessfully(QString userName);
+	void enterSuccessfully(QString userID, QString userName);
 };
 
 #endif // LOGINDIALOG_H

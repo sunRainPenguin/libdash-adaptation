@@ -21,7 +21,7 @@
 #include "../libdashframework/MPD/AdaptationSetHelper.h"
 
 #include "sqlconfig.h"
-
+#include "CommentDialog.h"
 namespace sampleplayer
 {
     class IDASHPlayerGuiObserver;
@@ -31,13 +31,12 @@ namespace sampleplayer
         Q_OBJECT
 
         public:
-            QtSamplePlayerGui           (bool hasLogedIn, QString userName, QString mediaID, QString mediaName, QString mpdUrl, QWidget *parent = 0);
+            QtSamplePlayerGui           (bool hasLogedIn, QString userID, QString userName, QString mediaID, QString mediaName, QString mpdUrl,  QWidget *parent = 0);
             virtual ~QtSamplePlayerGui  ();
 
             void                                    SetGuiFields            (dash::mpd::IMPD* mpd);
             virtual void                            AddWidgetObserver       (IDASHPlayerGuiObserver* observer);
             virtual void                            SetStatusBar            (const std::string& text);
-           // virtual std::string                     GetUrl                  ();
             sampleplayer::renderer::QTGLRenderer*   GetVideoElement         ();
 			void									SetMpdUrl(QString mpdUrl);				//2015.4.30 - php
 			void									SetCurrMediaInfo(QString mediaID, QString mediaName);	//2015.5.2 - php
@@ -47,13 +46,11 @@ namespace sampleplayer
 			bool									IsStarted();					//2015.5.1 - php
 	
         private slots:
-            //void on_cb_mpd_currentTextChanged                   (const QString &arg1);
             void on_cb_period_currentIndexChanged               (int index);
             void on_cb_video_adaptationset_currentIndexChanged  (int index);
             void on_cb_video_representation_currentIndexChanged (int index);
             void on_cb_audio_adaptationset_currentIndexChanged  (int index);
             void on_cb_audio_representation_currentIndexChanged (int index);
-//             void on_button_mpd_clicked                          ();
             void on_button_start_clicked                         ();
             void on_button_pause_clicked                       ();
 			void on_button_stop_clicked                         ();
@@ -74,7 +71,7 @@ namespace sampleplayer
 			virtual void    SetRateChangedLabel		        (int segmentNumber, unsigned int downloadRate);
 			virtual void    SetBWChangedLabel		        (unsigned int BW);
 			void closeEvent				( QCloseEvent * event );
-			void	SetLoginState		(QString usesrName);									//2015.5.2 - php
+			void	SetLoginState		(QString userID, QString usesrName);									//2015.5.2 - php
 
         private:
             std::map<std::string, std::string>                  keyValues;
@@ -83,6 +80,7 @@ namespace sampleplayer
             std::map<std::string, std::vector<std::string> >    audio;
 
             Ui::QtSamplePlayerClass                 *ui;
+			CommentDialog*							commentDialog;//2015.5.3 - php
             std::vector<IDASHPlayerGuiObserver *>   observers;
             dash::mpd::IMPD                         *mpd;
 			QString										mpdUrl;			//2015.4.30 - php
@@ -90,6 +88,7 @@ namespace sampleplayer
 			QString										mediaID;			//2015.5.2 - php
 			bool											    hasLogedIn;		//2015.5.2 - php
 			QString										userName;		//2015.5.2 - php
+			QString										userID;				//2015.5.3 - php
             void LockUI                     ();
             void UnLockUI                   ();
 
@@ -108,7 +107,7 @@ namespace sampleplayer
 			void NotifyStopButtonPressed		();
 			void NotifyProgressSliderReleased  (int progress);			//2015.4.13 - php
 			void NotifyProgressSliderPressed   ();			//2015.4.13 - php
-			void ShowCommentsFromDb		(QString MI_ID);//2015.5.2 - php
+			void ShowCommentsFromDb		(QString MI_ID);
 
 	signals:
 			void ClosePlayerGui();			//2015.5.1 - php

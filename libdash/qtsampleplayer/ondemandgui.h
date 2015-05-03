@@ -31,6 +31,7 @@ private:
 	QMultiHash<QString, QString> mediaInfo;
 	bool hasLogedIn;
 	QString userName;
+	QString userID;
 
 	bool SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column);
 	bool ShowAvailableMediaFromDb();
@@ -40,13 +41,13 @@ private slots:
 	void on_button_login_clicked();
 
 public slots:
-	void	SetLoginState		(QString usesrName);
+	void	SetLoginState		(QString userID, QString usesrName);
 	void StartPlayer						(QString currMediaID);
 	void on_playgui_closed				();
 	void LoginBeforeComment		();
 
 signals:
-	void enterSuccessfully(QString userName);
+	void enterSuccessfully(QString userID, QString userName);
 };
 
 #endif // ONDEMANDGUI_H

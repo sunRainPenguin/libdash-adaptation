@@ -15,20 +15,21 @@
 #include "QtSamplePlayerGui.h"
 #include "IDASHPlayerGuiObserver.h"
 #include "libdash.h"
-
+#include <QMultiHash>
 using namespace sampleplayer;
 using namespace sampleplayer::renderer;
 using namespace dash::mpd;
 using namespace libdash::framework::mpd;
 
-QtSamplePlayerGui::QtSamplePlayerGui    (bool hasLogedIn, QString userName, QString mediaID, QString mediaName, QString mpdUrl, QWidget *parent) : 
+QtSamplePlayerGui::QtSamplePlayerGui    (bool hasLogedIn, QString userID, QString Name, QString mediaID, QString mediaName, QString mpdUrl, QWidget *parent) : 
                    QMainWindow          (parent),
                    ui                   (new Ui::QtSamplePlayerClass),
                    mpd                  (NULL)
 {
     this->ui->setupUi(this);
 	this->hasLogedIn = hasLogedIn;
-	this->userName = userName;
+	this->userID = userID;
+	this->userName = Name;
 	this->mediaID = mediaID;
 	this->mediaName = mediaName;
 	this->mpdUrl = mpdUrl;
@@ -45,7 +46,6 @@ QtSamplePlayerGui::QtSamplePlayerGui    (bool hasLogedIn, QString userName, QStr
 
 	this->ShowCommentsFromDb(this->mediaID);
 
-
 	//2015.4.26 - php
 	QString qss_mainWindow;
 	QFile qssFile(":/qss/qss_mainWindow.qss");
@@ -61,6 +61,8 @@ QtSamplePlayerGui::QtSamplePlayerGui    (bool hasLogedIn, QString userName, QStr
 QtSamplePlayerGui::~QtSamplePlayerGui   ()
 {
     delete (this->ui);
+	delete (this->commentDialog);
+	this->commentDialog = NULL;
 }
 
 void            QtSamplePlayerGui::ClearComboBoxes                                  ()
@@ -144,12 +146,12 @@ void			  QtSamplePlayerGui::SetProgressSlider		(int  segmentDisplayIndex)
 //2015.4.18 - php
 void         QtSamplePlayerGui::SetVideoProgressLabel  (int segmentDisplayIndex)
 {
-		this->ui->bitmovinLogo->setText("Video Segment Index :"+ QString::number(segmentDisplayIndex, 10));
+		this->ui->label_videoSegmentIndex->setText("Video Segment Index :"+ QString::number(segmentDisplayIndex, 10));
 }
 
 void         QtSamplePlayerGui::SetAudioProgressLabel  (int segmentDisplayIndex)
 {
-	this->ui->libdashLogo ->setText("Audio Segment Index :"+ QString::number(segmentDisplayIndex, 10));
+	this->ui->label_audioSegmentIndex ->setText("Audio Segment Index :"+ QString::number(segmentDisplayIndex, 10));
 }
 
 void			QtSamplePlayerGui::SetProgressSliderRange	(int duration)
@@ -256,16 +258,6 @@ void            QtSamplePlayerGui::UnLockUI                                     
 {
     this->setEnabled(true);
 }
-//std::string     QtSamplePlayerGui::GetUrl                                           ()
-//{
-//    this->LockUI();
-//
-//    std::string ret  = this->ui->lineEdit_mpd->text().toStdString();
-//
-//    this->UnLockUI();
-//    return ret;
-//}
-
 /* Notifiers */
 void            QtSamplePlayerGui::NotifySettingsChanged                            ()
 {
@@ -325,12 +317,6 @@ void QtSamplePlayerGui::NotifyProgressSliderPressed  ()
 		this->observers.at(i)->OnProgressSliderPressed();
 }
 
-/* UI Slots */
-// void            QtSamplePlayerGui::on_button_mpd_clicked                            ()
-// {
-//     this->mpd = NULL;
-//     this->NotifyMPDDownloadPressed(this->GetUrl());
-// }
 void            QtSamplePlayerGui::on_cb_period_currentIndexChanged                 (int index)
 {
     if(index == -1 || this->mpd == NULL)
@@ -345,11 +331,6 @@ void            QtSamplePlayerGui::on_cb_period_currentIndexChanged             
 
     this->UnLockUI();
 }
-//void            QtSamplePlayerGui::on_cb_mpd_currentTextChanged                     (const QString &arg1)
-//{
-//    this->ui->button_start->setDisabled(true);
-//    this->ui->lineEdit_mpd->setText(arg1);
-//}
 void            QtSamplePlayerGui::on_cb_video_adaptationset_currentIndexChanged    (int index)
 {
     if(index == -1 || this->mpd == NULL)
@@ -400,10 +381,6 @@ void            QtSamplePlayerGui::on_button_start_clicked                      
     this->ui->button_pause->setEnabled(true);
 	this->ui->button_stop->setEnabled(true);
 	this->ui->progressSlider->setEnabled(true);				//2015.4.14 - php
-    //this->ui->cb_mpd->setDisabled(true);
-   /* this->ui->lineEdit_mpd->setDisabled(true);*/
-//     this->ui->button_mpd->setDisabled(true);
-
     this->NotifyStartButtonPressed();
 }
 void            QtSamplePlayerGui::on_button_pause_clicked                           ()
@@ -412,10 +389,6 @@ void            QtSamplePlayerGui::on_button_pause_clicked                      
     this->ui->button_pause->setEnabled(false);
 	this->ui->button_stop->setEnabled(false);
 	this->ui->progressSlider->setEnabled(false);			//2015.4.14 - php
-    //this->ui->cb_mpd->setDisabled(false);
-    /*this->ui->lineEdit_mpd->setDisabled(false);*/
-    //this->ui->button_mpd->setDisabled(false);
-
     this->NotifyPauseButtonPressed();
 }
 
@@ -425,10 +398,6 @@ void            QtSamplePlayerGui::on_button_stop_clicked                       
 	this->ui->button_pause->setEnabled(false);
 	this->ui->button_stop->setEnabled(false);
 	this->ui->progressSlider->setEnabled(false);			//2015.4.14 - php
-	//this->ui->cb_mpd->setDisabled(false);
-	//this->ui->lineEdit_mpd->setDisabled(false);
-// 	this->ui->button_mpd->setDisabled(false);
-
 	this->NotifyStopButtonPressed();
 }
 
@@ -464,10 +433,6 @@ void QtSamplePlayerGui::ClickButtonStop()
 	this->ui->button_pause->setEnabled(false);
 	this->ui->button_stop->setEnabled(false);
 	this->ui->progressSlider->setEnabled(false);			//2015.4.14 - php
-	//this->ui->cb_mpd->setDisabled(false);
-	//this->ui->lineEdit_mpd->setDisabled(false);
-// 	this->ui->button_mpd->setDisabled(false);
-
 	this->NotifyStopButtonPressed();
 }
 bool QtSamplePlayerGui::IsStarted()
@@ -487,10 +452,6 @@ void QtSamplePlayerGui::ClickButtonStart()
 	this->ui->button_pause->setEnabled(true);
 	this->ui->button_stop->setEnabled(true);
 	this->ui->progressSlider->setEnabled(true);				//2015.4.14 - php
-	//this->ui->cb_mpd->setDisabled(true);
-	/* this->ui->lineEdit_mpd->setDisabled(true);*/
-	//     this->ui->button_mpd->setDisabled(true);
-
 	this->NotifyStartButtonPressed();
 }
 
@@ -510,14 +471,17 @@ void QtSamplePlayerGui::on_button_comment_clicked()
 	else
 	{
 // 		this->ui->label_comment->setText(QString("Comment Successfully!"));
-
+		commentDialog = new CommentDialog(this->mediaID, this->userID,  this);
+		//QObject::connect(commentDialog, SIGNAL(), this, SLOT());
+		commentDialog->exec();
 	}
 }
 
-void QtSamplePlayerGui::SetLoginState(QString userName)
+void QtSamplePlayerGui::SetLoginState(QString userID, QString userName)
 {
 	this->hasLogedIn = true;
 	this->userName = userName;
+	this->userID = userID;
 	this->ui->label_userName->setText(userName);
 }
 
@@ -532,7 +496,7 @@ void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
 
 	select_sql =QString("SELECT user.username, uc.UC_CommentTime, uc.UC_CommentText FROM user, usercomment AS uc WHERE uc.MI_ID = ") + MI_ID + QString(" and uc.User_ID = user.ID ORDER BY uc.UC_ID DESC LIMIT 5");
 	sql_query.prepare(select_sql);
-	if (!sql_query.exec() || sql_query.size()==0)
+	if (!sql_query.exec() || sql_query.size()<1)
 	{
 		qDebug() << "\t" <<"Select comment failed! ";
 		return;
@@ -550,7 +514,8 @@ void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
 		indexCommentText = rec.indexOf(QString("UC_CommentText"));
 		commentText = sql_query.value(indexCommentText).toString();
 
-		comment = comment + userName + commentTime + commentText + QString( "\r\n");
+		comment = comment + userName + QString(" [") + commentTime + QString("]:  ") + commentText + QString( "\r\n");
 	}
 	this->ui->label_comment->setText(comment);
 }
+

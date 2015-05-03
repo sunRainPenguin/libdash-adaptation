@@ -131,7 +131,7 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QLabel" name="bitmovinLogo">
+         <widget class="QLabel" name="label_videoSegmentIndex">
           <property name="maximumSize">
            <size>
             <width>182</width>
@@ -147,7 +147,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="libdashLogo">
+         <widget class="QLabel" name="label_audioSegmentIndex">
           <property name="maximumSize">
            <size>
             <width>182</width>

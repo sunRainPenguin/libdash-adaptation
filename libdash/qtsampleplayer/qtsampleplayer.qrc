@@ -3,9 +3,11 @@
         <file>pic/backGround.jpg</file>
         <file>pic/88.jpg</file>
         <file>pic/93.jpg</file>
+        <file>pic/smilely.png</file>
     </qresource>
     <qresource prefix="/">
         <file>qss/qss_mainWindow.qss</file>
         <file>qss/qss_loginDialog.qss</file>
+        <file>qss/qss_commentDialog.qss</file>
     </qresource>
 </RCC>

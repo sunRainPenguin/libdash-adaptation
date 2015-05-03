@@ -22,23 +22,16 @@ void LoginDialog::on_button_ok_clicked()
 	QString password = this->ui.lineEdit_password->text();
 	if (username == "" || password == "")
 	{
-		if (username == "")
-		{
-			QMessageBox::warning(this, QString("Warning"), QString("Please enter username!"), QMessageBox::Yes);
+			QMessageBox::warning(this, QString("Warning"), QString("Empty username or password!"), QMessageBox::Yes);
 			this->ui.lineEdit_userName->setFocus();
-		}
-		if (password == "")
-		{
-			QMessageBox::warning(this, QString("Warning"), QString("Please enter password!"), QMessageBox::Yes);
-			this->ui.lineEdit_password->setFocus();
-		}
 	} 
 	else
 	{
-		if (this->QueryUserFromDb(username, password))
+		QString userID = this->QueryUserFromDb(username, password);
+		if (userID!= QString(""))
 		{
 			QMessageBox::information(this, QString("Welcome"), QString("Log in successfully!"), QMessageBox::Yes); 
-			emit enterSuccessfully(username);
+			emit enterSuccessfully(userID, username);
 			this->accept();
 		} 
 		else
@@ -49,28 +42,41 @@ void LoginDialog::on_button_ok_clicked()
 	}
 	
 }
-bool LoginDialog::QueryUserFromDb(QString username, QString password)
+QString LoginDialog::QueryUserFromDb(QString username, QString password)
 {
-		QString select_sql = "SELECT * FROM user WHERE BINARY username = '" + username + "' AND BINARY password = '" + password + "'";
+		int indexUserID;
+		QString userID;
+
 		QSqlQuery sql_query; 
+		QSqlRecord rec;
+
+		QString select_sql = "SELECT * FROM user WHERE BINARY username = '" + username + "' AND BINARY password = '" + password + "'";
 		sql_query.prepare(select_sql);
-		if(!sql_query.exec() || !sql_query.next())
+		if(!sql_query.exec())
 		{
-			return false;
+			qWarning() << "\t" <<"Select user failed! ";
+			return QString("");
 		}
 		else
 		{
-				return true;
+			rec = sql_query.record();
+			if (sql_query.next())
+			{
+				indexUserID = rec.indexOf(QString("ID"));
+				userID = sql_query.value(indexUserID).toString();
+				return userID;
+			}
+				return QString("");
 		}
 }
 void LoginDialog::on_button_cancel_clicked()
 {
 	this->reject();
 }
-void LoginDialog:: on_lineEdit_userName_returnPressed()
-{
-	this->reject();
-}
+//void LoginDialog:: on_lineEdit_userName_returnPressed()
+//{
+//	this->reject();
+//}
 bool LoginDialog::eventFilter(QObject * object, QEvent * event)
 {
 	if (event->type() == QEvent::KeyPress )
@@ -96,17 +102,12 @@ void LoginDialog::on_button_register_clicked()
 	QString username = this->ui.lineEdit_userName->text();
 	QString password = this->ui.lineEdit_password->text();
 
-	if (username == "")
+	if (username == "" || password == "")
 	{
-		QMessageBox::warning(this, QString("Warning"), QString("Please enter username!"), QMessageBox::Yes);
+		QMessageBox::warning(this, QString("Warning"), QString("Empty username or password!"), QMessageBox::Yes);
 		this->ui.lineEdit_userName->setFocus();
 	}
-	if (password == "")
-	{
-		QMessageBox::warning(this, QString("Warning"), QString("Please enter password!"), QMessageBox::Yes);
-		this->ui.lineEdit_password->setFocus();
-	}
-
+	
 	if (this->QueryUserFromDb(username))
 	{
 		QMessageBox::warning(this, QString("Warning"), QString("This username already exists!"), QMessageBox::Yes);
@@ -121,8 +122,7 @@ void LoginDialog::on_button_register_clicked()
 		else
 		{
 			QMessageBox::warning(this, QString("Warning"), QString("Register failed, please check it again!"));
-		}
-		
+		}	
 	}
 
 }
@@ -132,7 +132,7 @@ bool LoginDialog::QueryUserFromDb(QString username)
 	QString select_sql = "SELECT * FROM user WHERE BINARY username = '" + username + "'";
 	QSqlQuery sql_query; 
 	sql_query.prepare(select_sql);
-	if(!sql_query.exec() || !sql_query.next())
+	if(!sql_query.exec() || sql_query.size()<1)
 	{
 		return false;
 	}

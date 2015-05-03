@@ -1,0 +1,4 @@
+QPushButton#button_smilely
+{
+	border-image: url(:/QtSamplePlayer/pic/smilely.png);
+}

@@ -12,13 +12,13 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 	loginDialog = NULL;
 	playerGui    = NULL;
 	player = NULL;
+	verticalLayout = NULL;
 
 	if (!this->ShowAvailableMediaFromDb())
 	{
 		qCritical() << "\t" << "Failed to get media from Db ! exit(-1).";
 		exit(-1);
 	}
-
 }
 
 OnDemandGui::~OnDemandGui()
@@ -49,18 +49,19 @@ OnDemandGui::~OnDemandGui()
 void OnDemandGui::on_button_login_clicked()
 {
 	loginDialog = new LoginDialog(this);
-	QObject::connect(loginDialog, SIGNAL(enterSuccessfully(QString)), this, SLOT(SetLoginState(QString)));
+	QObject::connect(loginDialog, SIGNAL(enterSuccessfully(QString, QString)), this, SLOT(SetLoginState(QString, QString)));
 	loginDialog->exec();
 }
 
-void OnDemandGui::SetLoginState(QString username)
+void OnDemandGui::SetLoginState(QString userID, QString username)
 {
 	this->hasLogedIn = true;
+	this->userID = userID;
 	this->userName = username;
 	this->ui.button_login->setText(username);
 	if (playerGui)
 	{
-		emit enterSuccessfully(username);
+		emit enterSuccessfully(userID, username);
 	}
 }
 
@@ -193,8 +194,8 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 	QList<QString> valMediaInfo = mediaInfo.values(currMediaID);
 	if (valMediaInfo.size()<2)
 	{
-		qCritical() << "\t" << "Retrieve mediainfo failed! exit(-2).";
-		exit(-2);
+		qWarning() << "\t" << "Retrieve mediainfo failed!";
+		return;
 	} 
 	else
 	{
@@ -205,10 +206,10 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 
 	if (!playerGui)
 	{
-		playerGui = new QtSamplePlayerGui(hasLogedIn, this->userName, currMediaID, currMediaName, currMpdUrl, this);
+		playerGui = new QtSamplePlayerGui(hasLogedIn, this->userID, this->userName, currMediaID, currMediaName, currMpdUrl, this);
 		player =new DASHPlayer(*playerGui);
 		playerGui->show();
-		QObject::connect(this, SIGNAL(enterSuccessfully(QString)), playerGui, SLOT(SetLoginState(QString)));
+		QObject::connect(this, SIGNAL(enterSuccessfully(QString, QString)), playerGui, SLOT(SetLoginState(QString, QString)));
 		QObject::connect(playerGui, SIGNAL(ClosePlayerGui()), this, SLOT(on_playgui_closed()));
 		QObject::connect(playerGui, SIGNAL(LoginBeforeComment()), this, SLOT(LoginBeforeComment()));
 		playerGui->ClearMpd();
@@ -222,7 +223,6 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 
 		playerGui->SetMpdUrl(currMpdUrl);
 		playerGui->SetCurrMediaInfo(currMediaID,  currMediaName);
-/*		playerGui->SetLoginState(hasLogedIn, this->userName);*/
 
 		playerGui->ClearMpd();
 		player->OnDownloadMPDPressed(currMpdUrl.toStdString());
@@ -241,6 +241,8 @@ QPushButton*  OnDemandGui::FindButtonByNameIndex(int number)
 }
 void OnDemandGui::on_playgui_closed()
 {
+	if (playerGui->IsStarted())
+		playerGui->ClickButtonStop();
 	delete(player);
 	player = NULL;
 	delete(playerGui);
