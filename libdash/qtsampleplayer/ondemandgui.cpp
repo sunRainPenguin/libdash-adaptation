@@ -113,7 +113,7 @@ bool OnDemandGui::ShowAvailableMediaFromDb()
 
 			indexMI_InsertTime = rec.indexOf(QString("MI_InsertTime"));
 			QDateTime temp = sql_query.value(indexMI_InsertTime).toDateTime();
-			MI_InsertTime = temp.toString("yyyy-mm-dd hh:mm:ss");
+			MI_InsertTime = temp.toString("yyyy-MM-dd hh:mm:ss");
 
 			indexMI_ClickThroughRate = rec.indexOf(QString("MI_ClickThroughRate"));
 			MI_ClickThroughRate = sql_query.value(indexMI_ClickThroughRate).toString();

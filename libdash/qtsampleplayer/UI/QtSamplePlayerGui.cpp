@@ -61,8 +61,6 @@ QtSamplePlayerGui::QtSamplePlayerGui    (bool hasLogedIn, QString userID, QStrin
 QtSamplePlayerGui::~QtSamplePlayerGui   ()
 {
     delete (this->ui);
-	delete (this->commentDialog);
-	this->commentDialog = NULL;
 }
 
 void            QtSamplePlayerGui::ClearComboBoxes                                  ()
@@ -509,7 +507,8 @@ void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
 		userName = sql_query.value(indexUsername).toString();
 
 		indexCommentTime = rec.indexOf(QString("UC_CommentTime"));
-		commentTime = sql_query.value(indexCommentTime).toString();
+		QDateTime temp = sql_query.value(indexCommentTime).toDateTime();
+		commentTime = temp.toString("yyyy-MM-dd hh:mm:ss");
 
 		indexCommentText = rec.indexOf(QString("UC_CommentText"));
 		commentText = sql_query.value(indexCommentText).toString();
