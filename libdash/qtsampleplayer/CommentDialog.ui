@@ -13,27 +13,17 @@
   <property name="windowTitle">
    <string>CommentDialog</string>
   </property>
-  <widget class="QPlainTextEdit" name="TextEdit_commentText">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>30</y>
-     <width>361</width>
-     <height>141</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>230</x>
      <y>190</y>
-     <width>41</width>
+     <width>141</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>300字</string>
+    <string>300 characters limited</string>
    </property>
   </widget>
   <widget class="QPushButton" name="button_comment">
@@ -63,6 +53,16 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="TextEdit_commentText">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>381</width>
+     <height>161</height>
+    </rect>
    </property>
   </widget>
  </widget>

@@ -7,6 +7,8 @@ CommentDialog::CommentDialog(QString MI_ID, QString User_ID, QWidget *parent)
 	this->mediaID = MI_ID;
 	this->userID = User_ID;
 
+	this->ui.TextEdit_commentText->setFocus();
+
 	QString qss_commentDialog;
 	QFile qssFile(":/qss/qss_commentDialog.qss");
 	qssFile.open(QFile::ReadOnly);
@@ -27,17 +29,31 @@ void CommentDialog::on_button_comment_clicked()
 {
 	QDateTime current_date_time = QDateTime::currentDateTime();
 	QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm:ss");
+	if (this->ui.TextEdit_commentText->toPlainText().size()==0)
+	{
+		QMessageBox::warning(this, QString("Warning"), QString("Add comment failed, comment can't be empty"), QMessageBox::Yes);
+		return;
+	}
+	if (this->ui.TextEdit_commentText->toPlainText().size()>300)
+	{
+		QMessageBox::warning(this, QString("Warning"), QString("In the comment 300 characters limited!"), QMessageBox::Yes);
+		return;
+	}
+	QString cmmt = this->ui.TextEdit_commentText->toHtml();
 
-	if (!AddCommentToDb(this->ui.TextEdit_commentText->toPlainText(), this->mediaID, current_date, userID))
+	if (!AddCommentToDb(cmmt, this->mediaID, current_date, userID))
 	{
 		QMessageBox::warning(this, QString("Warning"), QString("Add comment failed!"), QMessageBox::Yes);
+		return;
+	}else
+	{
+		QMessageBox::information(this, QString("Comment"),QString("Comment successfully!"));
 	}
 	this->accept();
 }
 bool CommentDialog::AddCommentToDb(QString UC_CommentText, QString MI_ID, QString UC_CommentTime, QString User_ID )
 {
 	QSqlQuery sql_query;
-
 	sql_query.prepare("INSERT INTO usercomment(UC_CommentText, MI_ID, UC_CommentTime, User_ID) VALUES(:commentText,:mediaID,:commentTime,:userID)");
 
 	sql_query.bindValue(":commentText", UC_CommentText);
@@ -52,26 +68,7 @@ bool CommentDialog::AddCommentToDb(QString UC_CommentText, QString MI_ID, QStrin
 }
 void CommentDialog::on_button_smilely_clicked()
 {
-	QString emotionIconPath;
-	QSqlQuery sql_query; 
-	QSqlRecord rec;
-
-	QString select_sql = "SELECT * FROM smilelyfaces LIMIT 1";
-	sql_query.prepare(select_sql);
-	if(!sql_query.exec())
-	{
-		qWarning() << "\t" <<"Select user failed! ";
-		return;
-	}
-	else
-	{
-		rec = sql_query.record();
-		if (sql_query.next())
-		{
-			int index = rec.indexOf(QString("iconDir"));
-			emotionIconPath = sql_query.value(index).toString();
-		}
-	}
+	QString emotionIconPath = GetEmotionPath();
 
 	QSelectFaceWidget* selectFace = new QSelectFaceWidget(emotionIconPath, this);
 
@@ -80,18 +77,29 @@ void CommentDialog::on_button_smilely_clicked()
 	selectFace->popUp(GlobalPoint, this->ui.button_smilely->height()+10);
 
 	QObject::connect(selectFace, &QSelectFaceWidget::FaceSelected, [=](const QString &filename){
-		QString iconName = GetPicName(filename);
-		if (iconName.size()>0)
+ 		QString iconName = GetPicName(filename);
+// 		if (iconName.size()>0)
+// 		{
+// 			QString temp = "[/";
+// 			temp.append(iconName + "]");
+// 			iconName = temp;
+// 		}
+		QTextDocument *document =this->ui.TextEdit_commentText->document();
+		QTextCursor cursor = this->ui.TextEdit_commentText->textCursor();
+		QFileInfo fiPic(filename);
+		if (fiPic.exists())
 		{
-			QString temp = "</";
-			temp.append(iconName + ">");
-			iconName = temp;
+			QImage image(filename);
+			image = image.scaled(15, 15, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			cursor.movePosition(QTextCursor::End);
+			document->addResource(QTextDocument::ImageResource, QUrl(iconName), image);
+			cursor.insertImage(iconName);
 		}
-		this->ui.TextEdit_commentText->insertPlainText(iconName);
-		this->ui.TextEdit_commentText->moveCursor(QTextCursor::End);
-		
-	});
 
+		this->ui.TextEdit_commentText->setFocus();
+		this->ui.TextEdit_commentText->moveCursor(QTextCursor::End);
+	});
+	
 
 };
 QString CommentDialog::GetPicName(QString original)

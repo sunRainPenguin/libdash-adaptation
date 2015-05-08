@@ -7,7 +7,7 @@
 #include "sqlconfig.h"
 #include "QSelectFaceWidget.h"
 #include <QDateTime>
-#include <QTextCodec>
+#include "HelperFunctions.h"
 
 class CommentDialog : public QDialog
 {

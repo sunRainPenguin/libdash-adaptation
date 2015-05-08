@@ -45,6 +45,9 @@ QtSamplePlayerGui::QtSamplePlayerGui    (bool hasLogedIn, QString userID, QStrin
 	this->ui->progressSlider->setEnabled(false);			//2015.4.14 - php
 
 	this->ShowCommentsFromDb(this->mediaID);
+	timer = new QTimer(this);
+	connect(timer,SIGNAL(timeout()),this,SLOT(timerUpDate()));
+	timer->start(1000);
 
 	//2015.4.26 - php
 	QString qss_mainWindow;
@@ -468,9 +471,7 @@ void QtSamplePlayerGui::on_button_comment_clicked()
 	} 
 	else
 	{
-// 		this->ui->label_comment->setText(QString("Comment Successfully!"));
 		commentDialog = new CommentDialog(this->mediaID, this->userID,  this);
-		//QObject::connect(commentDialog, SIGNAL(), this, SLOT());
 		commentDialog->exec();
 	}
 }
@@ -513,8 +514,75 @@ void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
 		indexCommentText = rec.indexOf(QString("UC_CommentText"));
 		commentText = sql_query.value(indexCommentText).toString();
 
-		comment = comment + userName + QString(" [") + commentTime + QString("]:  ") + commentText + QString( "\r\n");
+		comment = comment + userName + QString(" (") + commentTime + QString("):  ") + QString( "\r\n") + commentText + QString( "\r\n");
 	}
-	this->ui->label_comment->setText(comment);
+
+	comment.replace("\r\n", "<br>");
+	int vx = this->ui->textEdit_comment->verticalScrollBar()->value();			//显示完成后保留滚动条的值，防止刷新滚动
+	
+	QTextDocument *document = this->ui->textEdit_comment->document();
+	QTextCursor cursor = this->ui->textEdit_comment->textCursor();
+	this->ui->textEdit_comment->setReadOnly(true);
+	this->ui->textEdit_comment->setText("");  
+
+	/****************************text****************************/
+	int firstEmotionIndex =  comment .indexOf(QString("[/"));
+	this->ui->textEdit_comment->insertHtml(QString("<html>%1</html>").arg(comment.mid(0,firstEmotionIndex)));;
+
+	int from = 0;
+	while(from<=comment.size())
+	{
+		/****************************picture****************************/
+		int indexPrefix =comment .indexOf(QString("[/"), from);
+		int indexSuffix = comment.indexOf(QString("]"), from);
+		int charCount =  indexSuffix - indexPrefix - 2;
+		QString emotionName = comment.mid(indexPrefix+2, charCount);
+		QString emotionJpg = GetEmotionPath() + QString("/") + emotionName +QString(".jpg");
+		QString emotionPng= GetEmotionPath() + QString("/") + emotionName +QString(".png");
+		 QFileInfo fiJpg(emotionJpg);
+		 QFileInfo fiPng(emotionPng);
+
+		 if (fiJpg.exists())
+		 {
+			 QImage image(emotionJpg);
+			 image = image.scaled(15, 15, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			 cursor.movePosition(QTextCursor::End);
+			 document->addResource(QTextDocument::ImageResource, QUrl(emotionJpg), image);
+			 cursor.insertImage(emotionJpg);
+		 }
+		 else if (fiPng.exists())
+		 {
+			 QImage image(emotionPng);
+			 image = image.scaled(15, 15, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			 cursor.movePosition(QTextCursor::End);
+			 document->addResource(QTextDocument::ImageResource, QUrl(emotionPng), image);
+			 cursor.insertImage(emotionPng);
+		 }
+
+		 /*****************************text****************************/
+		 int indexNextEmotion = comment.indexOf(QString("[/"), indexSuffix+1);
+		 if (indexNextEmotion>=0)
+		 {
+			  int textCount = indexNextEmotion-indexSuffix-1;
+			  QString text = comment.mid(indexSuffix+1, textCount);
+			  this->ui->textEdit_comment->insertHtml(QString("<html>%1</html>").arg(text));
+		 }else
+		 {
+			 //no emotion any more
+			 int textCount = comment.size() + 1 - indexSuffix;
+			 QString text = comment.mid(indexSuffix+1, textCount);
+			 this->ui->textEdit_comment->insertHtml(QString("<html>%1</html>").arg(text));
+			 break;
+		 }
+
+		 from = indexSuffix+1;
+	}
+		this->ui->textEdit_comment->verticalScrollBar()->setValue(vx);
+
+}
+
+void QtSamplePlayerGui::timerUpDate()
+{
+	this->ShowCommentsFromDb(this->mediaID);
 }
 
