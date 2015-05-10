@@ -22,6 +22,7 @@
 
 #include "sqlconfig.h"
 #include "CommentDialog.h"
+
 namespace sampleplayer
 {
     class IDASHPlayerGuiObserver;
@@ -73,6 +74,7 @@ namespace sampleplayer
 			virtual void    SetBWChangedLabel		        (unsigned int BW);
 			void closeEvent				( QCloseEvent * event );
 			void	SetLoginState		(QString userID, QString usesrName);									//2015.5.2 - php
+			void SetLogoutState    ();				//2015.5.10 - php
 
         private:
             std::map<std::string, std::string>                  keyValues;
@@ -110,6 +112,7 @@ namespace sampleplayer
 			void NotifyProgressSliderReleased  (int progress);			//2015.4.13 - php
 			void NotifyProgressSliderPressed   ();			//2015.4.13 - php
 			void ShowCommentsFromDb		(QString MI_ID);
+			QString GetEmotionPath();
 
 	signals:
 			void ClosePlayerGui();			//2015.5.1 - php

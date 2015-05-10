@@ -515,9 +515,9 @@ void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
 		commentText = sql_query.value(indexCommentText).toString();
 
 		comment = comment + userName + QString(" (") + commentTime + QString("):  ") + QString( "\r\n") + commentText + QString( "\r\n");
+
 	}
 
-	comment.replace("\r\n", "<br>");
 	int vx = this->ui->textEdit_comment->verticalScrollBar()->value();			//显示完成后保留滚动条的值，防止刷新滚动
 	
 	QTextDocument *document = this->ui->textEdit_comment->document();
@@ -527,7 +527,7 @@ void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
 
 	/****************************text****************************/
 	int firstEmotionIndex =  comment .indexOf(QString("[/"));
-	this->ui->textEdit_comment->insertHtml(QString("<html>%1</html>").arg(comment.mid(0,firstEmotionIndex)));;
+    this->ui->textEdit_comment->insertPlainText(comment.mid(0,firstEmotionIndex));
 
 	int from = 0;
 	while(from<=comment.size())
@@ -565,13 +565,13 @@ void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
 		 {
 			  int textCount = indexNextEmotion-indexSuffix-1;
 			  QString text = comment.mid(indexSuffix+1, textCount);
-			  this->ui->textEdit_comment->insertHtml(QString("<html>%1</html>").arg(text));
+			  this->ui->textEdit_comment->insertPlainText(text);
 		 }else
 		 {
 			 //no emotion any more
 			 int textCount = comment.size() + 1 - indexSuffix;
 			 QString text = comment.mid(indexSuffix+1, textCount);
-			 this->ui->textEdit_comment->insertHtml(QString("<html>%1</html>").arg(text));
+			 this->ui->textEdit_comment->insertPlainText(text);
 			 break;
 		 }
 
@@ -585,4 +585,36 @@ void QtSamplePlayerGui::timerUpDate()
 {
 	this->ShowCommentsFromDb(this->mediaID);
 }
+void QtSamplePlayerGui::SetLogoutState()
+{
+	this->hasLogedIn = false;
+	this->userName = "";
+	this->userID = "";
+	this->ui->label_userName->setText("");
+}
 
+QString QtSamplePlayerGui::GetEmotionPath()
+{
+	QString emotionIconPath;
+	QSqlQuery sql_query; 
+	QSqlRecord rec;
+
+	QString select_sql = "SELECT * FROM smilelyfaces LIMIT 1";
+	sql_query.prepare(select_sql);
+	if(!sql_query.exec())
+	{
+		qWarning() << "\t" <<"Select user failed! ";
+		return "";
+	}
+	else
+	{
+		rec = sql_query.record();
+		if (sql_query.next())
+		{
+			int index = rec.indexOf(QString("iconDir"));
+			emotionIconPath = sql_query.value(index).toString();
+			return emotionIconPath;
+		}
+		return "";
+	}
+}

@@ -27,21 +27,66 @@ CommentDialog::~CommentDialog()
 }
 void CommentDialog::on_button_comment_clicked()
 {
-	QDateTime current_date_time = QDateTime::currentDateTime();
-	QString current_date = current_date_time.toString("yyyy-MM-dd hh:mm:ss");
-	if (this->ui.TextEdit_commentText->toPlainText().size()==0)
+	QString cmmtHtml = this->ui.TextEdit_commentText->toHtml();
+	qDebug() << "\t" <<cmmtHtml;
+
+	//replace image
+	int indexImgFrom = 0;
+	int indexImgEnd = 0;
+	int imgnameCharCount = 0;
+	QString imgName;
+	while (cmmtHtml.indexOf("<img src=", indexImgFrom)>=0 && cmmtHtml.indexOf(" />", indexImgFrom)>=0)
 	{
-		QMessageBox::warning(this, QString("Warning"), QString("Add comment failed, comment can't be empty"), QMessageBox::Yes);
-		return;
+		indexImgFrom = cmmtHtml.indexOf("<img src=", indexImgFrom);
+		indexImgEnd = cmmtHtml.indexOf(" />", indexImgFrom);
+		imgnameCharCount = indexImgEnd-indexImgFrom-1-8-2;
+		imgName = cmmtHtml.mid(indexImgFrom+10, imgnameCharCount);
+		cmmtHtml.replace(indexImgFrom, indexImgEnd-indexImgFrom+3, QString("[/")+imgName+QString("]"));
+		
+		indexImgFrom = indexImgFrom+imgnameCharCount+3;
 	}
-	if (this->ui.TextEdit_commentText->toPlainText().size()>300)
+	qDebug() << "\t" <<cmmtHtml;
+	
+	//get comment content from paragraphs
+	int indexFrom = 0;
+	int indexEnd = 0;
+	QString comment;
+	while(cmmtHtml.indexOf("<p", indexFrom)>=0)
+	{
+			int indexTemp = cmmtHtml.indexOf(QString("<p"), indexFrom);
+			if (cmmtHtml.indexOf(">", indexTemp)>=0 && cmmtHtml.indexOf("</p>", indexTemp)>=0)
+			{
+				indexFrom = cmmtHtml.indexOf(QString(">"), indexTemp);
+				indexEnd = cmmtHtml.indexOf("</p>", indexTemp);	
+				QString strTemp = cmmtHtml.mid(indexFrom+1, indexEnd-indexFrom-1);
+				comment = comment + strTemp;
+				indexFrom = indexEnd+4;
+			}
+			else
+			{
+				qCritical() << "\t" << "Error html!";
+				return;
+			}
+	}
+
+	comment = comment.replace("<br />", " ");
+	comment = comment.simplified();
+	qDebug() << "\t" <<comment;
+	if (comment.size()>300)
 	{
 		QMessageBox::warning(this, QString("Warning"), QString("In the comment 300 characters limited!"), QMessageBox::Yes);
 		return;
 	}
-	QString cmmt = this->ui.TextEdit_commentText->toHtml();
+	if (comment.size()==0)
+	{
+		QMessageBox::warning(this, QString("Warning"), QString("Add comment failed, comment can't be empty"), QMessageBox::Yes);
+		return;
+	}
 
-	if (!AddCommentToDb(cmmt, this->mediaID, current_date, userID))
+	//add to database
+	QDateTime current_date_time = QDateTime::currentDateTime();
+	QString currentDateTime = current_date_time.toString("yyyy-MM-dd hh:mm:ss");
+	if (!AddCommentToDb(comment, this->mediaID, currentDateTime, userID))
 	{
 		QMessageBox::warning(this, QString("Warning"), QString("Add comment failed!"), QMessageBox::Yes);
 		return;
@@ -78,12 +123,6 @@ void CommentDialog::on_button_smilely_clicked()
 
 	QObject::connect(selectFace, &QSelectFaceWidget::FaceSelected, [=](const QString &filename){
  		QString iconName = GetPicName(filename);
-// 		if (iconName.size()>0)
-// 		{
-// 			QString temp = "[/";
-// 			temp.append(iconName + "]");
-// 			iconName = temp;
-// 		}
 		QTextDocument *document =this->ui.TextEdit_commentText->document();
 		QTextCursor cursor = this->ui.TextEdit_commentText->textCursor();
 		QFileInfo fiPic(filename);
@@ -91,13 +130,12 @@ void CommentDialog::on_button_smilely_clicked()
 		{
 			QImage image(filename);
 			image = image.scaled(15, 15, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-			cursor.movePosition(QTextCursor::End);
 			document->addResource(QTextDocument::ImageResource, QUrl(iconName), image);
 			cursor.insertImage(iconName);
 		}
 
 		this->ui.TextEdit_commentText->setFocus();
-		this->ui.TextEdit_commentText->moveCursor(QTextCursor::End);
+		//this->ui.TextEdit_commentText->moveCursor(QTextCursor::NoMove);
 	});
 	
 
@@ -120,4 +158,29 @@ QString CommentDialog::GetPicName(QString original)
 	
 	picName = original.mid(indexOfDelimiter+1, charCount);
 	return picName;
+}
+QString CommentDialog::GetEmotionPath()
+{
+	QString emotionIconPath;
+	QSqlQuery sql_query; 
+	QSqlRecord rec;
+
+	QString select_sql = "SELECT * FROM smilelyfaces LIMIT 1";
+	sql_query.prepare(select_sql);
+	if(!sql_query.exec())
+	{
+		qWarning() << "\t" <<"Select user failed! ";
+		return "";
+	}
+	else
+	{
+		rec = sql_query.record();
+		if (sql_query.next())
+		{
+			int index = rec.indexOf(QString("iconDir"));
+			emotionIconPath = sql_query.value(index).toString();
+			return emotionIconPath;
+		}
+		return "";
+	}
 }

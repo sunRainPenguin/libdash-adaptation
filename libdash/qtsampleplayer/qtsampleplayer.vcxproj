@@ -195,7 +195,6 @@
     <ClInclude Include="GeneratedFiles\ui_ondemandgui.h" />
     <ClInclude Include="GeneratedFiles\ui_QSelectFaceWidget.h" />
     <ClInclude Include="GeneratedFiles\ui_qtsampleplayer.h" />
-    <ClInclude Include="HelperFunctions.h" />
     <ClInclude Include="libdashframework\Buffer\AudioChunk.h" />
     <ClInclude Include="libdashframework\Buffer\AudioSamples.h" />
     <ClInclude Include="libdashframework\Buffer\Buffer.h" />

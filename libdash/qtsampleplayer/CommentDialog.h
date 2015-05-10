@@ -4,10 +4,9 @@
 #include <QDialog>
 #include <QMessageBox>
 #include "ui_CommentDialog.h"
-#include "sqlconfig.h"
 #include "QSelectFaceWidget.h"
 #include <QDateTime>
-#include "HelperFunctions.h"
+#include "sqlconfig.h"
 
 class CommentDialog : public QDialog
 {
@@ -27,6 +26,7 @@ private:
 	QString userID;
 	bool AddCommentToDb(QString UC_CommentText, QString MI_ID, QString UC_CommentTime, QString User_ID );
 	QString GetPicName(QString original);
+	QString GetEmotionPath();
 };
 
 #endif // COMMENTDIALOG_H

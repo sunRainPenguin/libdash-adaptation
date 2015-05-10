@@ -8,6 +8,7 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
+	this->ui.button_logout->setEnabled(false);
 	hasLogedIn = false;
 	loginDialog = NULL;
 	playerGui    = NULL;
@@ -19,6 +20,10 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 		qCritical() << "\t" << "Failed to get media from Db ! exit(-1).";
 		exit(-1);
 	}
+
+	timer = new QTimer(this);
+	connect(timer,SIGNAL(timeout()),this,SLOT(timerUpDate()));
+	timer->start(2000);
 }
 
 OnDemandGui::~OnDemandGui()
@@ -59,6 +64,7 @@ void OnDemandGui::SetLoginState(QString userID, QString username)
 	this->userID = userID;
 	this->userName = username;
 	this->ui.button_login->setText(username);
+	this->ui.button_logout->setEnabled(true);
 	if (playerGui)
 	{
 		emit enterSuccessfully(userID, username);
@@ -178,7 +184,6 @@ bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_Sh
 
 	this->ui.gridLayout->addLayout(verticalLayout, row, column);
 	connect(imgButton, SIGNAL(ButtonClicked(QString)), this, SLOT(StartPlayer(QString)));
-
 	delete(img);
 	img = NULL;
 	delete(icon);
@@ -203,15 +208,17 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 		currMpdUrl = valMediaInfo.at(0);
 		currMediaName = valMediaInfo.at(1);
 	}
-
+	UpdateClickThroughRateToDb(currMediaID);
 	if (!playerGui)
 	{
 		playerGui = new QtSamplePlayerGui(hasLogedIn, this->userID, this->userName, currMediaID, currMediaName, currMpdUrl, this);
 		player =new DASHPlayer(*playerGui);
 		playerGui->show();
 		QObject::connect(this, SIGNAL(enterSuccessfully(QString, QString)), playerGui, SLOT(SetLoginState(QString, QString)));
+		QObject::connect(this, SIGNAL(LogOut()), playerGui, SLOT(SetLogoutState()));
 		QObject::connect(playerGui, SIGNAL(ClosePlayerGui()), this, SLOT(on_playgui_closed()));
 		QObject::connect(playerGui, SIGNAL(LoginBeforeComment()), this, SLOT(LoginBeforeComment()));
+
 		playerGui->ClearMpd();
 		player->OnDownloadMPDPressed(currMpdUrl.toStdString());
 		playerGui->ClickButtonStart();
@@ -252,4 +259,34 @@ void OnDemandGui::on_playgui_closed()
 void OnDemandGui::LoginBeforeComment()
 {
 	on_button_login_clicked();
+}
+void OnDemandGui::on_button_logout_clicked()
+{
+	this->hasLogedIn = false;
+	this->userID = "";
+	this->userName = "";
+	this->ui.button_login->setText("Log in");
+	this->ui.button_logout->setEnabled(false);
+	if (playerGui)
+	{
+		emit LogOut();
+	}
+}
+void OnDemandGui::UpdateClickThroughRateToDb(QString mediaID)
+{
+	QSqlQuery sql_query; 
+	QString select_sql;
+
+	select_sql = "UPDATE mediainfo SET MI_ClickThroughRate=MI_ClickThroughRate+1 WHERE MI_ID =  " + mediaID;
+	sql_query.prepare(select_sql);
+	if (!sql_query.exec())
+	{
+		qCritical() << "\t" <<"Update click through rate failed! ";
+		return;
+	} 
+}
+void OnDemandGui::timerUpDate()
+{
+	ShowAvailableMediaFromDb();
+	this->update();
 }

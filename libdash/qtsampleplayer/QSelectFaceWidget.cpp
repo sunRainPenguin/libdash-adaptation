@@ -29,7 +29,7 @@ QSelectFaceWidget::QSelectFaceWidget(const QString &faceIconDir,  QWidget *paren
 			qDebug() << fileInfo.filePath();
 			if(! ( img->load(fileInfo.filePath()) ) ) 
 			{
-				qDebug() << "\t" <<"Load image failed ! ";
+				qCritical() << "\t" <<"Load image failed ! ";
 				delete(img);
 				img = NULL;
 				return ;
