@@ -13,6 +13,12 @@
 #include "UI/DASHPlayer.h"
 using namespace sampleplayer;
 
+enum LabelType{
+	mediaName,
+	mediaAuthor,
+	mediaTime,
+	clickThroughRate
+};
 class OnDemandGui : public QWidget
 {
 	Q_OBJECT
@@ -34,10 +40,10 @@ private:
 	QString userName;
 	QString userID;
 	QTimer *	timer;
-
 	bool SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column);
 	bool ShowAvailableMediaFromDb();
 	QPushButton* FindButtonByNameIndex(int number);
+	QLabel* FindLabelByNameIndex(int type,  int number);
 	void UpdateClickThroughRateToDb(QString mediaID);
 
 private slots:

@@ -170,17 +170,10 @@ bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_Sh
 	imgButton->setFixedSize(200, 150); 
 	imgButton->setAccessibleDescription(MI_ID);
 
-	QLabel*  labelMediaName = new QLabel(MI_Name, this);
-	QLabel*  labelAuthor = new QLabel(QString("Author: ")+MI_UploadAuthor, this);
-	QLabel*  labelUploadTime = new QLabel(MI_InsertTime, this);
-	QLabel*  labelClickThroughRate = new QLabel(MI_ClickThroughRate, this);
-
-	verticalLayout = new QVBoxLayout();
-	verticalLayout->addWidget(imgButton);
-	verticalLayout->addWidget(labelMediaName);
-	verticalLayout->addWidget(labelAuthor);
-	verticalLayout->addWidget(labelUploadTime);
-	verticalLayout->addWidget(labelClickThroughRate);
+	QLabel*  labelMediaName =FindLabelByNameIndex(LabelType::mediaName, COUNT_ROWCONTAIN*row+column);
+	QLabel*  labelAuthor = FindLabelByNameIndex(LabelType::mediaAuthor, COUNT_ROWCONTAIN*row+column);
+	QLabel*  labelUploadTime = FindLabelByNameIndex(LabelType::mediaTime, COUNT_ROWCONTAIN*row+column);
+	QLabel*  labelClickThroughRate = FindLabelByNameIndex(LabelType::clickThroughRate, COUNT_ROWCONTAIN*row+column);
 
 	this->ui.gridLayout->addLayout(verticalLayout, row, column);
 	connect(imgButton, SIGNAL(ButtonClicked(QString)), this, SLOT(StartPlayer(QString)));
@@ -246,6 +239,33 @@ QPushButton*  OnDemandGui::FindButtonByNameIndex(int number)
 		return NULL;
 
 }
+QLabel* OnDemandGui::FindLabelByNameIndex(int type,  int number)
+{
+	QString labelName;
+	switch(type)
+	{
+	case 0:
+		labelName = QString("ll_Name_") + QString::number(number, 10);
+		break;
+	case 1:
+		labelName = QString("ll_Author_") + QString::number(number, 10);
+		break;
+	case 2:
+		labelName = QString("ll_Time_") + QString::number(number, 10);
+		break;
+	case 3:
+		labelName = QString("ll_Rate_") + QString::number(number, 10);
+		break;
+	default:
+		break;
+	}
+	QLabel* label = this->findChild<QLabel*>(labelName) ;
+	if (label)
+		return label;
+	else
+		return NULL;
+}
+
 void OnDemandGui::on_playgui_closed()
 {
 	if (playerGui->IsStarted())
@@ -284,9 +304,10 @@ void OnDemandGui::UpdateClickThroughRateToDb(QString mediaID)
 		qCritical() << "\t" <<"Update click through rate failed! ";
 		return;
 	} 
+	ShowAvailableMediaFromDb();
 }
 void OnDemandGui::timerUpDate()
 {
-	ShowAvailableMediaFromDb();
-	this->update();
+	//ShowAvailableMediaFromDb();
+	//this->update();
 }
