@@ -455,7 +455,10 @@ void QtSamplePlayerGui::ClickButtonStart()
 	this->ui->progressSlider->setEnabled(true);				//2015.4.14 - php
 	this->NotifyStartButtonPressed();
 }
-
+QString QtSamplePlayerGui::GetMediaID()
+{
+	return this->mediaID;
+}
 void QtSamplePlayerGui::closeEvent( QCloseEvent * event )
 {
 	this->ClickButtonStop();

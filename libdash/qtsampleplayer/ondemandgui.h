@@ -32,24 +32,24 @@ private:
 	Ui::OnDemandGui ui;
 	LoginDialog*  loginDialog;
 	QtSamplePlayerGui* playerGui;
-	DASHPlayer* player;
-	QVBoxLayout* verticalLayout;
+	DASHPlayer* playergu;
 
 	QMultiHash<QString, QString> mediaInfo;
 	bool hasLogedIn;
 	QString userName;
 	QString userID;
-	QTimer *	timer;
-	bool SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column);
-	bool ShowAvailableMediaFromDb();
+	THREAD_HANDLE updateOnDemandGuiHandle;
+	static void*    UpdateGui                 (void *data);
+	bool SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column, bool updating);
+	bool ShowAvailableMediaFromDb(bool updating=false);
 	QPushButton* FindButtonByNameIndex(int number);
 	QLabel* FindLabelByNameIndex(int type,  int number);
 	void UpdateClickThroughRateToDb(QString mediaID);
+	bool StartUpdateOndemandGui();
 
 private slots:
 	void on_button_login_clicked();
 	void on_button_logout_clicked();
-	void timerUpDate	();
 
 public slots:
 	void	SetLoginState		(QString userID, QString usesrName);

@@ -12,8 +12,7 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 	hasLogedIn = false;
 	loginDialog = NULL;
 	playerGui    = NULL;
-	player = NULL;
-	verticalLayout = NULL;
+	playergu = NULL;
 
 	if (!this->ShowAvailableMediaFromDb())
 	{
@@ -21,9 +20,6 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 		exit(-1);
 	}
 
-	timer = new QTimer(this);
-	connect(timer,SIGNAL(timeout()),this,SLOT(timerUpDate()));
-	timer->start(2000);
 }
 
 OnDemandGui::~OnDemandGui()
@@ -33,20 +29,15 @@ OnDemandGui::~OnDemandGui()
 		delete(loginDialog);
 		loginDialog = NULL;
 	}
-	if (player)
+	if (playergu)
 	{
-		delete(player);
-		player = NULL;
+		delete(playergu);
+		playergu = NULL;
 	}
 	if (playerGui)
 	{
 		delete(playerGui);
 		playerGui =NULL;
-	}
-	if (verticalLayout)
-	{
-		delete(verticalLayout);
-		verticalLayout = NULL;
 	}
 	mediaInfo.clear();
 
@@ -71,7 +62,7 @@ void OnDemandGui::SetLoginState(QString userID, QString username)
 	}
 }
 
-bool OnDemandGui::ShowAvailableMediaFromDb()
+bool OnDemandGui::ShowAvailableMediaFromDb(bool updating)
 {
 	 int indexMI_ID, indexMI_MPDUrl, indexMI_ShowPicUrl, indexMI_Name, indexMI_UploadAuthor, indexMI_InsertTime, indexMI_ClickThroughRate;
 	QString MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate;
@@ -79,14 +70,6 @@ bool OnDemandGui::ShowAvailableMediaFromDb()
 	QSqlQuery sql_query; 
 	QString select_sql;
 	QSqlRecord rec;
-
-	this->ui.gridLayout->setRowStretch(0, 1);
-	this->ui.gridLayout->setRowStretch(1, 1);
-	this->ui.gridLayout->setRowStretch(2, 1);
-	this->ui.gridLayout->setColumnStretch(0, 1);
-	this->ui.gridLayout->setColumnStretch(1, 1);
-	this->ui.gridLayout->setColumnStretch(2, 1);
-	this->ui.gridLayout->setColumnStretch(3, 1);
 
 	select_sql = "SELECT * FROM mediainfo";
 	sql_query.prepare(select_sql);
@@ -129,7 +112,7 @@ bool OnDemandGui::ShowAvailableMediaFromDb()
 			mediaInfo.insert(MI_ID, MI_MPDUrl);
 			qDebug() << "\t" <<QString("Succeed Query! MI_ID:  %1  MI_MPDUrl:  %2   MI_ShowPicUrl:   %3  MI_Name:  %4   MI_UploadAuthor:  %5  MI_InsertTime:  %6 MI_ClickThroughRate:  %7").arg(MI_ID).arg(MI_MPDUrl).arg(MI_ShowPicUrl).arg(MI_Name).arg(MI_UploadAuthor).arg(MI_InsertTime).arg(MI_ClickThroughRate);
 
-			if (!this->SetMediaLayout(MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, recCount/COUNT_ROWCONTAIN, recCount%COUNT_ROWCONTAIN))
+			if (!this->SetMediaLayout(MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, recCount/COUNT_ROWCONTAIN, recCount%COUNT_ROWCONTAIN, updating))
 			{
 				return false;
 			}
@@ -146,7 +129,7 @@ bool OnDemandGui::ShowAvailableMediaFromDb()
 	return true;
 }
 
-bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column)
+bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column, bool updating)
 {
 	QImage* img=new QImage;
 	if(! ( img->load(MI_ShowPicUrl) ) ) //¼ÓÔØÍ¼Ïñ
@@ -165,18 +148,26 @@ bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_Sh
 
 	imgButton->setIcon(*icon);
 	imgButton->setText("");
-	imgButton->setParent(this);
+	//imgButton->setParent(this);
 	imgButton->setIconSize(QSize(190, 150));   
 	imgButton->setFixedSize(200, 150); 
 	imgButton->setAccessibleDescription(MI_ID);
 
 	QLabel*  labelMediaName =FindLabelByNameIndex(LabelType::mediaName, COUNT_ROWCONTAIN*row+column);
+	labelMediaName->setText(MI_Name);
 	QLabel*  labelAuthor = FindLabelByNameIndex(LabelType::mediaAuthor, COUNT_ROWCONTAIN*row+column);
+	labelAuthor->setText(QString("Author: ")+MI_UploadAuthor);
 	QLabel*  labelUploadTime = FindLabelByNameIndex(LabelType::mediaTime, COUNT_ROWCONTAIN*row+column);
+	labelUploadTime->setText(MI_InsertTime);
 	QLabel*  labelClickThroughRate = FindLabelByNameIndex(LabelType::clickThroughRate, COUNT_ROWCONTAIN*row+column);
+	labelClickThroughRate->setText(MI_ClickThroughRate);
 
-	this->ui.gridLayout->addLayout(verticalLayout, row, column);
-	connect(imgButton, SIGNAL(ButtonClicked(QString)), this, SLOT(StartPlayer(QString)));
+	if (!updating)
+	{
+		connect(imgButton, SIGNAL(ButtonClicked(QString)), this, SLOT(StartPlayer(QString)));
+	}
+		
+	
 	delete(img);
 	img = NULL;
 	delete(icon);
@@ -186,6 +177,12 @@ bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_Sh
 
 void OnDemandGui::StartPlayer(QString currMediaID)
 {
+	
+	if (this->playerGui  &&   this->playerGui->IsStarted() && this->playerGui->GetMediaID()==currMediaID )
+	{
+		QString lastMediaID = this->playerGui->GetMediaID();
+		return;
+	}
 	QString currMpdUrl;
 	QString currMediaName;
 
@@ -202,10 +199,12 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 		currMediaName = valMediaInfo.at(1);
 	}
 	UpdateClickThroughRateToDb(currMediaID);
+	ShowAvailableMediaFromDb();
+
 	if (!playerGui)
 	{
 		playerGui = new QtSamplePlayerGui(hasLogedIn, this->userID, this->userName, currMediaID, currMediaName, currMpdUrl, this);
-		player =new DASHPlayer(*playerGui);
+		playergu =new DASHPlayer(*playerGui);
 		playerGui->show();
 		QObject::connect(this, SIGNAL(enterSuccessfully(QString, QString)), playerGui, SLOT(SetLoginState(QString, QString)));
 		QObject::connect(this, SIGNAL(LogOut()), playerGui, SLOT(SetLogoutState()));
@@ -213,7 +212,7 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 		QObject::connect(playerGui, SIGNAL(LoginBeforeComment()), this, SLOT(LoginBeforeComment()));
 
 		playerGui->ClearMpd();
-		player->OnDownloadMPDPressed(currMpdUrl.toStdString());
+		playergu->OnDownloadMPDPressed(currMpdUrl.toStdString());
 		playerGui->ClickButtonStart();
 	}
 	else
@@ -225,7 +224,7 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 		playerGui->SetCurrMediaInfo(currMediaID,  currMediaName);
 
 		playerGui->ClearMpd();
-		player->OnDownloadMPDPressed(currMpdUrl.toStdString());
+		playergu->OnDownloadMPDPressed(currMpdUrl.toStdString());
 		playerGui->ClickButtonStart();
 	}
 }
@@ -270,8 +269,8 @@ void OnDemandGui::on_playgui_closed()
 {
 	if (playerGui->IsStarted())
 		playerGui->ClickButtonStop();
-	delete(player);
-	player = NULL;
+	delete(playergu);
+	playergu = NULL;
 	delete(playerGui);
 	this->playerGui = NULL;
 
@@ -304,10 +303,29 @@ void OnDemandGui::UpdateClickThroughRateToDb(QString mediaID)
 		qCritical() << "\t" <<"Update click through rate failed! ";
 		return;
 	} 
-	ShowAvailableMediaFromDb();
 }
-void OnDemandGui::timerUpDate()
+
+bool    OnDemandGui::StartUpdateOndemandGui        ()
 {
-	//ShowAvailableMediaFromDb();
-	//this->update();
+
+	this->updateOnDemandGuiHandle = CreateThreadPortable (UpdateGui, this);
+
+	if(this->updateOnDemandGuiHandle == NULL)
+		return false;
+
+	return true;
+}
+
+void*   OnDemandGui::UpdateGui        (void *data)
+{
+	OnDemandGui *gui = (OnDemandGui*) data;
+
+	while(gui)
+	{
+		gui->ShowAvailableMediaFromDb(true);
+		PortableSleep(5);
+	}
+
+
+	return NULL;
 }

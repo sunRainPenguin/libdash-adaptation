@@ -45,6 +45,7 @@ namespace sampleplayer
 			void									ClickButtonStop();			//2015.5.1 - php
 			void									ClickButtonStart();		//2015.5.1 - php
 			bool									IsStarted();					//2015.5.1 - php
+			QString							GetMediaID();				//2015.5.12 - php
 	
         private slots:
             void on_cb_period_currentIndexChanged               (int index);
