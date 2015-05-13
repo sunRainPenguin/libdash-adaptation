@@ -4,6 +4,7 @@
 
 #include <QSqlDatabase> 
 #include <QSqlQuery>
+#include <QSqlResult>
 #include <QSqlRecord>
 #include  <QSqlError>
 

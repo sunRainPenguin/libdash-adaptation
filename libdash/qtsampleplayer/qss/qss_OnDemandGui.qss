@@ -1,0 +1,10 @@
+QPushButton#button_search
+{
+	border-image: url(:/QtSamplePlayer/pic/search.png);
+}
+QPushButton#button_search:hover, QPushButton#button_search:pressed, QPushButton#button_search:checked
+{
+	border-image: url(:/QtSamplePlayer/pic/search_clicked.png);
+	width:50pt;
+	height:50pt;
+}

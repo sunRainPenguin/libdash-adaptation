@@ -93,6 +93,7 @@ void CommentDialog::on_button_comment_clicked()
 	}else
 	{
 		QMessageBox::information(this, QString("Comment"),QString("Comment successfully!"));
+		emit CommentSuccessfully();
 	}
 	this->accept();
 }

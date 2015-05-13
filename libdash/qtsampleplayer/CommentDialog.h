@@ -27,6 +27,9 @@ private:
 	bool AddCommentToDb(QString UC_CommentText, QString MI_ID, QString UC_CommentTime, QString User_ID );
 	QString GetPicName(QString original);
 	QString GetEmotionPath();
+
+signals:
+	void CommentSuccessfully();
 };
 
 #endif // COMMENTDIALOG_H

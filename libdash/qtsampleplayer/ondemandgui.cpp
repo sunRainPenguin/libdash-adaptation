@@ -10,14 +10,27 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 	ui.setupUi(this);
 	this->ui.button_logout->setEnabled(false);
 	hasLogedIn = false;
+	currentSearchKey = "";
 	loginDialog = NULL;
 	playerGui    = NULL;
 	playergu = NULL;
 
-	if (!this->ShowAvailableMediaFromDb())
+	if (!this->ShowAvailableMediaFromDb(currentSearchKey))
 	{
 		qCritical() << "\t" << "Failed to get media from Db ! exit(-1).";
 		exit(-1);
+	}
+	this->ui.lineEdit_search->setFocus();
+
+	QString qss_OnDemandGui;
+	QFile qssFile(":/qss/qss_OnDemandGui.qss");
+	qssFile.open(QFile::ReadOnly);
+
+	if(qssFile.isOpen())
+	{
+		qss_OnDemandGui = QLatin1String(qssFile.readAll());
+		this->setStyleSheet(qss_OnDemandGui);
+		qssFile.close();
 	}
 
 }
@@ -62,7 +75,7 @@ void OnDemandGui::SetLoginState(QString userID, QString username)
 	}
 }
 
-bool OnDemandGui::ShowAvailableMediaFromDb(bool updating)
+bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey)
 {
 	 int indexMI_ID, indexMI_MPDUrl, indexMI_ShowPicUrl, indexMI_Name, indexMI_UploadAuthor, indexMI_InsertTime, indexMI_ClickThroughRate;
 	QString MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate;
@@ -71,7 +84,16 @@ bool OnDemandGui::ShowAvailableMediaFromDb(bool updating)
 	QString select_sql;
 	QSqlRecord rec;
 
-	select_sql = "SELECT * FROM mediainfo";
+	if (SearchKey=="")
+	{
+		select_sql = QString("SELECT * FROM mediainfo ORDER BY MI_ClickThroughRate DESC LIMIT 12");
+	} 
+	else
+	{
+		select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
+	}
+	
+
 	sql_query.prepare(select_sql);
 	if (!sql_query.exec())
 	{
@@ -82,7 +104,11 @@ bool OnDemandGui::ShowAvailableMediaFromDb(bool updating)
 	{
 		rec = sql_query.record();
 		int recCount = 0;
-
+		if (sql_query.size()==0)
+		{
+			qDebug() << "\t" <<"Select mediainfo failed! ";
+			return false;
+		}
 		while (sql_query.next())
 		{
 			indexMI_ID = rec.indexOf(QString("MI_ID"));
@@ -112,25 +138,49 @@ bool OnDemandGui::ShowAvailableMediaFromDb(bool updating)
 			mediaInfo.insert(MI_ID, MI_MPDUrl);
 			qDebug() << "\t" <<QString("Succeed Query! MI_ID:  %1  MI_MPDUrl:  %2   MI_ShowPicUrl:   %3  MI_Name:  %4   MI_UploadAuthor:  %5  MI_InsertTime:  %6 MI_ClickThroughRate:  %7").arg(MI_ID).arg(MI_MPDUrl).arg(MI_ShowPicUrl).arg(MI_Name).arg(MI_UploadAuthor).arg(MI_InsertTime).arg(MI_ClickThroughRate);
 
-			if (!this->SetMediaLayout(MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, recCount/COUNT_ROWCONTAIN, recCount%COUNT_ROWCONTAIN, updating))
+			if (!this->SetMediaLayout(MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, recCount/COUNT_ROWCONTAIN, recCount%COUNT_ROWCONTAIN))
 			{
 				return false;
 			}
 			recCount++;
 		}
+
 		for (int i = recCount; i<=11; i++)
 		{
+			//hide the invisible widgets
 			QPushButton* imgButton = this->FindButtonByNameIndex(i);
 			imgButton->setEnabled(false);
 			imgButton->setVisible(false);
+			QLabel* labelMediaName = this->FindLabelByNameIndex(mediaName, i);
+			labelMediaName->setEnabled(false);
+			labelMediaName->setVisible(false);
+			QLabel* labelMediaAuthor = this->FindLabelByNameIndex(mediaAuthor, i);
+			labelMediaAuthor->setEnabled(false);
+			labelMediaAuthor->setVisible(false);
+			QLabel* labelMediaTime = this->FindLabelByNameIndex(mediaTime, i);
+			labelMediaTime->setEnabled(false);
+			labelMediaTime->setVisible(false);
+			QLabel* labelClickRate = this->FindLabelByNameIndex(clickThroughRate, i);
+			labelClickRate->setEnabled(false);
+			labelClickRate->setVisible(false);
+
+			QString verticalLayoutName = QString("vl_") + QString::number(i, 10);
+			QVBoxLayout* verticalLayout = this->findChild<QVBoxLayout*>(verticalLayoutName) ;
+			verticalLayout->addStretch();
 		}
 	}
 
 	return true;
 }
 
-bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column, bool updating)
+bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column)
 {
+
+// 	QNetworkAccessManager *manager;
+// 	manager = new QNetworkAccessManager(this);
+// 	QObject::connect(manager, SIGNAL(finished(QNetworkReply*)),
+// 		this, SLOT(replyFinished(QNetworkReply*)));
+
 	QImage* img=new QImage;
 	if(! ( img->load(MI_ShowPicUrl) ) ) //¼ÓÔØÍ¼Ïñ
 	{
@@ -152,20 +202,27 @@ bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_Sh
 	imgButton->setIconSize(QSize(190, 150));   
 	imgButton->setFixedSize(200, 150); 
 	imgButton->setAccessibleDescription(MI_ID);
+	imgButton->setEnabled(true);
+	imgButton->setVisible(true);
 
-	QLabel*  labelMediaName =FindLabelByNameIndex(LabelType::mediaName, COUNT_ROWCONTAIN*row+column);
+	QLabel*  labelMediaName =FindLabelByNameIndex(mediaName, COUNT_ROWCONTAIN*row+column);
 	labelMediaName->setText(MI_Name);
-	QLabel*  labelAuthor = FindLabelByNameIndex(LabelType::mediaAuthor, COUNT_ROWCONTAIN*row+column);
+	labelMediaName->setEnabled(true);
+	labelMediaName->setVisible(true);
+	QLabel*  labelAuthor = FindLabelByNameIndex(mediaAuthor, COUNT_ROWCONTAIN*row+column);
 	labelAuthor->setText(QString("Author: ")+MI_UploadAuthor);
-	QLabel*  labelUploadTime = FindLabelByNameIndex(LabelType::mediaTime, COUNT_ROWCONTAIN*row+column);
+	labelAuthor->setEnabled(true);
+	labelAuthor->setVisible(true);
+	QLabel*  labelUploadTime = FindLabelByNameIndex(mediaTime, COUNT_ROWCONTAIN*row+column);
 	labelUploadTime->setText(MI_InsertTime);
-	QLabel*  labelClickThroughRate = FindLabelByNameIndex(LabelType::clickThroughRate, COUNT_ROWCONTAIN*row+column);
+	labelUploadTime->setEnabled(true);
+	labelUploadTime->setVisible(true);
+	QLabel*  labelClickThroughRate = FindLabelByNameIndex(clickThroughRate, COUNT_ROWCONTAIN*row+column);
 	labelClickThroughRate->setText(MI_ClickThroughRate);
+	labelClickThroughRate->setEnabled(true);
+	labelClickThroughRate->setVisible(true);
 
-	if (!updating)
-	{
-		connect(imgButton, SIGNAL(ButtonClicked(QString)), this, SLOT(StartPlayer(QString)));
-	}
+	connect(imgButton, SIGNAL(ButtonClicked(QString)), this, SLOT(StartPlayer(QString)));
 		
 	
 	delete(img);
@@ -199,7 +256,7 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 		currMediaName = valMediaInfo.at(1);
 	}
 	UpdateClickThroughRateToDb(currMediaID);
-	ShowAvailableMediaFromDb();
+	ShowAvailableMediaFromDb(currentSearchKey);
 
 	if (!playerGui)
 	{
@@ -305,27 +362,23 @@ void OnDemandGui::UpdateClickThroughRateToDb(QString mediaID)
 	} 
 }
 
-bool    OnDemandGui::StartUpdateOndemandGui        ()
+void OnDemandGui::on_button_search_clicked()
 {
+	QString searchWord = this->ui.lineEdit_search->text().simplified();
+	searchWord = searchWord.remove(" ");
 
-	this->updateOnDemandGuiHandle = CreateThreadPortable (UpdateGui, this);
-
-	if(this->updateOnDemandGuiHandle == NULL)
-		return false;
-
-	return true;
-}
-
-void*   OnDemandGui::UpdateGui        (void *data)
-{
-	OnDemandGui *gui = (OnDemandGui*) data;
-
-	while(gui)
+	if (searchWord=="")
 	{
-		gui->ShowAvailableMediaFromDb(true);
-		PortableSleep(5);
+		ShowAvailableMediaFromDb(searchWord);
+		this->repaint();
+		return;
 	}
-
-
-	return NULL;
+	for (int i=0; i<=searchWord.size()-2; i++)
+	{
+		if (ShowAvailableMediaFromDb(searchWord.mid(i, 2)))
+		{
+			this->currentSearchKey = searchWord.mid(i, 2);
+			break;
+		}
+	}
 }

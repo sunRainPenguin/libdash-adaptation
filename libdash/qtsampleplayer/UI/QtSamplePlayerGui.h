@@ -59,7 +59,7 @@ namespace sampleplayer
 			void on_progressSlider_sliderReleased           ();			//2015.4.13 - php
 			void on_progressSlider_sliderPressed            ();			//2015.4.13 - php
 			void on_button_comment_clicked					();			//2015.5.2 - php
-			void timerUpDate											();			//2015.5.6 - php
+			void on_button_refresh_comment_clicked    ();			//2015.5.13 - php
 
         public slots:
             virtual void    SetVideoSegmentBufferFillState  (int percentage);
@@ -76,6 +76,7 @@ namespace sampleplayer
 			void closeEvent				( QCloseEvent * event );
 			void	SetLoginState		(QString userID, QString usesrName);									//2015.5.2 - php
 			void SetLogoutState    ();				//2015.5.10 - php
+			void UpdateComment		();   //2015.5.13 - php
 
         private:
             std::map<std::string, std::string>                  keyValues;
@@ -93,7 +94,6 @@ namespace sampleplayer
 			bool											    hasLogedIn;		//2015.5.2 - php
 			QString										userName;		//2015.5.2 - php
 			QString										userID;				//2015.5.3 - php
-			QTimer *										timer;				//2015.5.7 - php
             void LockUI                     ();
             void UnLockUI                   ();
 

@@ -45,9 +45,6 @@ QtSamplePlayerGui::QtSamplePlayerGui    (bool hasLogedIn, QString userID, QStrin
 	this->ui->progressSlider->setEnabled(false);			//2015.4.14 - php
 
 	this->ShowCommentsFromDb(this->mediaID);
-	timer = new QTimer(this);
-	connect(timer,SIGNAL(timeout()),this,SLOT(timerUpDate()));
-	timer->start(1000);
 
 	//2015.4.26 - php
 	QString qss_mainWindow;
@@ -475,6 +472,7 @@ void QtSamplePlayerGui::on_button_comment_clicked()
 	else
 	{
 		commentDialog = new CommentDialog(this->mediaID, this->userID,  this);
+		QObject::connect(commentDialog, SIGNAL(CommentSuccessfully()), this, SLOT(UpdateComment()));
 		commentDialog->exec();
 	}
 }
@@ -584,10 +582,6 @@ void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
 
 }
 
-void QtSamplePlayerGui::timerUpDate()
-{
-	this->ShowCommentsFromDb(this->mediaID);
-}
 void QtSamplePlayerGui::SetLogoutState()
 {
 	this->hasLogedIn = false;
@@ -620,4 +614,14 @@ QString QtSamplePlayerGui::GetEmotionPath()
 		}
 		return "";
 	}
+}
+
+void QtSamplePlayerGui::UpdateComment()
+{
+	this->ShowCommentsFromDb(this->mediaID);
+}
+
+void QtSamplePlayerGui::on_button_refresh_comment_clicked()
+{
+	this->ShowCommentsFromDb(this->mediaID);
 }

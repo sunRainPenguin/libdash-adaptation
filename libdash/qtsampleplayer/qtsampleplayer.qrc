@@ -1,13 +1,18 @@
 <RCC>
     <qresource prefix="/QtSamplePlayer">
+        <file>pic/search.png</file>
+        <file>pic/refresh.png</file>
         <file>pic/backGround.jpg</file>
         <file>pic/88.jpg</file>
         <file>pic/93.jpg</file>
         <file>pic/smilely.png</file>
+        <file>pic/refresh-clicked.png</file>
+        <file>pic/search_clicked.png</file>
     </qresource>
     <qresource prefix="/">
         <file>qss/qss_mainWindow.qss</file>
         <file>qss/qss_loginDialog.qss</file>
         <file>qss/qss_commentDialog.qss</file>
+        <file>qss/qss_OnDemandGui.qss</file>
     </qresource>
 </RCC>
