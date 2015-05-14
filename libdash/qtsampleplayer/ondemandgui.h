@@ -10,7 +10,7 @@
 #include <QtGui>
 #include <QMultiHash>
 #include <QtNetwork/QNetworkAccessManager>
-
+#include <QtNetwork/QNetworkReply>
 #include "UI/DASHPlayer.h"
 using namespace sampleplayer;
 
@@ -40,17 +40,21 @@ private:
 	QString userName;
 	QString userID;
 	QPixmap* currentPicture;
+	QString    currentPicName;
 	bool SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column);
-	bool ShowAvailableMediaFromDb(QString SearchKey);
-	QPushButton* FindButtonByNameIndex(int number);
-	QLabel* FindLabelByNameIndex(int type,  int number);
-	void UpdateClickThroughRateToDb(QString mediaID);
-	bool StartUpdateOndemandGui();
+	bool ShowAvailableMediaFromDb		(QString SearchKey);
+	QPushButton* FindButtonByNameIndex		(int number);
+	QLabel* FindLabelByNameIndex		(int type,  int number);
+	void UpdateClickThroughRateToDb		(QString mediaID);
+	bool StartUpdateOndemandGui		();
+	void ShowTreeView		();
+	bool LoadTreeViewData	(QString type, QStandardItemModel * treeModel);
 
 private slots:
 	void on_button_login_clicked();
 	void on_button_logout_clicked();
 	void on_button_search_clicked();
+	//void replyFinished(QNetworkReply *reply);
 
 public slots:
 	void	SetLoginState		(QString userID, QString usesrName);

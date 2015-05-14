@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>911</width>
-    <height>743</height>
+    <width>1069</width>
+    <height>726</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   <widget class="QPushButton" name="button_logout">
    <property name="geometry">
     <rect>
-     <x>820</x>
+     <x>980</x>
      <y>10</y>
      <width>61</width>
      <height>23</height>
@@ -29,7 +29,7 @@
   <widget class="QPushButton" name="button_login">
    <property name="geometry">
     <rect>
-     <x>720</x>
+     <x>880</x>
      <y>10</y>
      <width>75</width>
      <height>23</height>
@@ -42,8 +42,8 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>90</y>
+     <x>180</x>
+     <y>70</y>
      <width>870</width>
      <height>631</height>
     </rect>
@@ -525,8 +525,8 @@
   <widget class="QPushButton" name="button_search">
    <property name="geometry">
     <rect>
-     <x>650</x>
-     <y>9</y>
+     <x>770</x>
+     <y>10</y>
      <width>31</width>
      <height>31</height>
     </rect>
@@ -544,11 +544,11 @@
     <string/>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>10</y>
+     <x>180</x>
+     <y>11</y>
      <width>552</width>
      <height>54</height>
     </rect>
@@ -602,11 +602,21 @@
        </size>
       </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string/>
       </property>
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QTreeView" name="treeView">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>70</y>
+     <width>161</width>
+     <height>491</height>
+    </rect>
+   </property>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

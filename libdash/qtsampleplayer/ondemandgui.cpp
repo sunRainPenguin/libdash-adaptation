@@ -14,7 +14,8 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 	loginDialog = NULL;
 	playerGui    = NULL;
 	playergu = NULL;
-
+	
+	this->ShowTreeView();
 	if (!this->ShowAvailableMediaFromDb(currentSearchKey))
 	{
 		qCritical() << "\t" << "Failed to get media from Db ! exit(-1).";
@@ -175,25 +176,26 @@ bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey)
 
 bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column)
 {
+	this->currentPicture = new QPixmap;
+	 QNetworkAccessManager manager;
+	//QObject::connect(manager, SIGNAL(finished(QNetworkReply*)),
+	//	this, SLOT(replyFinished(QNetworkReply*)));
+	QNetworkReply *reply = manager.get(QNetworkRequest(QUrl(MI_ShowPicUrl)));
+	currentPicture->loadFromData(reply->readAll()); 
 
-// 	QNetworkAccessManager *manager;
-// 	manager = new QNetworkAccessManager(this);
-// 	QObject::connect(manager, SIGNAL(finished(QNetworkReply*)),
-// 		this, SLOT(replyFinished(QNetworkReply*)));
+	//QImage* img=new QImage;
+	//if(! ( img->load(MI_ShowPicUrl) ) ) //加载图像
+	//{
+	//	qDebug() << "\t" <<"Load image failed ! ";
+	//	delete(img);
+	//	img = NULL;
+	//	return false;
+	//}
+	//QPainter painter(this);
+	//QPixmap pixmapToShow = QPixmap::fromImage( img->scaled(size(), Qt::KeepAspectRatio) );
+	//painter.drawPixmap(0,0, pixmapToShow);
 
-	QImage* img=new QImage;
-	if(! ( img->load(MI_ShowPicUrl) ) ) //加载图像
-	{
-		qDebug() << "\t" <<"Load image failed ! ";
-		delete(img);
-		img = NULL;
-		return false;
-	}
-	QPainter painter(this);
-	QPixmap pixmapToShow = QPixmap::fromImage( img->scaled(size(), Qt::KeepAspectRatio) );
-	painter.drawPixmap(0,0, pixmapToShow);
-
-	QIcon *icon = new QIcon(pixmapToShow);
+	QIcon *icon = new QIcon(*currentPicture);
 	QPushButton* imgButton = this->FindButtonByNameIndex(COUNT_ROWCONTAIN*row+column);  //为了connect连接一直保持，这里的pushbutton在界面上添加
 
 	imgButton->setIcon(*icon);
@@ -225,8 +227,8 @@ bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_Sh
 	connect(imgButton, SIGNAL(ButtonClicked(QString)), this, SLOT(StartPlayer(QString)));
 		
 	
-	delete(img);
-	img = NULL;
+	//delete(img);
+	//img = NULL;
 	delete(icon);
 	icon = NULL;
 	return true;
@@ -373,12 +375,108 @@ void OnDemandGui::on_button_search_clicked()
 		this->repaint();
 		return;
 	}
-	for (int i=0; i<=searchWord.size()-2; i++)
+
+	int searchKeySize = searchWord.size();
+	QString searchKey;
+
+	while (searchKeySize>0)
 	{
-		if (ShowAvailableMediaFromDb(searchWord.mid(i, 2)))
+		for (int i=0; i<=searchWord.size()-searchKeySize; i++)
 		{
-			this->currentSearchKey = searchWord.mid(i, 2);
-			break;
+			searchKey=searchWord.mid(i, searchKeySize);
+			if (ShowAvailableMediaFromDb(searchKey))
+			{
+				this->currentSearchKey = searchKey;
+				return;
+			}
 		}
+		searchKeySize--;
 	}
 }
+
+void OnDemandGui::ShowTreeView()
+{
+	QStandardItemModel *treeModel = new QStandardItemModel();  
+	this->ui.treeView->setModel(treeModel);
+	LoadTreeViewData("Subject", treeModel);
+	LoadTreeViewData("Grade", treeModel);
+	this->ui.treeView->setHeaderHidden(TRUE);
+	this->ui.treeView->setEditTriggers(0);
+}
+bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
+{
+
+	QList<QStandardItem *> items;
+	QStandardItem *item = new QStandardItem(type);  
+	items.push_back(item);
+	treeModel->appendRow(items);
+
+	QList<QStandardItem *> childItems;
+	QSqlQuery sql_query; 
+	QString select_sql;
+	QSqlRecord rec;
+
+	if (type=="Subject")
+	{
+		select_sql = "SELECT * FROM subjectinfo ";
+	} 
+	if (type=="Grade")
+	{
+		select_sql = "SELECT * FROM gradeinfo ";
+	}
+
+	sql_query.prepare(select_sql);
+	if (!sql_query.exec())
+	{
+		qDebug() << "\t" <<"Select treeView infomation failed! ";
+		return false;
+	} 
+	else
+	{
+		rec = sql_query.record();
+		int recCount = 0;
+		if (sql_query.size()==0)
+		{
+			qDebug() << "\t" <<"Select treeView infomation failed! ";
+			return false;
+		}
+		while(sql_query.next())
+		{
+			if (type=="Subject")
+			{
+				int indexSubject;
+				QString subject;
+				
+				indexSubject = rec.indexOf("SI_Name");
+				subject = sql_query.value(indexSubject).toString();
+
+				QStandardItem *item = new QStandardItem(subject);  
+				childItems.push_back(item);
+			}
+			if (type=="Grade")
+			{
+				int indexGrade;
+				QString grade;
+
+				indexGrade = rec.indexOf("GI_Name");
+				grade = sql_query.value(indexGrade).toString();
+
+				QStandardItem *item = new QStandardItem(grade);  
+				childItems.push_back(item);
+
+			}
+		}
+	}
+items.at(0)->appendRows(childItems);
+return true;
+}
+//void OnDemandGui::replyFinished(QNetworkReply *reply)
+//{
+//	currentPicture->loadFromData(reply->readAll()); 
+//	QDateTime now;
+//	QString filename = now.currentDateTime().toString("yyMMddhhmmss.jpg");
+//	currentPicture->save(filename);
+//	qDebug()<<"picture saved as "<<filename;
+//	this->currentPicName = filename;
+//
+//}
