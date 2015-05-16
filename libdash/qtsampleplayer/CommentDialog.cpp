@@ -144,6 +144,7 @@ void CommentDialog::on_button_smilely_clicked()
 QString CommentDialog::GetPicName(QString original)
 {
 	int indexOfJpg = original.indexOf(".jpg");
+	int indexOfJpeg = original.indexOf(".jpeg");
 	int indexOfPng = original.indexOf(".png");
 	int indexOfDelimiter = original.lastIndexOf("/");
 
@@ -152,6 +153,8 @@ QString CommentDialog::GetPicName(QString original)
 
 	if (indexOfJpg>=0)
 		charCount = indexOfJpg - indexOfDelimiter - 1;
+	else if (indexOfJpeg)
+		charCount = indexOfJpeg - indexOfDelimiter - 1;
 	else if (indexOfPng>=0)
 		charCount = indexOfPng - indexOfDelimiter - 1;
 	else

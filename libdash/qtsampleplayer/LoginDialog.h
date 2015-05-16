@@ -20,7 +20,7 @@ private:
 	bool QueryUserFromDb(QString username);
 	bool AddUserToDb(QString username, QString password);
 
-public slots:
+private slots:
 	 bool  eventFilter(QObject * object, QEvent * event);
 
 private slots:

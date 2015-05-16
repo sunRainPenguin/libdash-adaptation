@@ -539,11 +539,13 @@ void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
 		int charCount =  indexSuffix - indexPrefix - 2;
 		QString emotionName = comment.mid(indexPrefix+2, charCount);
 		QString emotionJpg = GetEmotionPath() + QString("/") + emotionName +QString(".jpg");
+		QString emotionJpeg = GetEmotionPath() + QString("/") + emotionName +QString(".jpeg");
 		QString emotionPng= GetEmotionPath() + QString("/") + emotionName +QString(".png");
 		 QFileInfo fiJpg(emotionJpg);
+		 QFileInfo fiJpeg(emotionJpeg);
 		 QFileInfo fiPng(emotionPng);
 
-		 if (fiJpg.exists())
+		 if (fiJpg.isFile())
 		 {
 			 QImage image(emotionJpg);
 			 image = image.scaled(15, 15, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -551,13 +553,21 @@ void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
 			 document->addResource(QTextDocument::ImageResource, QUrl(emotionJpg), image);
 			 cursor.insertImage(emotionJpg);
 		 }
-		 else if (fiPng.exists())
+		 else if (fiPng.isFile())
 		 {
 			 QImage image(emotionPng);
 			 image = image.scaled(15, 15, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 			 cursor.movePosition(QTextCursor::End);
 			 document->addResource(QTextDocument::ImageResource, QUrl(emotionPng), image);
 			 cursor.insertImage(emotionPng);
+		 }
+		 else if (fiJpeg.isFile())
+		 {
+			 QImage image(emotionJpeg);
+			 image = image.scaled(15, 15, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			 cursor.movePosition(QTextCursor::End);
+			 document->addResource(QTextDocument::ImageResource, QUrl(emotionJpeg), image);
+			 cursor.insertImage(emotionJpeg);
 		 }
 
 		 /*****************************text****************************/

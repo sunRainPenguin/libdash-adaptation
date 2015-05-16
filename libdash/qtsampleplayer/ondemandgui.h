@@ -11,16 +11,21 @@
 #include <QMultiHash>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+#include <QUrl>
 #include "UI/DASHPlayer.h"
 using namespace sampleplayer;
 
+#define  subjectType "Subject"
+#define  gradeType   "Grade"
 enum LabelType{
 	mediaName,
 	mediaAuthor,
 	mediaTime,
 	clickThroughRate
 };
-class OnDemandGui : public QWidget
+
+class OnDemandGui : public QMainWindow
 {
 	Q_OBJECT
 
@@ -33,16 +38,15 @@ private:
 	Ui::OnDemandGui ui;
 	LoginDialog*  loginDialog;
 	QtSamplePlayerGui* playerGui;
-	DASHPlayer* playergu;
+	DASHPlayer* player;
+	QStandardItemModel *treeModel;
 	QString   currentSearchKey;
 	QMultiHash<QString, QString> mediaInfo;
 	bool hasLogedIn;
 	QString userName;
 	QString userID;
-	QPixmap* currentPicture;
-	QString    currentPicName;
 	bool SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column);
-	bool ShowAvailableMediaFromDb		(QString SearchKey);
+	bool ShowAvailableMediaFromDb		(QString SearchKey, QString subject="", QString grade="");
 	QPushButton* FindButtonByNameIndex		(int number);
 	QLabel* FindLabelByNameIndex		(int type,  int number);
 	void UpdateClickThroughRateToDb		(QString mediaID);
@@ -51,10 +55,12 @@ private:
 	bool LoadTreeViewData	(QString type, QStandardItemModel * treeModel);
 
 private slots:
-	void on_button_login_clicked();
-	void on_button_logout_clicked();
-	void on_button_search_clicked();
-	//void replyFinished(QNetworkReply *reply);
+	void on_button_login_clicked		();
+	void on_button_logout_clicked		();
+	void on_button_search_clicked		();
+	void on_treeView_clicked				(QModelIndex modelIndex);
+	void replyFinished							(QNetworkReply *reply);
+	bool eventFilter								(QObject * object, QEvent * event);
 
 public slots:
 	void	SetLoginState		(QString userID, QString usesrName);

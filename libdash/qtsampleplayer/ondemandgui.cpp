@@ -5,7 +5,7 @@
 #define COUNT_COLUMNCONTAIN 3
 
 OnDemandGui::OnDemandGui(QWidget *parent)
-	: QWidget(parent)
+	: QMainWindow(parent)
 {
 	ui.setupUi(this);
 	this->ui.button_logout->setEnabled(false);
@@ -13,7 +13,7 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 	currentSearchKey = "";
 	loginDialog = NULL;
 	playerGui    = NULL;
-	playergu = NULL;
+	player = NULL;
 	
 	this->ShowTreeView();
 	if (!this->ShowAvailableMediaFromDb(currentSearchKey))
@@ -22,7 +22,7 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 		exit(-1);
 	}
 	this->ui.lineEdit_search->setFocus();
-
+	this->ui.lineEdit_search->installEventFilter(this);
 	QString qss_OnDemandGui;
 	QFile qssFile(":/qss/qss_OnDemandGui.qss");
 	qssFile.open(QFile::ReadOnly);
@@ -35,7 +35,6 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 	}
 
 }
-
 OnDemandGui::~OnDemandGui()
 {
 	if (loginDialog)
@@ -43,15 +42,20 @@ OnDemandGui::~OnDemandGui()
 		delete(loginDialog);
 		loginDialog = NULL;
 	}
-	if (playergu)
+	if (player)
 	{
-		delete(playergu);
-		playergu = NULL;
+		delete(player);
+		player = NULL;
 	}
 	if (playerGui)
 	{
 		delete(playerGui);
 		playerGui =NULL;
+	}
+	if (treeModel)
+	{
+		delete(treeModel);
+		treeModel = NULL;
 	}
 	mediaInfo.clear();
 
@@ -62,7 +66,6 @@ void OnDemandGui::on_button_login_clicked()
 	QObject::connect(loginDialog, SIGNAL(enterSuccessfully(QString, QString)), this, SLOT(SetLoginState(QString, QString)));
 	loginDialog->exec();
 }
-
 void OnDemandGui::SetLoginState(QString userID, QString username)
 {
 	this->hasLogedIn = true;
@@ -75,19 +78,57 @@ void OnDemandGui::SetLoginState(QString userID, QString username)
 		emit enterSuccessfully(userID, username);
 	}
 }
-
-bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey)
+bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString subject, QString grade)
 {
-	 int indexMI_ID, indexMI_MPDUrl, indexMI_ShowPicUrl, indexMI_Name, indexMI_UploadAuthor, indexMI_InsertTime, indexMI_ClickThroughRate;
-	QString MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate;
+	 int indexMI_ID, indexMI_MPDUrl, indexMI_ShowPicUrl, indexMI_Name, indexMI_UploadAuthor, indexMI_InsertTime, indexMI_ClickThroughRate, indexSI_ID, indexGI_ID;
+	QString MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, SI_ID, GI_ID;
+	QString whereSI_ID, whereGI_ID;
 
 	QSqlQuery sql_query; 
 	QString select_sql;
 	QSqlRecord rec;
 
+	if (subject!="")
+	{
+		select_sql = "SELECT SI_ID FROM subjectinfo WHERE SI_Name = '" + subject + "'  ";
+		sql_query.prepare(select_sql);
+		if (sql_query.exec() && sql_query.next())
+		{
+			rec = sql_query.record();
+			indexSI_ID = rec.indexOf("SI_ID");
+			SI_ID = sql_query.value(indexSI_ID).toString();
+			whereSI_ID = "WHERE SI_ID = " + SI_ID + " ";
+		}
+	}
+
+	if (grade!="")
+	{
+		select_sql = "SELECT GI_ID FROM gradeinfo WHERE GI_Name = '" + grade + "'  ";
+		sql_query.prepare(select_sql);
+		if (sql_query.exec() && sql_query.next())
+		{
+			rec = sql_query.record();
+			indexGI_ID = rec.indexOf("GI_ID");
+			GI_ID = sql_query.value(indexGI_ID).toString();
+			whereGI_ID = "WHERE GI_ID = " + GI_ID + " ";
+		}
+	}
+
 	if (SearchKey=="")
 	{
-		select_sql = QString("SELECT * FROM mediainfo ORDER BY MI_ClickThroughRate DESC LIMIT 12");
+		if (SI_ID!="")
+		{
+			select_sql = QString("SELECT * FROM mediainfo " + whereSI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
+		}
+		else if (GI_ID!="")
+		{
+			select_sql = QString("SELECT * FROM mediainfo " + whereGI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
+		}
+		else
+		{
+			select_sql = QString("SELECT * FROM mediainfo ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
+		}
+		
 	} 
 	else
 	{
@@ -106,10 +147,8 @@ bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey)
 		rec = sql_query.record();
 		int recCount = 0;
 		if (sql_query.size()==0)
-		{
-			qDebug() << "\t" <<"Select mediainfo failed! ";
-			return false;
-		}
+			qDebug() << "\t" <<"There's no mediainfo! ";
+
 		while (sql_query.next())
 		{
 			indexMI_ID = rec.indexOf(QString("MI_ID"));
@@ -143,6 +182,21 @@ bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey)
 			{
 				return false;
 			}
+
+			//save the select result to the temp dir
+			QFileInfo file( "./Temp/" + MI_ID + ".png");
+			if (!file.isFile())
+			{
+				//show picture on the server
+				QNetworkAccessManager *manager;
+				manager = new QNetworkAccessManager(this);
+				QNetworkReply *reply = manager->get(QNetworkRequest(QUrl(MI_ShowPicUrl)));
+				reply->setProperty("buttonNumber", recCount);
+				reply->setProperty("MI_ID", MI_ID);
+				connect(manager, SIGNAL(finished(QNetworkReply*)),
+					this, SLOT(replyFinished(QNetworkReply*)));
+			}
+
 			recCount++;
 		}
 
@@ -173,35 +227,40 @@ bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey)
 
 	return true;
 }
-
 bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column)
 {
-	this->currentPicture = new QPixmap;
-	 QNetworkAccessManager manager;
-	//QObject::connect(manager, SIGNAL(finished(QNetworkReply*)),
-	//	this, SLOT(replyFinished(QNetworkReply*)));
-	QNetworkReply *reply = manager.get(QNetworkRequest(QUrl(MI_ShowPicUrl)));
-	currentPicture->loadFromData(reply->readAll()); 
+	//load image from the temp
+	bool loadImgfailed = false;
+	QString imgDir;
+	QFileInfo file( "./Temp/" + MI_ID + ".png");
+	if (file.isFile())
+	{
+		imgDir = "./Temp/" + MI_ID + ".png";
+	}
+	QImage* img=new QImage;
+	QPixmap pixmapToShow;
+ 	if( imgDir=="" || !( img->load(imgDir) ) ) 
+ 	{
+ 		qDebug() << "\t" <<"Load image failed ! ";
+		loadImgfailed = true;
+ 	}else
+	{
+ 		QPainter painter(this);
+ 		pixmapToShow = QPixmap::fromImage( img->scaled(size(), Qt::KeepAspectRatio) );
+ 		painter.drawPixmap(0,0, pixmapToShow);
+	}
 
-	//QImage* img=new QImage;
-	//if(! ( img->load(MI_ShowPicUrl) ) ) //加载图像
-	//{
-	//	qDebug() << "\t" <<"Load image failed ! ";
-	//	delete(img);
-	//	img = NULL;
-	//	return false;
-	//}
-	//QPainter painter(this);
-	//QPixmap pixmapToShow = QPixmap::fromImage( img->scaled(size(), Qt::KeepAspectRatio) );
-	//painter.drawPixmap(0,0, pixmapToShow);
-
-	QIcon *icon = new QIcon(*currentPicture);
 	QPushButton* imgButton = this->FindButtonByNameIndex(COUNT_ROWCONTAIN*row+column);  //为了connect连接一直保持，这里的pushbutton在界面上添加
-
-	imgButton->setIcon(*icon);
+	if (!loadImgfailed)
+	{
+		QIcon *icon = new QIcon(pixmapToShow);
+		imgButton->setIcon(*icon);
+		imgButton->setIconSize(QSize(190, 150)); 
+		delete(icon);
+		icon = NULL;
+	}
+	
 	imgButton->setText("");
-	//imgButton->setParent(this);
-	imgButton->setIconSize(QSize(190, 150));   
 	imgButton->setFixedSize(200, 150); 
 	imgButton->setAccessibleDescription(MI_ID);
 	imgButton->setEnabled(true);
@@ -225,23 +284,15 @@ bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_Sh
 	labelClickThroughRate->setVisible(true);
 
 	connect(imgButton, SIGNAL(ButtonClicked(QString)), this, SLOT(StartPlayer(QString)));
-		
-	
-	//delete(img);
-	//img = NULL;
-	delete(icon);
-	icon = NULL;
+	delete(img);
+	img = NULL;
 	return true;
 }
-
 void OnDemandGui::StartPlayer(QString currMediaID)
 {
-	
 	if (this->playerGui  &&   this->playerGui->IsStarted() && this->playerGui->GetMediaID()==currMediaID )
-	{
-		QString lastMediaID = this->playerGui->GetMediaID();
 		return;
-	}
+
 	QString currMpdUrl;
 	QString currMediaName;
 
@@ -263,7 +314,7 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 	if (!playerGui)
 	{
 		playerGui = new QtSamplePlayerGui(hasLogedIn, this->userID, this->userName, currMediaID, currMediaName, currMpdUrl, this);
-		playergu =new DASHPlayer(*playerGui);
+		player =new DASHPlayer(*playerGui);
 		playerGui->show();
 		QObject::connect(this, SIGNAL(enterSuccessfully(QString, QString)), playerGui, SLOT(SetLoginState(QString, QString)));
 		QObject::connect(this, SIGNAL(LogOut()), playerGui, SLOT(SetLogoutState()));
@@ -271,7 +322,7 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 		QObject::connect(playerGui, SIGNAL(LoginBeforeComment()), this, SLOT(LoginBeforeComment()));
 
 		playerGui->ClearMpd();
-		playergu->OnDownloadMPDPressed(currMpdUrl.toStdString());
+		player->OnDownloadMPDPressed(currMpdUrl.toStdString());
 		playerGui->ClickButtonStart();
 	}
 	else
@@ -283,7 +334,7 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 		playerGui->SetCurrMediaInfo(currMediaID,  currMediaName);
 
 		playerGui->ClearMpd();
-		playergu->OnDownloadMPDPressed(currMpdUrl.toStdString());
+		player->OnDownloadMPDPressed(currMpdUrl.toStdString());
 		playerGui->ClickButtonStart();
 	}
 }
@@ -295,7 +346,6 @@ QPushButton*  OnDemandGui::FindButtonByNameIndex(int number)
 		return button;
 	else
 		return NULL;
-
 }
 QLabel* OnDemandGui::FindLabelByNameIndex(int type,  int number)
 {
@@ -323,16 +373,14 @@ QLabel* OnDemandGui::FindLabelByNameIndex(int type,  int number)
 	else
 		return NULL;
 }
-
 void OnDemandGui::on_playgui_closed()
 {
 	if (playerGui->IsStarted())
 		playerGui->ClickButtonStop();
-	delete(playergu);
-	playergu = NULL;
+	delete(player);
+	player = NULL;
 	delete(playerGui);
 	this->playerGui = NULL;
-
 }
 void OnDemandGui::LoginBeforeComment()
 {
@@ -363,7 +411,6 @@ void OnDemandGui::UpdateClickThroughRateToDb(QString mediaID)
 		return;
 	} 
 }
-
 void OnDemandGui::on_button_search_clicked()
 {
 	QString searchWord = this->ui.lineEdit_search->text().simplified();
@@ -393,13 +440,12 @@ void OnDemandGui::on_button_search_clicked()
 		searchKeySize--;
 	}
 }
-
 void OnDemandGui::ShowTreeView()
 {
-	QStandardItemModel *treeModel = new QStandardItemModel();  
+	treeModel = new QStandardItemModel();  
 	this->ui.treeView->setModel(treeModel);
-	LoadTreeViewData("Subject", treeModel);
-	LoadTreeViewData("Grade", treeModel);
+	LoadTreeViewData(subjectType, treeModel);
+	LoadTreeViewData(gradeType, treeModel);
 	this->ui.treeView->setHeaderHidden(TRUE);
 	this->ui.treeView->setEditTriggers(0);
 }
@@ -440,20 +486,24 @@ bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
 			qDebug() << "\t" <<"Select treeView infomation failed! ";
 			return false;
 		}
-		while(sql_query.next())
+
+		if (type=="Subject")
 		{
-			if (type=="Subject")
+			while(sql_query.next())
 			{
 				int indexSubject;
 				QString subject;
-				
+
 				indexSubject = rec.indexOf("SI_Name");
 				subject = sql_query.value(indexSubject).toString();
 
 				QStandardItem *item = new QStandardItem(subject);  
 				childItems.push_back(item);
 			}
-			if (type=="Grade")
+		}
+		if (type=="Grade")
+		{
+			while(sql_query.next())
 			{
 				int indexGrade;
 				QString grade;
@@ -463,20 +513,68 @@ bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
 
 				QStandardItem *item = new QStandardItem(grade);  
 				childItems.push_back(item);
-
 			}
 		}
 	}
+
 items.at(0)->appendRows(childItems);
 return true;
 }
-//void OnDemandGui::replyFinished(QNetworkReply *reply)
-//{
-//	currentPicture->loadFromData(reply->readAll()); 
-//	QDateTime now;
-//	QString filename = now.currentDateTime().toString("yyMMddhhmmss.jpg");
-//	currentPicture->save(filename);
-//	qDebug()<<"picture saved as "<<filename;
-//	this->currentPicName = filename;
-//
-//}
+void OnDemandGui::replyFinished(QNetworkReply *reply)
+{
+	if(reply->error() == QNetworkReply::NoError)
+	{
+		QPixmap* currentPicture= new QPixmap;
+		int buttonNumber = reply->property("buttonNumber").toInt();
+		QString MI_ID = reply->property("MI_ID").toString();
+		
+		QByteArray jpegData = reply->readAll(); 
+		currentPicture->loadFromData(jpegData); 
+		if (MI_ID!="")
+		{
+			QFileInfo file("./Temp/");
+			if (file.isDir())
+				currentPicture->save("./Temp/" + MI_ID + ".png");
+		}
+		
+ 		QIcon *icon = new QIcon(*currentPicture);
+ 		QPushButton* imgButton = this->FindButtonByNameIndex(buttonNumber);
+ 		imgButton->setIcon(*icon);
+ 		imgButton->setIconSize(QSize(190, 150));   
+		delete(currentPicture);
+		currentPicture=NULL;
+	}
+}
+bool OnDemandGui::eventFilter(QObject * object, QEvent * event)
+{
+	if (event->type() == QEvent::KeyPress )
+	{
+		QKeyEvent* key_event = static_cast<QKeyEvent*>(event);
+		bool lineEdit_search = this->ui.lineEdit_search->hasFocus();
+
+		if(object == this->ui.lineEdit_search && lineEdit_search)
+		{
+			if(key_event->key() == Qt::Key_Enter  || key_event->key() == Qt::Key_Return){
+				this->ui.button_search->setFocus();
+				this->on_button_search_clicked();
+				return true;
+			}	
+		}
+	}
+	return QMainWindow::eventFilter(object, event);
+}
+void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
+{
+	 QStandardItem *item = treeModel->itemFromIndex(modelIndex);
+	 QString selectItem = item->text();
+	 QString selectType = item->parent()->text();
+	 if (selectType == subjectType)
+	 {
+		 ShowAvailableMediaFromDb("", selectItem);
+	 }
+	 else if (selectType == gradeType)
+	 {
+		 ShowAvailableMediaFromDb("","",selectItem);
+	 }
+	 
+}
