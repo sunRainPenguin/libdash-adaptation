@@ -10,13 +10,14 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 	ui.setupUi(this);
 	this->ui.button_logout->setEnabled(false);
 	hasLogedIn = false;
-	currentSearchKey = "";
+	this->selectItem = NULL;
+	SetSearchInfo();
 	loginDialog = NULL;
 	playerGui    = NULL;
 	player = NULL;
 	
 	this->ShowTreeView();
-	if (!this->ShowAvailableMediaFromDb(currentSearchKey))
+	if (this->ShowAvailableMediaFromDb()==-1)
 	{
 		qCritical() << "\t" << "Failed to get media from Db ! exit(-1).";
 		exit(-1);
@@ -78,16 +79,18 @@ void OnDemandGui::SetLoginState(QString userID, QString username)
 		emit enterSuccessfully(userID, username);
 	}
 }
-bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, QString searchType)
+int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, QString searchType)
 {
 	 int indexMI_ID, indexMI_MPDUrl, indexMI_ShowPicUrl, indexMI_Name, indexMI_UploadAuthor, indexMI_InsertTime, indexMI_ClickThroughRate, indexSI_ID, indexGI_ID;
 	QString MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, SI_ID, GI_ID;
 	QString whereSI_ID, whereGI_ID, whereAndSI_ID, whereAndGI_ID;
 
+	int recCount = 0;
 	QSqlQuery sql_query; 
 	QString select_sql;
 	QSqlRecord rec;
 
+	//Get the sql statement
 	if (searchType==subjectType)
 	{
 		select_sql = "SELECT SI_ID FROM subjectinfo WHERE SI_Name = '" + typeValue + "'  ";
@@ -101,7 +104,6 @@ bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue,
 			whereAndSI_ID = " AND SI_ID = " + SI_ID + " ";
 		}
 	}
-
 	if (searchType==gradeType)
 	{
 		select_sql = "SELECT GI_ID FROM gradeinfo WHERE GI_Name = '" + typeValue + "'  ";
@@ -115,38 +117,23 @@ bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue,
 			whereAndGI_ID = " AND GI_ID = " + GI_ID + " ";
 		}
 	}
-
 	if (SearchKey=="")
 	{
 		if (SI_ID!="")
-		{
 			select_sql = QString("SELECT * FROM mediainfo " + whereSI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
-		}
 		else if (GI_ID!="")
-		{
 			select_sql = QString("SELECT * FROM mediainfo " + whereGI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
-		}
 		else
-		{
 			select_sql = QString("SELECT * FROM mediainfo ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
-		}
-		
 	} 
 	else
 	{
 		if (SI_ID!="")
-		{
 			select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndSI_ID + "ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
-		}
 		else if (GI_ID!="")
-		{
 			select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndGI_ID + "ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
-		}
 		else
-		{
-			select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
-		}
-		
+			select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";	
 	}
 	
 
@@ -154,12 +141,11 @@ bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue,
 	if (!sql_query.exec())
 	{
 		qDebug() << "\t" <<"Select mediainfo failed! ";
-		return false;
+		return -1;
 	} 
 	else
 	{
 		rec = sql_query.record();
-		int recCount = 0;
 		if (sql_query.size()==0)
 			qDebug() << "\t" <<"There's no mediainfo! ";
 
@@ -193,9 +179,7 @@ bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue,
 			qDebug() << "\t" <<QString("Succeed Query! MI_ID:  %1  MI_MPDUrl:  %2   MI_ShowPicUrl:   %3  MI_Name:  %4   MI_UploadAuthor:  %5  MI_InsertTime:  %6 MI_ClickThroughRate:  %7").arg(MI_ID).arg(MI_MPDUrl).arg(MI_ShowPicUrl).arg(MI_Name).arg(MI_UploadAuthor).arg(MI_InsertTime).arg(MI_ClickThroughRate);
 
 			if (!this->SetMediaLayout(MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, recCount/COUNT_ROWCONTAIN, recCount%COUNT_ROWCONTAIN))
-			{
-				return false;
-			}
+				return -1;
 
 			//save the select result to the temp dir
 			QFileInfo file( "./Temp/" + MI_ID + ".png");
@@ -239,7 +223,7 @@ bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue,
 		}
 	}
 
-	return true;
+	return recCount;
 }
 bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column)
 {
@@ -432,14 +416,15 @@ void OnDemandGui::UpdateClickThroughRateToDb(QString mediaID)
 void OnDemandGui::on_button_search_clicked()
 {
 	QString searchWord = this->ui.lineEdit_search->text().simplified();
-// 	searchWord = searchWord.remove(" ");
-// 	QStandardItem* selectItem = treeModel->itemFromIndex(this->ui.treeView->selectionModel()->currentIndex());
-	QString selectItemText = this->selectItem->text();
-	QString selectType;
-	if (selectItem->parent())
-		selectType = selectItem->parent()->text();
-
-
+ 	searchWord = searchWord.remove(" ");
+	QString selectItemText, selectType;
+	if (this->selectItem)
+	{
+		selectItemText = this->selectItem->text();
+		if (selectItem->parent())
+			selectType = selectItem->parent()->text();
+	}
+	
 	if (searchWord=="")
 	{
 		ShowAvailableMediaFromDb(searchWord, selectItemText, selectType);
@@ -455,9 +440,11 @@ void OnDemandGui::on_button_search_clicked()
 		for (int i=0; i<=searchWord.size()-searchKeySize; i++)
 		{
 			searchKey=searchWord.mid(i, searchKeySize);
-			if (ShowAvailableMediaFromDb(searchKey, selectItemText, selectType))
+			int resultCount = ShowAvailableMediaFromDb(searchKey, selectItemText, selectType);
+			if (resultCount>0)
 			{
-				this->currentSearchKey = searchKey;
+				SetSearchInfo(searchKey);
+				ShowSearchResult(searchWord, QString::number(resultCount, 10));
 				return;
 			}
 		}
@@ -596,6 +583,8 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 	 QString  selectItemText = selectItem->text();
 	 if (!selectItem->parent())
 	 {
+		 ShowAvailableMediaFromDb();
+		 SetSearchInfo();
 		 if (this->ui.treeView->isExpanded(modelIndex))
 			 this->ui.treeView->collapse(modelIndex);
 		 else
@@ -607,10 +596,23 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 	 if (selectType == subjectType)
 	 {
 		 ShowAvailableMediaFromDb("", selectItemText, subjectType);
+		 SetSearchInfo();
 	 }
 	 else if (selectType == gradeType)
 	 {
 		 ShowAvailableMediaFromDb("", selectItemText, gradeType);
+		 SetSearchInfo();
 	 }
 	 
+}
+void OnDemandGui::SetSearchInfo	    (QString currentSearchKey)
+{
+	if (currentSearchKey=="")
+		this->ui.lineEdit_search->setText("");
+	this->currentSearchKey = currentSearchKey;
+}
+void OnDemandGui::ShowSearchResult(QString searchWord, QString count)
+{
+	QString searchResult = "Search " + searchWord +":  " + count + " results ...";
+	this->ui.label_search_state->setText(searchWord);
 }

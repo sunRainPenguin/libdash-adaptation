@@ -48,13 +48,15 @@ private:
 	QString userName;
 	QString userID;
 	bool SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column);
-	bool ShowAvailableMediaFromDb		(QString SearchKey, QString typeValue="", QString searchType="");
+	int ShowAvailableMediaFromDb		(QString SearchKey="", QString typeValue="", QString searchType="");
 	QPushButton* FindButtonByNameIndex		(int number);
 	QLabel* FindLabelByNameIndex		(int type,  int number);
 	void UpdateClickThroughRateToDb		(QString mediaID);
 	bool StartUpdateOndemandGui		();
 	void ShowTreeView		();
 	bool LoadTreeViewData	(QString type, QStandardItemModel * treeModel);
+	void SetSearchInfo	    (QString currentSearchKey = "");
+	void ShowSearchResult(QString searchWord, QString count);
 
 private slots:
 	void on_button_login_clicked		();
