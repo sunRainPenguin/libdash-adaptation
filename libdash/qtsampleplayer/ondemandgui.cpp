@@ -78,39 +78,41 @@ void OnDemandGui::SetLoginState(QString userID, QString username)
 		emit enterSuccessfully(userID, username);
 	}
 }
-bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString subject, QString grade)
+bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, QString searchType)
 {
 	 int indexMI_ID, indexMI_MPDUrl, indexMI_ShowPicUrl, indexMI_Name, indexMI_UploadAuthor, indexMI_InsertTime, indexMI_ClickThroughRate, indexSI_ID, indexGI_ID;
 	QString MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, SI_ID, GI_ID;
-	QString whereSI_ID, whereGI_ID;
+	QString whereSI_ID, whereGI_ID, whereAndSI_ID, whereAndGI_ID;
 
 	QSqlQuery sql_query; 
 	QString select_sql;
 	QSqlRecord rec;
 
-	if (subject!="")
+	if (searchType==subjectType)
 	{
-		select_sql = "SELECT SI_ID FROM subjectinfo WHERE SI_Name = '" + subject + "'  ";
+		select_sql = "SELECT SI_ID FROM subjectinfo WHERE SI_Name = '" + typeValue + "'  ";
 		sql_query.prepare(select_sql);
 		if (sql_query.exec() && sql_query.next())
 		{
 			rec = sql_query.record();
 			indexSI_ID = rec.indexOf("SI_ID");
 			SI_ID = sql_query.value(indexSI_ID).toString();
-			whereSI_ID = "WHERE SI_ID = " + SI_ID + " ";
+			whereSI_ID = " WHERE SI_ID = " + SI_ID + " ";
+			whereAndSI_ID = " AND SI_ID = " + SI_ID + " ";
 		}
 	}
 
-	if (grade!="")
+	if (searchType==gradeType)
 	{
-		select_sql = "SELECT GI_ID FROM gradeinfo WHERE GI_Name = '" + grade + "'  ";
+		select_sql = "SELECT GI_ID FROM gradeinfo WHERE GI_Name = '" + typeValue + "'  ";
 		sql_query.prepare(select_sql);
 		if (sql_query.exec() && sql_query.next())
 		{
 			rec = sql_query.record();
 			indexGI_ID = rec.indexOf("GI_ID");
 			GI_ID = sql_query.value(indexGI_ID).toString();
-			whereGI_ID = "WHERE GI_ID = " + GI_ID + " ";
+			whereGI_ID = " WHERE GI_ID = " + GI_ID + " ";
+			whereAndGI_ID = " AND GI_ID = " + GI_ID + " ";
 		}
 	}
 
@@ -132,7 +134,19 @@ bool OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString subject, Q
 	} 
 	else
 	{
-		select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
+		if (SI_ID!="")
+		{
+			select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndSI_ID + "ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
+		}
+		else if (GI_ID!="")
+		{
+			select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndGI_ID + "ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
+		}
+		else
+		{
+			select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
+		}
+		
 	}
 	
 
@@ -309,7 +323,11 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 		currMediaName = valMediaInfo.at(1);
 	}
 	UpdateClickThroughRateToDb(currMediaID);
-	ShowAvailableMediaFromDb(currentSearchKey);
+	QString selectItemText = this->selectItem->text();
+	QString selectType;
+	if (selectItem->parent())
+		selectType = selectItem->parent()->text();
+	ShowAvailableMediaFromDb(currentSearchKey, selectItemText, selectType);
 
 	if (!playerGui)
 	{
@@ -414,11 +432,17 @@ void OnDemandGui::UpdateClickThroughRateToDb(QString mediaID)
 void OnDemandGui::on_button_search_clicked()
 {
 	QString searchWord = this->ui.lineEdit_search->text().simplified();
-	searchWord = searchWord.remove(" ");
+// 	searchWord = searchWord.remove(" ");
+// 	QStandardItem* selectItem = treeModel->itemFromIndex(this->ui.treeView->selectionModel()->currentIndex());
+	QString selectItemText = this->selectItem->text();
+	QString selectType;
+	if (selectItem->parent())
+		selectType = selectItem->parent()->text();
+
 
 	if (searchWord=="")
 	{
-		ShowAvailableMediaFromDb(searchWord);
+		ShowAvailableMediaFromDb(searchWord, selectItemText, selectType);
 		this->repaint();
 		return;
 	}
@@ -431,7 +455,7 @@ void OnDemandGui::on_button_search_clicked()
 		for (int i=0; i<=searchWord.size()-searchKeySize; i++)
 		{
 			searchKey=searchWord.mid(i, searchKeySize);
-			if (ShowAvailableMediaFromDb(searchKey))
+			if (ShowAvailableMediaFromDb(searchKey, selectItemText, selectType))
 			{
 				this->currentSearchKey = searchKey;
 				return;
@@ -444,6 +468,7 @@ void OnDemandGui::ShowTreeView()
 {
 	treeModel = new QStandardItemModel();  
 	this->ui.treeView->setModel(treeModel);
+	LoadTreeViewData(allType, treeModel);
 	LoadTreeViewData(subjectType, treeModel);
 	LoadTreeViewData(gradeType, treeModel);
 	this->ui.treeView->setHeaderHidden(TRUE);
@@ -456,6 +481,8 @@ bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
 	QStandardItem *item = new QStandardItem(type);  
 	items.push_back(item);
 	treeModel->appendRow(items);
+	if (type == allType)
+		return true;
 
 	QList<QStandardItem *> childItems;
 	QSqlQuery sql_query; 
@@ -565,16 +592,25 @@ bool OnDemandGui::eventFilter(QObject * object, QEvent * event)
 }
 void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 {
-	 QStandardItem *item = treeModel->itemFromIndex(modelIndex);
-	 QString selectItem = item->text();
-	 QString selectType = item->parent()->text();
+	 selectItem = treeModel->itemFromIndex(modelIndex);
+	 QString  selectItemText = selectItem->text();
+	 if (!selectItem->parent())
+	 {
+		 if (this->ui.treeView->isExpanded(modelIndex))
+			 this->ui.treeView->collapse(modelIndex);
+		 else
+			 this->ui.treeView->expand(modelIndex);
+		 return;
+	 }
+
+	 QString selectType = selectItem->parent()->text();
 	 if (selectType == subjectType)
 	 {
-		 ShowAvailableMediaFromDb("", selectItem);
+		 ShowAvailableMediaFromDb("", selectItemText, subjectType);
 	 }
 	 else if (selectType == gradeType)
 	 {
-		 ShowAvailableMediaFromDb("","",selectItem);
+		 ShowAvailableMediaFromDb("", selectItemText, gradeType);
 	 }
 	 
 }

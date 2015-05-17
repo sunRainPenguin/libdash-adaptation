@@ -18,6 +18,7 @@ using namespace sampleplayer;
 
 #define  subjectType "Subject"
 #define  gradeType   "Grade"
+#define  allType		"All of the videos"
 enum LabelType{
 	mediaName,
 	mediaAuthor,
@@ -40,13 +41,14 @@ private:
 	QtSamplePlayerGui* playerGui;
 	DASHPlayer* player;
 	QStandardItemModel *treeModel;
+	QStandardItem *selectItem;
 	QString   currentSearchKey;
 	QMultiHash<QString, QString> mediaInfo;
 	bool hasLogedIn;
 	QString userName;
 	QString userID;
 	bool SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column);
-	bool ShowAvailableMediaFromDb		(QString SearchKey, QString subject="", QString grade="");
+	bool ShowAvailableMediaFromDb		(QString SearchKey, QString typeValue="", QString searchType="");
 	QPushButton* FindButtonByNameIndex		(int number);
 	QLabel* FindLabelByNameIndex		(int type,  int number);
 	void UpdateClickThroughRateToDb		(QString mediaID);
