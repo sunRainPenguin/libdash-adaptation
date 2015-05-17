@@ -19,6 +19,7 @@ using namespace sampleplayer;
 #define  subjectType "Subject"
 #define  gradeType   "Grade"
 #define  allType		"All of the videos"
+
 enum LabelType{
 	mediaName,
 	mediaAuthor,
@@ -56,7 +57,7 @@ private:
 	void ShowTreeView		();
 	bool LoadTreeViewData	(QString type, QStandardItemModel * treeModel);
 	void SetSearchInfo	    (QString currentSearchKey = "");
-	void ShowSearchResult(QString searchWord, QString count);
+	void ShowSearchResult(QString text,  QString searchWord="", QString count="");
 
 private slots:
 	void on_button_login_clicked		();

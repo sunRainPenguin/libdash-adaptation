@@ -15,13 +15,14 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 	loginDialog = NULL;
 	playerGui    = NULL;
 	player = NULL;
-	
+
 	this->ShowTreeView();
 	if (this->ShowAvailableMediaFromDb()==-1)
 	{
 		qCritical() << "\t" << "Failed to get media from Db ! exit(-1).";
 		exit(-1);
 	}
+	ShowSearchResult("Hot movies  ...  ");
 	this->ui.lineEdit_search->setFocus();
 	this->ui.lineEdit_search->installEventFilter(this);
 	QString qss_OnDemandGui;
@@ -428,6 +429,7 @@ void OnDemandGui::on_button_search_clicked()
 	if (searchWord=="")
 	{
 		ShowAvailableMediaFromDb(searchWord, selectItemText, selectType);
+		ShowSearchResult("Hot movies  ...  ");
 		this->repaint();
 		return;
 	}
@@ -444,7 +446,7 @@ void OnDemandGui::on_button_search_clicked()
 			if (resultCount>0)
 			{
 				SetSearchInfo(searchKey);
-				ShowSearchResult(searchWord, QString::number(resultCount, 10));
+				ShowSearchResult("", searchWord, QString::number(resultCount, 10));
 				return;
 			}
 		}
@@ -585,6 +587,7 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 	 {
 		 ShowAvailableMediaFromDb();
 		 SetSearchInfo();
+		 ShowSearchResult("Hot movies  ...  ");
 		 if (this->ui.treeView->isExpanded(modelIndex))
 			 this->ui.treeView->collapse(modelIndex);
 		 else
@@ -597,11 +600,13 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 	 {
 		 ShowAvailableMediaFromDb("", selectItemText, subjectType);
 		 SetSearchInfo();
+		 ShowSearchResult("Hot movies  ...  ");
 	 }
 	 else if (selectType == gradeType)
 	 {
 		 ShowAvailableMediaFromDb("", selectItemText, gradeType);
 		 SetSearchInfo();
+		 ShowSearchResult("Hot movies  ...  ");
 	 }
 	 
 }
@@ -611,8 +616,16 @@ void OnDemandGui::SetSearchInfo	    (QString currentSearchKey)
 		this->ui.lineEdit_search->setText("");
 	this->currentSearchKey = currentSearchKey;
 }
-void OnDemandGui::ShowSearchResult(QString searchWord, QString count)
+void OnDemandGui::ShowSearchResult(QString text,  QString searchWord, QString count)
 {
-	QString searchResult = "Search " + searchWord +":  " + count + " results ...";
-	this->ui.label_search_state->setText(searchWord);
+	if (text!="")
+	{
+		this->ui.label_search_state->setText(text);
+	} 
+	else
+	{
+		QString searchResult = "Search '" + searchWord +"':  " + count + " results ...";
+		this->ui.label_search_state->setText(searchResult);
+	}
+	
 }

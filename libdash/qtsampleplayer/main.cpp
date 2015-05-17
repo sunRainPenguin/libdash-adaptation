@@ -19,7 +19,7 @@ using namespace sampleplayer;
 #include <QString>
 #include "DebugLog.h"
 
-
+#define  serverAddress   "http://localhost:8081/"
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -29,6 +29,20 @@ int main(int argc, char *argv[])
 	}
 
 	qInstallMessageHandler(CustomMessageHandler);
+
+	QUrl url(serverAddress);
+	QNetworkAccessManager manager;
+	QEventLoop loop;
+	QNetworkReply *reply = manager.get(QNetworkRequest(url));
+	QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+	loop.exec();
+	QString replyUrl = reply->request().url().toString();
+	if (reply->error() != QNetworkReply::NoError)
+	{
+		qCritical() << "\t" <<"Failed to connect to server! exit(-2).";
+		QMessageBox::warning(NULL, QString("Warning"), QString("Can't connect the server!"), QMessageBox::Yes);
+		exit(-2);
+	}
 
 	QStringList drivers = QSqlDatabase::drivers();    
 	foreach(QString driver, drivers) 
