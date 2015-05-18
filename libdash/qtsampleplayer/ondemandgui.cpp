@@ -308,10 +308,14 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 		currMediaName = valMediaInfo.at(1);
 	}
 	UpdateClickThroughRateToDb(currMediaID);
-	QString selectItemText = this->selectItem->text();
-	QString selectType;
-	if (selectItem->parent())
-		selectType = selectItem->parent()->text();
+	QString selectItemText, selectType;
+	if (this->selectItem)
+	{
+		selectItemText = this->selectItem->text();
+		selectType;
+		if (selectItem->parent())
+			selectType = selectItem->parent()->text();
+	}
 	ShowAvailableMediaFromDb(currentSearchKey, selectItemText, selectType);
 
 	if (!playerGui)
@@ -446,7 +450,7 @@ void OnDemandGui::on_button_search_clicked()
 			if (resultCount>0)
 			{
 				SetSearchInfo(searchKey);
-				ShowSearchResult("", searchWord, QString::number(resultCount, 10));
+				ShowSearchResult("", searchWord, selectItemText, QString::number(resultCount, 10));
 				return;
 			}
 		}
@@ -616,7 +620,7 @@ void OnDemandGui::SetSearchInfo	    (QString currentSearchKey)
 		this->ui.lineEdit_search->setText("");
 	this->currentSearchKey = currentSearchKey;
 }
-void OnDemandGui::ShowSearchResult(QString text,  QString searchWord, QString count)
+void OnDemandGui::ShowSearchResult(QString text,  QString searchWord, QString searchCategory, QString count)
 {
 	if (text!="")
 	{
@@ -624,7 +628,10 @@ void OnDemandGui::ShowSearchResult(QString text,  QString searchWord, QString co
 	} 
 	else
 	{
-		QString searchResult = "Search '" + searchWord +"':  " + count + " results ...";
+		QString categoryText;
+		if (searchCategory!="")
+			categoryText = "in  '" + searchCategory + "' "; 
+		QString searchResult = "Search '" + searchWord +"'  "+ categoryText + " :  " + count + " results ...";
 		this->ui.label_search_state->setText(searchResult);
 	}
 	
