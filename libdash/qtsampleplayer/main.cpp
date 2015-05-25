@@ -19,7 +19,27 @@ using namespace sampleplayer;
 #include <QString>
 #include "DebugLog.h"
 
-#define  serverAddress   "http://localhost:8081/"
+/*#define  serverAddress   "http://192.168.23.2:8080/"*/
+/*#define  serverAddress   "http://192.168.253.5:8080/"*/
+#define serverAddress "http://localhost:8081/"
+#define dbHostName "localhost"
+#define  dbName "videomanagement"
+#define dbUserName "root"
+#define dbPassword "qwe123"
+
+void ClearTemp()
+{
+	QDir tempDir("./Temp/");
+	tempDir.setFilter(QDir::Files);
+	int i = 0, FileCount=tempDir.count();
+	if (FileCount>0)
+	{
+		for (i=0; i<=FileCount-1; i++)
+			tempDir.remove(tempDir[i]);
+	}
+	
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -27,7 +47,7 @@ int main(int argc, char *argv[])
 	{
 		qDebug() << "\t" <<"Clear debug log failed!";
 	}
-
+	ClearTemp();
 	qInstallMessageHandler(CustomMessageHandler);
 
 	QUrl url(serverAddress);
@@ -48,11 +68,11 @@ int main(int argc, char *argv[])
 	foreach(QString driver, drivers) 
 		qDebug() << "\t" << driver;    
 	QSqlDatabase data_base = QSqlDatabase::addDatabase("QMYSQL");
-	data_base.setHostName("localhost");  //设置主机地址192.168.23.3
+	data_base.setHostName(dbHostName);  //设置主机地址192.168.23.3    localhost
 	data_base.setPort(3306);  //设置端口
-	data_base.setDatabaseName("videomanagement");  //设置数据库名称
-	data_base.setUserName("root");  //设置用户名
-	data_base.setPassword("qwe123");  //设置密码
+	data_base.setDatabaseName(dbName);  //设置数据库名称
+	data_base.setUserName(dbUserName);  //设置用户名
+	data_base.setPassword(dbPassword);  //设置密码qwe123
 	if(!data_base.open())
 	{
 		qCritical() << "\t" <<"Failed to connect to database! exit(1).";

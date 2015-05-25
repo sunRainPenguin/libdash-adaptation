@@ -23,8 +23,15 @@
 #include "sqlconfig.h"
 #include "CommentDialog.h"
 
+
+
 namespace sampleplayer
 {
+	enum IsFavorite{
+		favorite_unchecked,
+		favorite_checked,
+		favorite_notSet
+	};
     class IDASHPlayerGuiObserver;
 
     class QtSamplePlayerGui : public QMainWindow
@@ -60,6 +67,7 @@ namespace sampleplayer
 			void on_progressSlider_sliderPressed            ();			//2015.4.13 - php
 			void on_button_comment_clicked					();			//2015.5.2 - php
 			void on_button_refresh_comment_clicked    ();			//2015.5.13 - php
+			void on_button_favorite_clicked					();			//2015.5.25 - php
 
         public slots:
             virtual void    SetVideoSegmentBufferFillState  (int percentage);
@@ -94,6 +102,7 @@ namespace sampleplayer
 			bool											    hasLogedIn;		//2015.5.2 - php
 			QString										userName;		//2015.5.2 - php
 			QString										userID;				//2015.5.3 - php
+			IsFavorite										favorite;			//2015.5.25 - php
             void LockUI                     ();
             void UnLockUI                   ();
 
@@ -112,12 +121,16 @@ namespace sampleplayer
 			void NotifyStopButtonPressed		();
 			void NotifyProgressSliderReleased  (int progress);			//2015.4.13 - php
 			void NotifyProgressSliderPressed   ();			//2015.4.13 - php
-			void ShowCommentsFromDb		(QString MI_ID);
-			QString GetEmotionPath();
+			void ShowCommentsFromDb		(QString MI_ID);			//2015.5.25 - php
+			IsFavorite  GetFavoriteState				(QString userID, QString mediaID);		//2015.5.25 - php
+			QString GetEmotionPath();		//2015.5.25 - php
+			void SetFavoriteHeart	(IsFavorite favorite);		//2015.5.25 - php
+			void SetFavoriteToDb	(IsFavorite favorite);
 
 	signals:
 			void ClosePlayerGui();			//2015.5.1 - php
 			void LoginBeforeComment();				//2015.5.2 - php 
+			void MyFavoriteChanged();			//2015.5.25 - php
     };
 }
 

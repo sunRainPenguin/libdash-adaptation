@@ -18,8 +18,8 @@ LoginDialog::~LoginDialog()
 
 void LoginDialog::on_button_ok_clicked()
 {
-	QString username = this->ui.lineEdit_userName->text();
-	QString password = this->ui.lineEdit_password->text();
+	QString username = this->ui.lineEdit_userName->text().trimmed();
+	QString password = this->ui.lineEdit_password->text().trimmed();
 	if (username == "" || password == "")
 	{
 			QMessageBox::warning(this, QString("Warning"), QString("Empty username or password!"), QMessageBox::Yes);

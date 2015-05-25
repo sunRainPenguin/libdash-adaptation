@@ -63,7 +63,7 @@ void                    QTAudioRenderer::Init           ()
 {
     this->deviceInfo  = QAudioDeviceInfo(QAudioDeviceInfo::defaultOutputDevice());
 
-    this->format.setSampleRate(48000);
+    this->format.setSampleRate(480000);
     this->format.setChannelCount(2);
     this->format.setSampleSize(16);
     this->format.setCodec("audio/pcm");

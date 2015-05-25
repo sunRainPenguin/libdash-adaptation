@@ -27,6 +27,23 @@ QPushButton#button_refresh_comment:hover, QPushButton#button_refresh_comment:pre
     font-size: 16px;
     font-weight:200
 }
+QPushButton#button_favorite
+{
+	background-color: none;
+	border-image: none;
+	font-family: "Aharoni";
+    font-size: 14px;
+    text-align: center;
+    font-weight:100
+}
+QPushButton#button_favorite:hover, QPushButton#button_favorite:pressed, QPushButton#button_favorite:checked
+{
+	background-color: none;
+	border-image: none;
+    font-size: 16px;
+    font-weight:200
+}
+
 QPushButton:hover, QPushButton:pressed , QPushButton:checked
 {
     background-color: rgb(85, 170, 255);

@@ -75,6 +75,7 @@ void OnDemandGui::SetLoginState(QString userID, QString username)
 	this->userName = username;
 	this->ui.button_login->setText(username);
 	this->ui.button_logout->setEnabled(true);
+	this->refreshMyFavoriteUI();
 	if (playerGui)
 	{
 		emit enterSuccessfully(userID, username);
@@ -84,14 +85,52 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 {
 	 int indexMI_ID, indexMI_MPDUrl, indexMI_ShowPicUrl, indexMI_Name, indexMI_UploadAuthor, indexMI_InsertTime, indexMI_ClickThroughRate, indexSI_ID, indexGI_ID;
 	QString MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, SI_ID, GI_ID;
-	QString whereSI_ID, whereGI_ID, whereAndSI_ID, whereAndGI_ID;
+	QString whereSI_ID, whereGI_ID, whereAndSI_ID, whereAndGI_ID, whereMI_ID, whereAndMI_ID;
 
 	int recCount = 0;
+	bool noVideoToShow=false;
 	QSqlQuery sql_query; 
 	QString select_sql;
 	QSqlRecord rec;
 
 	//Get the sql statement
+	/**************************myFavorite**************************/
+	if (searchType==myFavorite)
+	{
+		if (userID!="")
+		{
+			select_sql = QString("SELECT DISTINCT MI_ID FROM UserFavorite WHERE UF_UserID=") + userID + " ";
+			sql_query.prepare(select_sql);
+			if (!sql_query.exec())
+			{
+				qWarning() << "\t" <<"Select UserFavorite failed! Return -3";
+				return -1;
+			} 
+			if (sql_query.size()<1)
+			{
+				qDebug() << "\t" << "This user has no favorite video! ";
+				noVideoToShow=true;
+			}
+
+			whereMI_ID = QString(" MI_ID IN (");
+			rec = sql_query.record();
+			while (sql_query.next())
+			{
+				indexMI_ID = rec.indexOf("MI_ID");
+				MI_ID = sql_query.value(indexMI_ID).toString();
+				whereMI_ID = whereMI_ID + MI_ID +",";
+			}
+			whereMI_ID.remove(whereMI_ID.size()-1, 1);
+			whereMI_ID.append(") ");
+			whereAndMI_ID = whereMI_ID;
+			whereAndMI_ID.insert(0, "AND ");
+			whereMI_ID.insert(0, "WHERE ");
+			
+		}
+		else
+			noVideoToShow=true;
+	}
+	/**************************subjectType**************************/
 	if (searchType==subjectType)
 	{
 		select_sql = "SELECT SI_ID FROM subjectinfo WHERE SI_Name = '" + typeValue + "'  ";
@@ -105,6 +144,7 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 			whereAndSI_ID = " AND SI_ID = " + SI_ID + " ";
 		}
 	}
+	/**************************gradeType**************************/
 	if (searchType==gradeType)
 	{
 		select_sql = "SELECT GI_ID FROM gradeinfo WHERE GI_Name = '" + typeValue + "'  ";
@@ -118,112 +158,120 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 			whereAndGI_ID = " AND GI_ID = " + GI_ID + " ";
 		}
 	}
-	if (SearchKey=="")
+	/************************** prepare the final sql state **************************/
+	if (!noVideoToShow)
 	{
-		if (SI_ID!="")
-			select_sql = QString("SELECT * FROM mediainfo " + whereSI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
-		else if (GI_ID!="")
-			select_sql = QString("SELECT * FROM mediainfo " + whereGI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
+		if (SearchKey=="")
+		{
+			if        (searchType==subjectType && SI_ID!="")
+				select_sql = QString("SELECT * FROM mediainfo " + whereSI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
+			else if (searchType==gradeType && GI_ID!="")
+				select_sql = QString("SELECT * FROM mediainfo " + whereGI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
+			else if (searchType==myFavorite)
+				select_sql = QString("SELECT * FROM mediainfo " + whereMI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ");
+			else
+				select_sql = QString("SELECT * FROM mediainfo ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
+		} 
 		else
-			select_sql = QString("SELECT * FROM mediainfo ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
-	} 
-	else
+		{
+			if        (searchType==subjectType && SI_ID!="")
+				select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndSI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
+			else if (searchType==gradeType && GI_ID!="")
+				select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndGI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
+			else if (searchType==myFavorite)
+				select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndMI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
+			else
+				select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";	
+		}
+
+		/************************** show videos **************************/
+		sql_query.prepare(select_sql);
+		if (!sql_query.exec())
+		{
+			qDebug() << "\t" <<"Select mediainfo failed! ";
+			return -1;
+		} 
+		else
+		{
+			rec = sql_query.record();
+			if (sql_query.size()==0)
+				qDebug() << "\t" <<"There's no mediainfo! ";
+
+			while (sql_query.next())
+			{
+				indexMI_ID = rec.indexOf(QString("MI_ID"));
+				MI_ID = sql_query.value(indexMI_ID).toString();
+
+				indexMI_MPDUrl = rec.indexOf(QString("MI_MPDUrl"));
+				MI_MPDUrl = sql_query.value(indexMI_MPDUrl).toString();
+
+				indexMI_ShowPicUrl = rec.indexOf(QString("MI_ShowPicUrl"));
+				MI_ShowPicUrl = sql_query.value(indexMI_ShowPicUrl).toString();
+
+				indexMI_Name = rec.indexOf(QString("MI_Name"));
+				MI_Name = sql_query.value(indexMI_Name).toString();
+
+				indexMI_UploadAuthor = rec.indexOf(QString("MI_UploadAuthor"));
+				MI_UploadAuthor = sql_query.value(indexMI_UploadAuthor).toString();
+
+				indexMI_InsertTime = rec.indexOf(QString("MI_InsertTime"));
+				QDateTime temp = sql_query.value(indexMI_InsertTime).toDateTime();
+				MI_InsertTime = temp.toString("yyyy-MM-dd hh:mm:ss");
+
+				indexMI_ClickThroughRate = rec.indexOf(QString("MI_ClickThroughRate"));
+				MI_ClickThroughRate = sql_query.value(indexMI_ClickThroughRate).toString();
+
+				//插入时，默认第一个为Name，第二个为MPDUrl
+				mediaInfo.insert(MI_ID, MI_Name);
+				mediaInfo.insert(MI_ID, MI_MPDUrl);
+				qDebug() << "\t" <<QString("Succeed Query! MI_ID:  %1  MI_MPDUrl:  %2   MI_ShowPicUrl:   %3  MI_Name:  %4   MI_UploadAuthor:  %5  MI_InsertTime:  %6 MI_ClickThroughRate:  %7").arg(MI_ID).arg(MI_MPDUrl).arg(MI_ShowPicUrl).arg(MI_Name).arg(MI_UploadAuthor).arg(MI_InsertTime).arg(MI_ClickThroughRate);
+
+				if (!this->SetMediaLayout(MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, recCount/COUNT_ROWCONTAIN, recCount%COUNT_ROWCONTAIN))
+					return -1;
+
+				//save the select result to the temp dir
+				QFileInfo file( "./Temp/" + MI_ID + ".png");
+				if (!file.isFile())
+				{
+					//show picture on the server
+					QNetworkAccessManager *manager;
+					manager = new QNetworkAccessManager(this);
+					QNetworkReply *reply = manager->get(QNetworkRequest(QUrl(MI_ShowPicUrl)));
+					reply->setProperty("buttonNumber", recCount);
+					reply->setProperty("MI_ID", MI_ID);
+					connect(manager, SIGNAL(finished(QNetworkReply*)),
+						this, SLOT(replyFinished(QNetworkReply*)));
+				}
+				recCount++;
+			}
+		}
+	}
+
+	//Hide the widget which has no video to show
+	for (int i = recCount; i<=11; i++)
 	{
-		if (SI_ID!="")
-			select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndSI_ID + "ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
-		else if (GI_ID!="")
-			select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndGI_ID + "ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
-		else
-			select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";	
+		//hide the invisible widgets
+		QPushButton* imgButton = this->FindButtonByNameIndex(i);
+		imgButton->setEnabled(false);
+		imgButton->setVisible(false);
+		QLabel* labelMediaName = this->FindLabelByNameIndex(mediaName, i);
+		labelMediaName->setEnabled(false);
+		labelMediaName->setVisible(false);
+		QLabel* labelMediaAuthor = this->FindLabelByNameIndex(mediaAuthor, i);
+		labelMediaAuthor->setEnabled(false);
+		labelMediaAuthor->setVisible(false);
+		QLabel* labelMediaTime = this->FindLabelByNameIndex(mediaTime, i);
+		labelMediaTime->setEnabled(false);
+		labelMediaTime->setVisible(false);
+		QLabel* labelClickRate = this->FindLabelByNameIndex(clickThroughRate, i);
+		labelClickRate->setEnabled(false);
+		labelClickRate->setVisible(false);
+
+		QString verticalLayoutName = QString("vl_") + QString::number(i, 10);
+		QVBoxLayout* verticalLayout = this->findChild<QVBoxLayout*>(verticalLayoutName) ;
+		verticalLayout->addStretch();
 	}
 	
-
-	sql_query.prepare(select_sql);
-	if (!sql_query.exec())
-	{
-		qDebug() << "\t" <<"Select mediainfo failed! ";
-		return -1;
-	} 
-	else
-	{
-		rec = sql_query.record();
-		if (sql_query.size()==0)
-			qDebug() << "\t" <<"There's no mediainfo! ";
-
-		while (sql_query.next())
-		{
-			indexMI_ID = rec.indexOf(QString("MI_ID"));
-			MI_ID = sql_query.value(indexMI_ID).toString();
-
-			indexMI_MPDUrl = rec.indexOf(QString("MI_MPDUrl"));
-			MI_MPDUrl = sql_query.value(indexMI_MPDUrl).toString();
-
-			indexMI_ShowPicUrl = rec.indexOf(QString("MI_ShowPicUrl"));
-			MI_ShowPicUrl = sql_query.value(indexMI_ShowPicUrl).toString();
-
-			indexMI_Name = rec.indexOf(QString("MI_Name"));
-			MI_Name = sql_query.value(indexMI_Name).toString();
-
-			indexMI_UploadAuthor = rec.indexOf(QString("MI_UploadAuthor"));
-			MI_UploadAuthor = sql_query.value(indexMI_UploadAuthor).toString();
-
-			indexMI_InsertTime = rec.indexOf(QString("MI_InsertTime"));
-			QDateTime temp = sql_query.value(indexMI_InsertTime).toDateTime();
-			MI_InsertTime = temp.toString("yyyy-MM-dd hh:mm:ss");
-
-			indexMI_ClickThroughRate = rec.indexOf(QString("MI_ClickThroughRate"));
-			MI_ClickThroughRate = sql_query.value(indexMI_ClickThroughRate).toString();
-
-			//插入时，默认第一个为Name，第二个为MPDUrl
-			mediaInfo.insert(MI_ID, MI_Name);
-			mediaInfo.insert(MI_ID, MI_MPDUrl);
-			qDebug() << "\t" <<QString("Succeed Query! MI_ID:  %1  MI_MPDUrl:  %2   MI_ShowPicUrl:   %3  MI_Name:  %4   MI_UploadAuthor:  %5  MI_InsertTime:  %6 MI_ClickThroughRate:  %7").arg(MI_ID).arg(MI_MPDUrl).arg(MI_ShowPicUrl).arg(MI_Name).arg(MI_UploadAuthor).arg(MI_InsertTime).arg(MI_ClickThroughRate);
-
-			if (!this->SetMediaLayout(MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, recCount/COUNT_ROWCONTAIN, recCount%COUNT_ROWCONTAIN))
-				return -1;
-
-			//save the select result to the temp dir
-			QFileInfo file( "./Temp/" + MI_ID + ".png");
-			if (!file.isFile())
-			{
-				//show picture on the server
-				QNetworkAccessManager *manager;
-				manager = new QNetworkAccessManager(this);
-				QNetworkReply *reply = manager->get(QNetworkRequest(QUrl(MI_ShowPicUrl)));
-				reply->setProperty("buttonNumber", recCount);
-				reply->setProperty("MI_ID", MI_ID);
-				connect(manager, SIGNAL(finished(QNetworkReply*)),
-					this, SLOT(replyFinished(QNetworkReply*)));
-			}
-
-			recCount++;
-		}
-
-		for (int i = recCount; i<=11; i++)
-		{
-			//hide the invisible widgets
-			QPushButton* imgButton = this->FindButtonByNameIndex(i);
-			imgButton->setEnabled(false);
-			imgButton->setVisible(false);
-			QLabel* labelMediaName = this->FindLabelByNameIndex(mediaName, i);
-			labelMediaName->setEnabled(false);
-			labelMediaName->setVisible(false);
-			QLabel* labelMediaAuthor = this->FindLabelByNameIndex(mediaAuthor, i);
-			labelMediaAuthor->setEnabled(false);
-			labelMediaAuthor->setVisible(false);
-			QLabel* labelMediaTime = this->FindLabelByNameIndex(mediaTime, i);
-			labelMediaTime->setEnabled(false);
-			labelMediaTime->setVisible(false);
-			QLabel* labelClickRate = this->FindLabelByNameIndex(clickThroughRate, i);
-			labelClickRate->setEnabled(false);
-			labelClickRate->setVisible(false);
-
-			QString verticalLayoutName = QString("vl_") + QString::number(i, 10);
-			QVBoxLayout* verticalLayout = this->findChild<QVBoxLayout*>(verticalLayoutName) ;
-			verticalLayout->addStretch();
-		}
-	}
-
 	return recCount;
 }
 bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column)
@@ -308,14 +356,6 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 		currMediaName = valMediaInfo.at(1);
 	}
 	UpdateClickThroughRateToDb(currMediaID);
-	QString selectItemText, selectType;
-	if (this->selectItem)
-	{
-		selectItemText = this->selectItem->text();
-		selectType;
-		if (selectItem->parent())
-			selectType = selectItem->parent()->text();
-	}
 	ShowAvailableMediaFromDb(currentSearchKey, selectItemText, selectType);
 
 	if (!playerGui)
@@ -327,6 +367,7 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 		QObject::connect(this, SIGNAL(LogOut()), playerGui, SLOT(SetLogoutState()));
 		QObject::connect(playerGui, SIGNAL(ClosePlayerGui()), this, SLOT(on_playgui_closed()));
 		QObject::connect(playerGui, SIGNAL(LoginBeforeComment()), this, SLOT(LoginBeforeComment()));
+		QObject::connect(playerGui, SIGNAL(MyFavoriteChanged()), this, SLOT(refreshMyFavoriteUI()));
 
 		playerGui->ClearMpd();
 		player->OnDownloadMPDPressed(currMpdUrl.toStdString());
@@ -400,6 +441,7 @@ void OnDemandGui::on_button_logout_clicked()
 	this->userName = "";
 	this->ui.button_login->setText("Log in");
 	this->ui.button_logout->setEnabled(false);
+	this->refreshMyFavoriteUI();
 	if (playerGui)
 	{
 		emit LogOut();
@@ -422,14 +464,7 @@ void OnDemandGui::on_button_search_clicked()
 {
 	QString searchWord = this->ui.lineEdit_search->text().simplified();
  	searchWord = searchWord.remove(" ");
-	QString selectItemText, selectType;
-	if (this->selectItem)
-	{
-		selectItemText = this->selectItem->text();
-		if (selectItem->parent())
-			selectType = selectItem->parent()->text();
-	}
-	
+
 	if (searchWord=="")
 	{
 		ShowAvailableMediaFromDb(searchWord, selectItemText, selectType);
@@ -462,6 +497,7 @@ void OnDemandGui::ShowTreeView()
 	treeModel = new QStandardItemModel();  
 	this->ui.treeView->setModel(treeModel);
 	LoadTreeViewData(allType, treeModel);
+	LoadTreeViewData(myFavorite, treeModel);
 	LoadTreeViewData(subjectType, treeModel);
 	LoadTreeViewData(gradeType, treeModel);
 	this->ui.treeView->setHeaderHidden(TRUE);
@@ -474,7 +510,7 @@ bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
 	QStandardItem *item = new QStandardItem(type);  
 	items.push_back(item);
 	treeModel->appendRow(items);
-	if (type == allType)
+	if (type == allType || type == myFavorite)
 		return true;
 
 	QList<QStandardItem *> childItems;
@@ -482,11 +518,11 @@ bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
 	QString select_sql;
 	QSqlRecord rec;
 
-	if (type=="Subject")
+	if (type==subjectType)
 	{
 		select_sql = "SELECT * FROM subjectinfo ";
 	} 
-	if (type=="Grade")
+	else if (type==gradeType)
 	{
 		select_sql = "SELECT * FROM gradeinfo ";
 	}
@@ -507,7 +543,7 @@ bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
 			return false;
 		}
 
-		if (type=="Subject")
+		if (type==subjectType)
 		{
 			while(sql_query.next())
 			{
@@ -521,7 +557,7 @@ bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
 				childItems.push_back(item);
 			}
 		}
-		if (type=="Grade")
+		if (type==gradeType)
 		{
 			while(sql_query.next())
 			{
@@ -586,12 +622,28 @@ bool OnDemandGui::eventFilter(QObject * object, QEvent * event)
 void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 {
 	 selectItem = treeModel->itemFromIndex(modelIndex);
-	 QString  selectItemText = selectItem->text();
+	selectItemText = selectItem->text();
+
+	if (selectItemText == myFavorite)
+		selectType = selectItemText;
+	if (selectItem->parent())
+		selectType = selectItem->parent()->text();
+
+	//Select the parent node
 	 if (!selectItem->parent())
 	 {
-		 ShowAvailableMediaFromDb();
 		 SetSearchInfo();
-		 ShowSearchResult("Hot movies  ...  ");
+		 if (selectItem->text()==myFavorite)
+		 {
+			 ShowAvailableMediaFromDb("", "", myFavorite);
+			 ShowSearchResult("My Favorite ...  ");
+			 QMessageBox::warning(this, QString("Warning"), QString("Please log in before watching the favorite videos!"), QMessageBox::Yes);
+		 }
+		 else
+		 {
+			 ShowAvailableMediaFromDb();
+			 ShowSearchResult("Hot movies  ...  ");
+		 }
 		 if (this->ui.treeView->isExpanded(modelIndex))
 			 this->ui.treeView->collapse(modelIndex);
 		 else
@@ -599,7 +651,7 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 		 return;
 	 }
 
-	 QString selectType = selectItem->parent()->text();
+	 //Select the child node
 	 if (selectType == subjectType)
 	 {
 		 ShowAvailableMediaFromDb("", selectItemText, subjectType);
@@ -634,5 +686,11 @@ void OnDemandGui::ShowSearchResult(QString text,  QString searchWord, QString se
 		QString searchResult = "Search '" + searchWord +"'  "+ categoryText + " :  " + count + " results ...";
 		this->ui.label_search_state->setText(searchResult);
 	}
-	
+}
+void OnDemandGui::refreshMyFavoriteUI		()
+{
+	if (this->selectItemText == myFavorite)
+	{
+		this->ShowAvailableMediaFromDb(currentSearchKey, selectItemText, selectType);
+	}
 }

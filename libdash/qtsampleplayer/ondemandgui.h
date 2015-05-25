@@ -19,6 +19,7 @@ using namespace sampleplayer;
 #define  subjectType "Subject"
 #define  gradeType   "Grade"
 #define  allType		"All of the videos"
+#define  myFavorite	"My favorite"
 
 enum LabelType{
 	mediaName,
@@ -43,6 +44,8 @@ private:
 	DASHPlayer* player;
 	QStandardItemModel *treeModel;
 	QStandardItem *selectItem;
+	QString selectItemText;
+	QString selectType;
 	QString   currentSearchKey;
 	QMultiHash<QString, QString> mediaInfo;
 	bool hasLogedIn;
@@ -72,6 +75,7 @@ public slots:
 	void StartPlayer						(QString currMediaID);
 	void on_playgui_closed				();
 	void LoginBeforeComment		();
+	void refreshMyFavoriteUI			();
 
 signals:
 	void enterSuccessfully(QString userID, QString userName);

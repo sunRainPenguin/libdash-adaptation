@@ -23,16 +23,20 @@ using namespace libdash::framework::mpd;
 
 QtSamplePlayerGui::QtSamplePlayerGui    (bool hasLogedIn, QString userID, QString Name, QString mediaID, QString mediaName, QString mpdUrl, QWidget *parent) : 
                    QMainWindow          (parent),
+					   hasLogedIn	(hasLogedIn),
+					   userID	(userID),
+					   userName	(Name),
+					   mediaID		(mediaID),
+					   mediaName	(mediaName),
+					   favorite	(favorite_notSet),
+					   mpdUrl	(mpdUrl),
                    ui                   (new Ui::QtSamplePlayerClass),
                    mpd                  (NULL)
 {
     this->ui->setupUi(this);
-	this->hasLogedIn = hasLogedIn;
-	this->userID = userID;
-	this->userName = Name;
-	this->mediaID = mediaID;
-	this->mediaName = mediaName;
-	this->mpdUrl = mpdUrl;
+	this->favorite = this->GetFavoriteState(userID, mediaID);
+	this->SetFavoriteHeart(this->favorite);
+
 	this->ui->label_userName->setText(userName);
 	this->ui->label_mediaName->setText(mediaName);
     this->SetVideoSegmentBufferFillState(0);
@@ -419,6 +423,8 @@ void QtSamplePlayerGui::SetCurrMediaInfo(QString mediaID, QString mediaName)
 	this->mediaID = mediaID;
 	this->mediaName = mediaName;
 	this->ui->label_mediaName->setText(mediaName);
+	this->favorite = this->GetFavoriteState(userID, mediaID);
+	this->SetFavoriteHeart(this->favorite);
 	this->ShowCommentsFromDb(mediaID);
 }
 void QtSamplePlayerGui::ClearMpd()
@@ -483,6 +489,8 @@ void QtSamplePlayerGui::SetLoginState(QString userID, QString userName)
 	this->userName = userName;
 	this->userID = userID;
 	this->ui->label_userName->setText(userName);
+	this->favorite = this->GetFavoriteState(userID, mediaID);
+	this->SetFavoriteHeart(this->favorite);
 }
 
 void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
@@ -598,6 +606,8 @@ void QtSamplePlayerGui::SetLogoutState()
 	this->userName = "";
 	this->userID = "";
 	this->ui->label_userName->setText("");
+	this->favorite = this->GetFavoriteState(userID, mediaID);
+	this->SetFavoriteHeart(this->favorite);
 }
 
 QString QtSamplePlayerGui::GetEmotionPath()
@@ -634,4 +644,89 @@ void QtSamplePlayerGui::UpdateComment()
 void QtSamplePlayerGui::on_button_refresh_comment_clicked()
 {
 	this->ShowCommentsFromDb(this->mediaID);
+}
+IsFavorite QtSamplePlayerGui::GetFavoriteState				(QString userID, QString mediaID)
+{
+	QSqlQuery sql_query; 
+	QString select_sql;
+
+	if (userID=="" || mediaID=="")
+		return favorite_notSet;
+	select_sql =QString(" SELECT * FROM UserFavorite WHERE UF_UserID=") + userID +QString(" AND MI_ID=") + mediaID + QString(" ") ;
+	sql_query.prepare(select_sql);
+	if (!sql_query.exec() || sql_query.size()<1)
+	{
+		qDebug() << "\t" <<"Select UserFavorite failed! ";
+		return favorite_unchecked;
+	} 
+	else
+		return favorite_checked;
+
+}
+void QtSamplePlayerGui::SetFavoriteHeart(IsFavorite favorite)
+{
+	if (favorite==favorite_checked)
+	{
+		QIcon icon("./pic/favorite_checked.ico");
+		this->ui->button_favorite->setIcon(icon);
+		this->ui->button_favorite->setIconSize(QSize(30, 30));
+		this->ui->button_favorite->setEnabled(true);
+	}
+	else if(favorite==favorite_unchecked)
+	{
+		QIcon icon("./pic/favorite_unchecked.ico");
+		this->ui->button_favorite->setIcon(icon);
+		this->ui->button_favorite->setIconSize(QSize(30, 30));
+		this->ui->button_favorite->setEnabled(true);
+	}
+	else if(favorite==favorite_notSet)
+	{
+		this->ui->button_favorite->setIcon(QIcon());
+		this->ui->button_favorite->setDisabled(true);
+	}
+
+}
+void QtSamplePlayerGui::on_button_favorite_clicked					()
+{
+	if (favorite==favorite_unchecked)
+	{
+		this->favorite = favorite_checked;
+		SetFavoriteHeart(favorite_checked);
+		SetFavoriteToDb(favorite_checked);
+	}
+	else if (favorite==favorite_checked)
+	{
+		this->favorite = favorite_unchecked;
+		SetFavoriteHeart(favorite_unchecked);
+		SetFavoriteToDb(favorite_unchecked);
+	}
+	emit MyFavoriteChanged();
+}
+void QtSamplePlayerGui::SetFavoriteToDb	(IsFavorite favorite)
+{
+	if (userID!="" && mediaID!="")
+	{
+		QSqlQuery sql_query; 
+		QString select_sql;
+		if (favorite==favorite_checked)
+		{
+			select_sql =QString(" INSERT INTO UserFavorite(UF_UserID, MI_ID) VALUES(") + userID + "," + mediaID + ") ";
+			sql_query.prepare(select_sql);
+			if (!sql_query.exec())
+			{
+				qWarning() << "\t" << "Insert favorite data failed! ";
+				return;
+			}
+		}
+		else if (favorite==favorite_unchecked)
+		{
+			select_sql =QString(" DELETE FROM UserFavorite WHERE UF_UserID=") + userID + " AND MI_ID=" + mediaID + " ";
+			sql_query.prepare(select_sql);
+			if (!sql_query.exec())
+			{
+				qWarning() << "\t" << "Delete favorite data failed! ";
+				return;
+			}
+		}
+	}
 }
