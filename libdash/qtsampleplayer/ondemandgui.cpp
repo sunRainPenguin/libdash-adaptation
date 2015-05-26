@@ -76,6 +76,7 @@ void OnDemandGui::SetLoginState(QString userID, QString username)
 	this->ui.button_login->setText(username);
 	this->ui.button_logout->setEnabled(true);
 	this->refreshMyFavoriteUI();
+	this->refreshRecentVideoUI();
 	if (playerGui)
 	{
 		emit enterSuccessfully(userID, username);
@@ -83,9 +84,11 @@ void OnDemandGui::SetLoginState(QString userID, QString username)
 }
 int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, QString searchType)
 {
-	 int indexMI_ID, indexMI_MPDUrl, indexMI_ShowPicUrl, indexMI_Name, indexMI_UploadAuthor, indexMI_InsertTime, indexMI_ClickThroughRate, indexSI_ID, indexGI_ID;
+	 int indexMI_ID, indexMI_MPDUrl, indexMI_ShowPicUrl, indexMI_Name, indexMI_UploadAuthor, indexMI_InsertTime, indexMI_ClickThroughRate, indexSI_ID, indexGI_ID, indexProgress, indexProgressMax, progress, progressMax;
 	QString MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, SI_ID, GI_ID;
 	QString whereSI_ID, whereGI_ID, whereAndSI_ID, whereAndGI_ID, whereMI_ID, whereAndMI_ID;
+
+	QMultiHash<QString, int>	progressInfo;
 
 	int recCount = 0;
 	bool noVideoToShow=false;
@@ -94,12 +97,15 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 	QSqlRecord rec;
 
 	//Get the sql statement
-	/**************************myFavorite**************************/
-	if (searchType==myFavorite)
+	/**************************myFavorite/recentVideos**************************/
+	if (searchType==myFavorite || searchType==recentVideos)
 	{
 		if (userID!="")
 		{
-			select_sql = QString("SELECT DISTINCT MI_ID FROM UserFavorite WHERE UF_UserID=") + userID + " ";
+			if (searchType==myFavorite)
+				select_sql = QString("SELECT DISTINCT MI_ID FROM UserFavorite WHERE UF_UserID=") + userID + " ";
+			if (searchType==recentVideos)
+				select_sql = QString("SELECT DISTINCT MI_ID, UW_Progress, UW_ProgressMax FROM UserWatched WHERE UW_UserID=") + userID + " ";
 			sql_query.prepare(select_sql);
 			if (!sql_query.exec())
 			{
@@ -118,6 +124,13 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 			{
 				indexMI_ID = rec.indexOf("MI_ID");
 				MI_ID = sql_query.value(indexMI_ID).toString();
+				indexProgress = rec.indexOf("UW_Progress");
+				progress = sql_query.value(indexProgress).toInt();
+				indexProgressMax = rec.indexOf("UW_ProgressMax");
+				progressMax = sql_query.value(indexProgressMax).toInt();
+
+				progressInfo.insert(MI_ID, progress);
+				progressInfo.insert(MI_ID, progressMax);
 				whereMI_ID = whereMI_ID + MI_ID +",";
 			}
 			whereMI_ID.remove(whereMI_ID.size()-1, 1);
@@ -167,7 +180,7 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 				select_sql = QString("SELECT * FROM mediainfo " + whereSI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
 			else if (searchType==gradeType && GI_ID!="")
 				select_sql = QString("SELECT * FROM mediainfo " + whereGI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
-			else if (searchType==myFavorite)
+			else if (searchType==myFavorite || searchType==recentVideos)
 				select_sql = QString("SELECT * FROM mediainfo " + whereMI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ");
 			else
 				select_sql = QString("SELECT * FROM mediainfo ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
@@ -178,7 +191,7 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 				select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndSI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
 			else if (searchType==gradeType && GI_ID!="")
 				select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndGI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
-			else if (searchType==myFavorite)
+			else if (searchType==myFavorite || searchType==recentVideos)
 				select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndMI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
 			else
 				select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";	
@@ -196,7 +209,6 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 			rec = sql_query.record();
 			if (sql_query.size()==0)
 				qDebug() << "\t" <<"There's no mediainfo! ";
-
 			while (sql_query.next())
 			{
 				indexMI_ID = rec.indexOf(QString("MI_ID"));
@@ -225,8 +237,15 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 				mediaInfo.insert(MI_ID, MI_Name);
 				mediaInfo.insert(MI_ID, MI_MPDUrl);
 				qDebug() << "\t" <<QString("Succeed Query! MI_ID:  %1  MI_MPDUrl:  %2   MI_ShowPicUrl:   %3  MI_Name:  %4   MI_UploadAuthor:  %5  MI_InsertTime:  %6 MI_ClickThroughRate:  %7").arg(MI_ID).arg(MI_MPDUrl).arg(MI_ShowPicUrl).arg(MI_Name).arg(MI_UploadAuthor).arg(MI_InsertTime).arg(MI_ClickThroughRate);
-
-				if (!this->SetMediaLayout(MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, recCount/COUNT_ROWCONTAIN, recCount%COUNT_ROWCONTAIN))
+				int progressMax=-1, progress=-1;
+				if (searchType== recentVideos && progressInfo.size()!=0)
+				{
+					QList<int> progressInfoList = progressInfo.values(MI_ID);
+					progressMax = progressInfoList.at(0);
+					progress = progressInfoList.at(1);
+				}
+				
+				if (!this->SetMediaLayout(MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, recCount/COUNT_ROWCONTAIN, recCount%COUNT_ROWCONTAIN, progress, progressMax))
 					return -1;
 
 				//save the select result to the temp dir
@@ -254,18 +273,21 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 		QPushButton* imgButton = this->FindButtonByNameIndex(i);
 		imgButton->setEnabled(false);
 		imgButton->setVisible(false);
-		QLabel* labelMediaName = this->FindLabelByNameIndex(mediaName, i);
+		QLabel* labelMediaName = this->FindLabelByNameIndex(label_mediaName, i);
 		labelMediaName->setEnabled(false);
 		labelMediaName->setVisible(false);
-		QLabel* labelMediaAuthor = this->FindLabelByNameIndex(mediaAuthor, i);
+		QLabel* labelMediaAuthor = this->FindLabelByNameIndex(label_mediaAuthor, i);
 		labelMediaAuthor->setEnabled(false);
 		labelMediaAuthor->setVisible(false);
-		QLabel* labelMediaTime = this->FindLabelByNameIndex(mediaTime, i);
+		QLabel* labelMediaTime = this->FindLabelByNameIndex(label_mediaTime, i);
 		labelMediaTime->setEnabled(false);
 		labelMediaTime->setVisible(false);
-		QLabel* labelClickRate = this->FindLabelByNameIndex(clickThroughRate, i);
+		QLabel* labelClickRate = this->FindLabelByNameIndex(label_clickThroughRate, i);
 		labelClickRate->setEnabled(false);
 		labelClickRate->setVisible(false);
+		QLabel* labelProgress = this->FindLabelByNameIndex(label_progress, i);
+		labelProgress->setEnabled(false);
+		labelProgress->setVisible(false);
 
 		QString verticalLayoutName = QString("vl_") + QString::number(i, 10);
 		QVBoxLayout* verticalLayout = this->findChild<QVBoxLayout*>(verticalLayoutName) ;
@@ -274,7 +296,7 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 	
 	return recCount;
 }
-bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column)
+bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column, int progress, int progressMax)
 {
 	//load image from the temp
 	bool loadImgfailed = false;
@@ -313,19 +335,19 @@ bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_Sh
 	imgButton->setEnabled(true);
 	imgButton->setVisible(true);
 
-	QLabel*  labelMediaName =FindLabelByNameIndex(mediaName, COUNT_ROWCONTAIN*row+column);
+	QLabel*  labelMediaName =FindLabelByNameIndex(label_mediaName, COUNT_ROWCONTAIN*row+column);
 	labelMediaName->setText(MI_Name);
 	labelMediaName->setEnabled(true);
 	labelMediaName->setVisible(true);
-	QLabel*  labelAuthor = FindLabelByNameIndex(mediaAuthor, COUNT_ROWCONTAIN*row+column);
+	QLabel*  labelAuthor = FindLabelByNameIndex(label_mediaAuthor, COUNT_ROWCONTAIN*row+column);
 	labelAuthor->setText(QString("Author: ")+MI_UploadAuthor);
 	labelAuthor->setEnabled(true);
 	labelAuthor->setVisible(true);
-	QLabel*  labelUploadTime = FindLabelByNameIndex(mediaTime, COUNT_ROWCONTAIN*row+column);
+	QLabel*  labelUploadTime = FindLabelByNameIndex(label_mediaTime, COUNT_ROWCONTAIN*row+column);
 	labelUploadTime->setText(MI_InsertTime);
 	labelUploadTime->setEnabled(true);
 	labelUploadTime->setVisible(true);
-	QLabel*  labelClickThroughRate = FindLabelByNameIndex(clickThroughRate, COUNT_ROWCONTAIN*row+column);
+	QLabel*  labelClickThroughRate = FindLabelByNameIndex(label_clickThroughRate, COUNT_ROWCONTAIN*row+column);
 	labelClickThroughRate->setText(MI_ClickThroughRate);
 	labelClickThroughRate->setEnabled(true);
 	labelClickThroughRate->setVisible(true);
@@ -333,6 +355,17 @@ bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_Sh
 	connect(imgButton, SIGNAL(ButtonClicked(QString)), this, SLOT(StartPlayer(QString)));
 	delete(img);
 	img = NULL;
+
+	QLabel*  labelProgress = FindLabelByNameIndex(label_progress, COUNT_ROWCONTAIN*row+column);
+	labelProgress->setText("");
+	labelProgress->setEnabled(true);
+	labelProgress->setVisible(true);
+	if (progress>=0 && progressMax >0)
+	{
+		double dpercent = (double)progress/(double)progressMax;
+		int ipersent = dpercent*100;
+		labelProgress->setText("Watched " + QString::number(ipersent,10) + "% ");
+	}
 	return true;
 }
 void OnDemandGui::StartPlayer(QString currMediaID)
@@ -365,7 +398,7 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 		playerGui->show();
 		QObject::connect(this, SIGNAL(enterSuccessfully(QString, QString)), playerGui, SLOT(SetLoginState(QString, QString)));
 		QObject::connect(this, SIGNAL(LogOut()), playerGui, SLOT(SetLogoutState()));
-		QObject::connect(playerGui, SIGNAL(ClosePlayerGui()), this, SLOT(on_playgui_closed()));
+		QObject::connect(playerGui, SIGNAL(ClosePlayerGui(int, int)), this, SLOT(on_playgui_closed(int, int)));
 		QObject::connect(playerGui, SIGNAL(LoginBeforeComment()), this, SLOT(LoginBeforeComment()));
 		QObject::connect(playerGui, SIGNAL(MyFavoriteChanged()), this, SLOT(refreshMyFavoriteUI()));
 
@@ -375,6 +408,13 @@ void OnDemandGui::StartPlayer(QString currMediaID)
 	}
 	else
 	{		
+		if (userID!="" && this->playerGui->GetMediaID()!="")
+		{
+			int progress= this->playerGui->GetProgress();
+			int progressMax = this->playerGui->GetProgressMax();
+			this->AddUserLastAccessVideoToDb(userID, this->playerGui->GetMediaID(), progress, progressMax);		//Record the video information before ending the last video
+			this->refreshRecentVideoUI();
+		}
 		if (playerGui->IsStarted())
 			playerGui->ClickButtonStop();
 
@@ -412,6 +452,8 @@ QLabel* OnDemandGui::FindLabelByNameIndex(int type,  int number)
 	case 3:
 		labelName = QString("ll_Rate_") + QString::number(number, 10);
 		break;
+	case 4:
+		labelName = QString("ll_progress_") + QString::number(number, 10);
 	default:
 		break;
 	}
@@ -421,8 +463,14 @@ QLabel* OnDemandGui::FindLabelByNameIndex(int type,  int number)
 	else
 		return NULL;
 }
-void OnDemandGui::on_playgui_closed()
+void OnDemandGui::on_playgui_closed(int progress, int progressMax)
 {
+	if (userID!="" && this->playerGui->GetMediaID()!="")
+	{
+		this->AddUserLastAccessVideoToDb(userID, this->playerGui->GetMediaID(), progress, progressMax);
+		this->refreshRecentVideoUI();
+	}
+
 	if (playerGui->IsStarted())
 		playerGui->ClickButtonStop();
 	delete(player);
@@ -442,6 +490,7 @@ void OnDemandGui::on_button_logout_clicked()
 	this->ui.button_login->setText("Log in");
 	this->ui.button_logout->setEnabled(false);
 	this->refreshMyFavoriteUI();
+	this->refreshRecentVideoUI();
 	if (playerGui)
 	{
 		emit LogOut();
@@ -482,7 +531,7 @@ void OnDemandGui::on_button_search_clicked()
 		{
 			searchKey=searchWord.mid(i, searchKeySize);
 			int resultCount = ShowAvailableMediaFromDb(searchKey, selectItemText, selectType);
-			if (resultCount>0)
+			if (resultCount>=0)
 			{
 				SetSearchInfo(searchKey);
 				ShowSearchResult("", searchWord, selectItemText, QString::number(resultCount, 10));
@@ -497,9 +546,11 @@ void OnDemandGui::ShowTreeView()
 	treeModel = new QStandardItemModel();  
 	this->ui.treeView->setModel(treeModel);
 	LoadTreeViewData(allType, treeModel);
+	LoadTreeViewData(recentVideos, treeModel);
 	LoadTreeViewData(myFavorite, treeModel);
 	LoadTreeViewData(subjectType, treeModel);
 	LoadTreeViewData(gradeType, treeModel);
+	this->ui.treeView->expandAll();
 	this->ui.treeView->setHeaderHidden(TRUE);
 	this->ui.treeView->setEditTriggers(0);
 }
@@ -510,7 +561,7 @@ bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
 	QStandardItem *item = new QStandardItem(type);  
 	items.push_back(item);
 	treeModel->appendRow(items);
-	if (type == allType || type == myFavorite)
+	if (type == allType || type == myFavorite || type == recentVideos)
 		return true;
 
 	QList<QStandardItem *> childItems;
@@ -624,8 +675,8 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 	 selectItem = treeModel->itemFromIndex(modelIndex);
 	selectItemText = selectItem->text();
 
-	if (selectItemText == myFavorite)
-		selectType = selectItemText;
+	if (selectItemText == myFavorite || selectItemText == recentVideos || selectItemText == allType)
+		selectType = selectItemText;			
 	if (selectItem->parent())
 		selectType = selectItem->parent()->text();
 
@@ -637,7 +688,17 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 		 {
 			 ShowAvailableMediaFromDb("", "", myFavorite);
 			 ShowSearchResult("My Favorite ...  ");
-			 QMessageBox::warning(this, QString("Warning"), QString("Please log in before watching the favorite videos!"), QMessageBox::Yes);
+			 if (this->userName=="")
+				 QMessageBox::warning(this, QString("Warning"), QString("Please log in before watching your favorite videos!"), QMessageBox::Yes);
+			 return;
+		 }
+		 else if (selectItem->text()==recentVideos)
+		 {
+			 ShowAvailableMediaFromDb("", "", recentVideos);
+			 ShowSearchResult("Recent Videos ...  ");
+			 if (this->userName=="")
+				 QMessageBox::warning(this, QString("Warning"), QString("Please log in before watching your recent videos!"), QMessageBox::Yes);
+			 return;
 		 }
 		 else
 		 {
@@ -690,7 +751,75 @@ void OnDemandGui::ShowSearchResult(QString text,  QString searchWord, QString se
 void OnDemandGui::refreshMyFavoriteUI		()
 {
 	if (this->selectItemText == myFavorite)
-	{
 		this->ShowAvailableMediaFromDb(currentSearchKey, selectItemText, selectType);
+}
+void OnDemandGui::AddUserLastAccessVideoToDb		(QString userID, QString mediaID, int progress, int progressMax)
+{
+	int recCount=0;
+	QString earliestUW_ID, updateUW_ID;
+	QSqlQuery sql_query;
+	QString sql;
+
+	/********************************Add/update record to Db*****************************/
+	//Select the repeat one among the recent videos
+	sql = QString("SELECT UW_ID FROM userwatched WHERE UW_UserID=" + userID + " AND MI_ID = " + mediaID + " ");
+	sql_query.prepare(sql);
+	if(!sql_query.exec())
+	{
+		qDebug() << "\t" << "Delete repeat record from userwatched failed! ";
+		return;
 	}
+	else  if (sql_query.next())
+	{
+		updateUW_ID = sql_query.value(0).toString();
+	}
+	//Add or update record
+	QDateTime current_date_time = QDateTime::currentDateTime();
+	QString currentDateTime = current_date_time.toString("yyyy-MM-dd hh:mm:ss");
+	if (updateUW_ID=="")
+		sql = QString("INSERT INTO userwatched(UW_UserID, MI_ID, UW_Progress, UW_ProgressMax, UW_LastAccessTime) VALUES(" + userID + ", " +  mediaID + ", "+ QString::number(progress, 10) + ", " + QString::number(progressMax) + ", '" + currentDateTime +  "' ) ");
+	else
+		sql = QString("UPDATE userwatched SET UW_Progress = " + QString::number(progress, 10) + ", UW_ProgressMax =" +QString::number(progressMax) + ", UW_LastAccessTime='" + currentDateTime + "' WHERE UW_ID=" + updateUW_ID + " ");
+	sql_query.prepare(sql);
+	if (!sql_query.exec())
+	{
+		qDebug() << "\t" << "Add record to userwatched failed!";
+		return;
+	}
+
+	//If it's an insert...
+	if (updateUW_ID=="")
+	{
+		//Get the video count this user has watched
+		sql = QString("SELECT UW_ID FROM userwatched WHERE UW_UserID=" + userID +" ORDER BY UW_LastAccessTime");
+		sql_query.prepare(sql);
+		if (!sql_query.exec())
+		{
+			qDebug() << "\t" << "Select count from userwatched failed!";
+			return;
+		}
+		else if (sql_query.next())
+		{
+			earliestUW_ID = sql_query.value(0).toString();
+			recCount = sql_query.size();
+		}
+
+		//Delete record from Db if more than 3 records are restored
+		if (recCount>=3)
+		{
+			sql = QString("DELETE FROM userwatched WHERE UW_ID = " + earliestUW_ID + " ");
+			sql_query.prepare(sql);
+			if (!sql_query.exec())
+			{
+				qDebug() << "\t" << "Delete from userwatched failed! ";
+				return;
+			}
+		}
+	}
+
+}
+void OnDemandGui::refreshRecentVideoUI			()
+{
+	if (this->selectItemText==recentVideos)
+		this->ShowAvailableMediaFromDb(currentSearchKey, selectItemText, selectType);
 }

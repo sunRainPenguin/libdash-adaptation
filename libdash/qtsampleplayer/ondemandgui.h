@@ -16,16 +16,18 @@
 #include "UI/DASHPlayer.h"
 using namespace sampleplayer;
 
-#define  subjectType "Subject"
-#define  gradeType   "Grade"
-#define  allType		"All of the videos"
-#define  myFavorite	"My favorite"
+#define subjectType "Subject"
+#define gradeType   "Grade"
+#define allType		"Hot videos"
+#define myFavorite	"My favorite"
+#define recentVideos	"Recent videos"	  
 
 enum LabelType{
-	mediaName,
-	mediaAuthor,
-	mediaTime,
-	clickThroughRate
+	label_mediaName,
+	label_mediaAuthor,
+	label_mediaTime,
+	label_clickThroughRate,
+	label_progress
 };
 
 class OnDemandGui : public QMainWindow
@@ -51,7 +53,8 @@ private:
 	bool hasLogedIn;
 	QString userName;
 	QString userID;
-	bool SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column);
+
+	bool SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_ShowPicUrl, QString MI_Name, QString MI_UploadAuthor, QString MI_InsertTime, QString MI_ClickThroughRate, int row, int column, int progress, int progressMax);
 	int ShowAvailableMediaFromDb		(QString SearchKey="", QString typeValue="", QString searchType="");
 	QPushButton* FindButtonByNameIndex		(int number);
 	QLabel* FindLabelByNameIndex		(int type,  int number);
@@ -61,6 +64,8 @@ private:
 	bool LoadTreeViewData	(QString type, QStandardItemModel * treeModel);
 	void SetSearchInfo	    (QString currentSearchKey = "");
 	void ShowSearchResult(QString text,  QString searchWord="", QString searchCategory = "",  QString count="");
+	void AddUserLastAccessVideoToDb		(QString userID, QString mediaID, int progress,  int progressMax);
+	void refreshRecentVideoUI			();
 
 private slots:
 	void on_button_login_clicked		();
@@ -73,7 +78,7 @@ private slots:
 public slots:
 	void	SetLoginState		(QString userID, QString usesrName);
 	void StartPlayer						(QString currMediaID);
-	void on_playgui_closed				();
+	void on_playgui_closed				(int progress,  int progressMax);
 	void LoginBeforeComment		();
 	void refreshMyFavoriteUI			();
 

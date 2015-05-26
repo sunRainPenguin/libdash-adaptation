@@ -76,12 +76,13 @@ bool    MultimediaManager::Init                             (const std::string& 
     LeaveCriticalSection(&this->monitorMutex);
     return true;
 }
-void    MultimediaManager::Start                            ()
+void    MultimediaManager::Start                            (int progress)
 {
     /* Global Start button for start must be added to interface*/
     if (this->isStarted)
         this->Stop();
-
+	if (progress>0)
+		SetSegmentDisplayIndex(progress);
     EnterCriticalSection(&this->monitorMutex);
 
     if (this->videoAdaptationSet && this->videoRepresentation)

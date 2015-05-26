@@ -53,7 +53,9 @@ namespace sampleplayer
 			void									ClickButtonStart();		//2015.5.1 - php
 			bool									IsStarted();					//2015.5.1 - php
 			QString							GetMediaID();				//2015.5.12 - php
-	
+			int									GetProgress();				//2015.5.26 - php
+			int									GetProgressMax();		//2015.5.26 - php
+
         private slots:
             void on_cb_period_currentIndexChanged               (int index);
             void on_cb_video_adaptationset_currentIndexChanged  (int index);
@@ -116,7 +118,7 @@ namespace sampleplayer
 
             void NotifySettingsChanged      ();
             void NotifyMPDDownloadPressed   (const std::string &url);
-            void NotifyStartButtonPressed   ();
+            void NotifyStartButtonPressed   (int progress=0);
             void NotifyPauseButtonPressed    ();
 			void NotifyStopButtonPressed		();
 			void NotifyProgressSliderReleased  (int progress);			//2015.4.13 - php
@@ -125,10 +127,11 @@ namespace sampleplayer
 			IsFavorite  GetFavoriteState				(QString userID, QString mediaID);		//2015.5.25 - php
 			QString GetEmotionPath();		//2015.5.25 - php
 			void SetFavoriteHeart	(IsFavorite favorite);		//2015.5.25 - php
-			void SetFavoriteToDb	(IsFavorite favorite);
+			void SetFavoriteToDb	(IsFavorite favorite);		//2015.5.26 - php
+			int	GetProgressFromDb				(QString userID, QString MI_ID);			//2015.5.26 - php
 
 	signals:
-			void ClosePlayerGui();			//2015.5.1 - php
+			void ClosePlayerGui(int progress, int progressMax);			//2015.5.1 - php
 			void LoginBeforeComment();				//2015.5.2 - php 
 			void MyFavoriteChanged();			//2015.5.25 - php
     };

@@ -49,7 +49,7 @@ namespace sampleplayer
             virtual ~DASHPlayer ();
 
             virtual void OnSettingsChanged      (int period, int videoAdaptationSet, int videoRepresentation, int audioAdaptationSet, int audioRepresentation);
-            virtual void OnStartButtonPressed   (int period, int videoAdaptationSet, int videoRepresentation, int audioAdaptationSet, int audioRepresentation);
+            virtual void OnStartButtonPressed   (int period, int videoAdaptationSet, int videoRepresentation, int audioAdaptationSet, int audioRepresentation, int progress=0);
             virtual void OnPauseButtonPressed    ();
 			virtual void OnStopButtonPressed    ();
 

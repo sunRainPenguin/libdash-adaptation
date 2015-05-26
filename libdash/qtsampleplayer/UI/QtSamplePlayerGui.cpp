@@ -281,7 +281,7 @@ void            QtSamplePlayerGui::NotifyMPDDownloadPressed                     
     for(size_t i = 0; i < this->observers.size(); i++)
         this->observers.at(i)->OnDownloadMPDPressed(url);
 }
-void            QtSamplePlayerGui::NotifyStartButtonPressed                         ()
+void            QtSamplePlayerGui::NotifyStartButtonPressed                         (int progress)
 {
     this->LockUI();
 
@@ -292,7 +292,12 @@ void            QtSamplePlayerGui::NotifyStartButtonPressed                     
     int audioRepresentation = this->ui->cb_audio_representation->currentIndex();
 
     for(size_t i = 0; i < this->observers.size(); i++)
-        this->observers.at(i)->OnStartButtonPressed(period, videoAdaptionSet, videoRepresentation, audioAdaptionSet, audioRepresentation);
+	{
+		if (progress>0)
+			this->observers.at(i)->OnStartButtonPressed(period, videoAdaptionSet, videoRepresentation, audioAdaptionSet, audioRepresentation, progress);
+		else
+			this->observers.at(i)->OnStartButtonPressed(period, videoAdaptionSet, videoRepresentation, audioAdaptionSet, audioRepresentation);
+	}
 
     this->UnLockUI();
 }
@@ -456,7 +461,14 @@ void QtSamplePlayerGui::ClickButtonStart()
 	this->ui->button_pause->setEnabled(true);
 	this->ui->button_stop->setEnabled(true);
 	this->ui->progressSlider->setEnabled(true);				//2015.4.14 - php
-	this->NotifyStartButtonPressed();
+	int progress = this->GetProgressFromDb (this->userID, this->mediaID);
+	if (progress>0)
+	{
+		this->NotifyStartButtonPressed(progress);
+		this->SetProgressSlider(progress);
+	}
+	else
+		this->NotifyStartButtonPressed();
 }
 QString QtSamplePlayerGui::GetMediaID()
 {
@@ -464,8 +476,10 @@ QString QtSamplePlayerGui::GetMediaID()
 }
 void QtSamplePlayerGui::closeEvent( QCloseEvent * event )
 {
+	int progress = this->ui->progressSlider->value();
+	int progressMax = this->ui->progressSlider->maximum();
 	this->ClickButtonStop();
-	emit ClosePlayerGui();
+	emit ClosePlayerGui(progress, progressMax);
 	event->accept();
 }
 
@@ -729,4 +743,34 @@ void QtSamplePlayerGui::SetFavoriteToDb	(IsFavorite favorite)
 			}
 		}
 	}
+}
+int QtSamplePlayerGui::GetProgress()
+{
+	return this->ui->progressSlider->value();
+}
+int QtSamplePlayerGui::GetProgressMax()
+{
+	return this->ui->progressSlider->maximum();
+}
+
+int QtSamplePlayerGui::GetProgressFromDb				(QString userID, QString MI_ID)
+{
+	QSqlQuery sql_query;
+	QString sql;
+
+	sql = QString("SELECT DISTINCT MI_ID, UW_Progress FROM UserWatched WHERE UW_UserID=") + userID + " AND MI_ID =" + MI_ID;
+	sql_query.prepare(sql);
+	if (!sql_query.exec())
+	{
+		qDebug() << "\t" << "Select progress from UserWatched failed! ";
+		return -1;
+	}
+	else if (sql_query.next())
+	{
+		QSqlRecord rec = sql_query.record();
+		int indexProgress = rec.indexOf("UW_Progress");
+		int progress = sql_query.value(indexProgress).toInt();
+		return progress;
+	}
+	return -1;
 }

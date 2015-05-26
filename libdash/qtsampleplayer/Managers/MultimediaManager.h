@@ -34,7 +34,7 @@ namespace sampleplayer
                 virtual ~MultimediaManager  ();
 
                 bool                Init    (const std::string& url);
-                void                Start   ();
+                void                Start   (int progress=0);
                 void                Stop    ();
                 dash::mpd::IMPD*    GetMPD  ();
 

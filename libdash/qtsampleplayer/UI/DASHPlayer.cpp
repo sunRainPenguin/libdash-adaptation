@@ -61,7 +61,7 @@ DASHPlayer::~DASHPlayer ()
     DeleteCriticalSection(&this->monitorMutex);
 }
 
-void DASHPlayer::OnStartButtonPressed               (int period, int videoAdaptationSet, int videoRepresentation, int audioAdaptationSet, int audioRepresentation)
+void DASHPlayer::OnStartButtonPressed               (int period, int videoAdaptationSet, int videoRepresentation, int audioAdaptationSet, int audioRepresentation, int progress)
 {
     /*
     std::string url = this->gui->GetUrl();
@@ -74,7 +74,10 @@ void DASHPlayer::OnStartButtonPressed               (int period, int videoAdapta
     this->gui->SetStatusBar("Successfully parsed MPD at: " + url);
 
     this->OnSettingsChanged(period, videoAdaptationSet, videoRepresentation, audioAdaptationSet, audioRepresentation); */
-    this->multimediaManager->Start();
+	if (progress>0)
+		this->multimediaManager->Start(progress);
+	else
+		this->multimediaManager->Start();
 }
 void DASHPlayer::OnPauseButtonPressed                ()
 {

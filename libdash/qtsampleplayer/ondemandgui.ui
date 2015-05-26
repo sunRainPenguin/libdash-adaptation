@@ -89,6 +89,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QLabel" name="ll_progress_11">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item row="1" column="2">
@@ -123,6 +130,13 @@
       </item>
       <item>
        <widget class="QLabel" name="ll_Rate_6">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="ll_progress_6">
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -167,6 +181,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QLabel" name="ll_progress_8">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item row="0" column="3">
@@ -201,6 +222,13 @@
       </item>
       <item>
        <widget class="QLabel" name="ll_Rate_3">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="ll_progress_3">
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -245,6 +273,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QLabel" name="ll_progress_2">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item row="0" column="1">
@@ -279,6 +314,13 @@
       </item>
       <item>
        <widget class="QLabel" name="ll_Rate_1">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="ll_progress_1">
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -323,6 +365,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QLabel" name="ll_progress_0">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item row="2" column="1">
@@ -357,6 +406,13 @@
       </item>
       <item>
        <widget class="QLabel" name="ll_Rate_9">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="ll_progress_9">
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -401,6 +457,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QLabel" name="ll_progress_10">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item row="1" column="0">
@@ -435,6 +498,13 @@
       </item>
       <item>
        <widget class="QLabel" name="ll_Rate_4">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="ll_progress_4">
         <property name="text">
          <string>TextLabel</string>
         </property>
@@ -479,6 +549,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QLabel" name="ll_progress_7">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
     <item row="1" column="1">
@@ -513,6 +590,13 @@
       </item>
       <item>
        <widget class="QLabel" name="ll_Rate_5">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="ll_progress_5">
         <property name="text">
          <string>TextLabel</string>
         </property>
