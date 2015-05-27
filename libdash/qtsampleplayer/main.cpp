@@ -43,6 +43,7 @@ void ClearTemp()
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+	a.setWindowIcon(QIcon("project.ico"));
 	if (!ClearDebugLog())
 	{
 		qDebug() << "\t" <<"Clear debug log failed!";

@@ -22,7 +22,7 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 		qCritical() << "\t" << "Failed to get media from Db ! exit(-1).";
 		exit(-1);
 	}
-	ShowSearchResult("Hot movies  ...  ");
+	ShowSearchResult(Global::allType+QString(" ..."));
 	this->ui.lineEdit_search->setFocus();
 	this->ui.lineEdit_search->installEventFilter(this);
 	QString qss_OnDemandGui;
@@ -98,13 +98,13 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 
 	//Get the sql statement
 	/**************************myFavorite/recentVideos**************************/
-	if (searchType==myFavorite || searchType==recentVideos)
+	if (searchType==Global::myFavorite || searchType==Global::recentVideos)
 	{
 		if (userID!="")
 		{
-			if (searchType==myFavorite)
+			if (searchType==Global::myFavorite)
 				select_sql = QString("SELECT DISTINCT MI_ID FROM UserFavorite WHERE UF_UserID=") + userID + " ";
-			if (searchType==recentVideos)
+			if (searchType==Global::recentVideos)
 				select_sql = QString("SELECT DISTINCT MI_ID, UW_Progress, UW_ProgressMax FROM UserWatched WHERE UW_UserID=") + userID + " ";
 			sql_query.prepare(select_sql);
 			if (!sql_query.exec())
@@ -144,7 +144,7 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 			noVideoToShow=true;
 	}
 	/**************************subjectType**************************/
-	if (searchType==subjectType)
+	if (searchType==Global::subjectType)
 	{
 		select_sql = "SELECT SI_ID FROM subjectinfo WHERE SI_Name = '" + typeValue + "'  ";
 		sql_query.prepare(select_sql);
@@ -158,7 +158,7 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 		}
 	}
 	/**************************gradeType**************************/
-	if (searchType==gradeType)
+	if (searchType==Global::gradeType)
 	{
 		select_sql = "SELECT GI_ID FROM gradeinfo WHERE GI_Name = '" + typeValue + "'  ";
 		sql_query.prepare(select_sql);
@@ -176,22 +176,22 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 	{
 		if (SearchKey=="")
 		{
-			if        (searchType==subjectType && SI_ID!="")
+			if        (searchType==Global::subjectType && SI_ID!="")
 				select_sql = QString("SELECT * FROM mediainfo " + whereSI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
-			else if (searchType==gradeType && GI_ID!="")
+			else if (searchType==Global::gradeType && GI_ID!="")
 				select_sql = QString("SELECT * FROM mediainfo " + whereGI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
-			else if (searchType==myFavorite || searchType==recentVideos)
+			else if (searchType==Global::myFavorite || searchType==Global::recentVideos)
 				select_sql = QString("SELECT * FROM mediainfo " + whereMI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12 ");
 			else
 				select_sql = QString("SELECT * FROM mediainfo ORDER BY MI_ClickThroughRate DESC LIMIT 12 ") ;
 		} 
 		else
 		{
-			if        (searchType==subjectType && SI_ID!="")
+			if        (searchType==Global::subjectType && SI_ID!="")
 				select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndSI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
-			else if (searchType==gradeType && GI_ID!="")
+			else if (searchType==Global::gradeType && GI_ID!="")
 				select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndGI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
-			else if (searchType==myFavorite || searchType==recentVideos)
+			else if (searchType==Global::myFavorite || searchType==Global::recentVideos)
 				select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' " + whereAndMI_ID + " ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";
 			else
 				select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";	
@@ -238,7 +238,7 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 				mediaInfo.insert(MI_ID, MI_MPDUrl);
 				qDebug() << "\t" <<QString("Succeed Query! MI_ID:  %1  MI_MPDUrl:  %2   MI_ShowPicUrl:   %3  MI_Name:  %4   MI_UploadAuthor:  %5  MI_InsertTime:  %6 MI_ClickThroughRate:  %7").arg(MI_ID).arg(MI_MPDUrl).arg(MI_ShowPicUrl).arg(MI_Name).arg(MI_UploadAuthor).arg(MI_InsertTime).arg(MI_ClickThroughRate);
 				int progressMax=-1, progress=-1;
-				if (searchType== recentVideos && progressInfo.size()!=0)
+				if (searchType== Global::recentVideos && progressInfo.size()!=0)
 				{
 					QList<int> progressInfoList = progressInfo.values(MI_ID);
 					progressMax = progressInfoList.at(0);
@@ -336,19 +336,19 @@ bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_Sh
 	imgButton->setVisible(true);
 
 	QLabel*  labelMediaName =FindLabelByNameIndex(label_mediaName, COUNT_ROWCONTAIN*row+column);
-	labelMediaName->setText(MI_Name);
+	labelMediaName->setText(QString::fromLocal8Bit("视频名称：") + MI_Name);
 	labelMediaName->setEnabled(true);
 	labelMediaName->setVisible(true);
 	QLabel*  labelAuthor = FindLabelByNameIndex(label_mediaAuthor, COUNT_ROWCONTAIN*row+column);
-	labelAuthor->setText(QString("Author: ")+MI_UploadAuthor);
+	labelAuthor->setText(QString::fromLocal8Bit("上传者：")+MI_UploadAuthor);
 	labelAuthor->setEnabled(true);
 	labelAuthor->setVisible(true);
 	QLabel*  labelUploadTime = FindLabelByNameIndex(label_mediaTime, COUNT_ROWCONTAIN*row+column);
-	labelUploadTime->setText(MI_InsertTime);
+	labelUploadTime->setText(QString::fromLocal8Bit("上传时间：") + MI_InsertTime);
 	labelUploadTime->setEnabled(true);
 	labelUploadTime->setVisible(true);
 	QLabel*  labelClickThroughRate = FindLabelByNameIndex(label_clickThroughRate, COUNT_ROWCONTAIN*row+column);
-	labelClickThroughRate->setText(MI_ClickThroughRate);
+	labelClickThroughRate->setText(QString::fromLocal8Bit("点击率：") + MI_ClickThroughRate);
 	labelClickThroughRate->setEnabled(true);
 	labelClickThroughRate->setVisible(true);
 
@@ -364,7 +364,7 @@ bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_Sh
 	{
 		double dpercent = (double)progress/(double)progressMax;
 		int ipersent = dpercent*100;
-		labelProgress->setText("Watched " + QString::number(ipersent,10) + "% ");
+		labelProgress->setText(QString::fromLocal8Bit("已经观看了： ") + QString::number(ipersent,10) + "% ");
 	}
 	return true;
 }
@@ -517,7 +517,7 @@ void OnDemandGui::on_button_search_clicked()
 	if (searchWord=="")
 	{
 		ShowAvailableMediaFromDb(searchWord, selectItemText, selectType);
-		ShowSearchResult("Hot movies  ...  ");
+		ShowSearchResult(Global::allType+QString(" ..."));
 		this->repaint();
 		return;
 	}
@@ -545,11 +545,11 @@ void OnDemandGui::ShowTreeView()
 {
 	treeModel = new QStandardItemModel();  
 	this->ui.treeView->setModel(treeModel);
-	LoadTreeViewData(allType, treeModel);
-	LoadTreeViewData(recentVideos, treeModel);
-	LoadTreeViewData(myFavorite, treeModel);
-	LoadTreeViewData(subjectType, treeModel);
-	LoadTreeViewData(gradeType, treeModel);
+	LoadTreeViewData(Global::allType, treeModel);
+	LoadTreeViewData(Global::recentVideos, treeModel);
+	LoadTreeViewData(Global::myFavorite, treeModel);
+	LoadTreeViewData(Global::subjectType, treeModel);
+	LoadTreeViewData(Global::gradeType, treeModel);
 	this->ui.treeView->expandAll();
 	this->ui.treeView->setHeaderHidden(TRUE);
 	this->ui.treeView->setEditTriggers(0);
@@ -561,7 +561,7 @@ bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
 	QStandardItem *item = new QStandardItem(type);  
 	items.push_back(item);
 	treeModel->appendRow(items);
-	if (type == allType || type == myFavorite || type == recentVideos)
+	if (type == Global::allType || type == Global::myFavorite || type == Global::recentVideos)
 		return true;
 
 	QList<QStandardItem *> childItems;
@@ -569,11 +569,11 @@ bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
 	QString select_sql;
 	QSqlRecord rec;
 
-	if (type==subjectType)
+	if (type==Global::subjectType)
 	{
 		select_sql = "SELECT * FROM subjectinfo ";
 	} 
-	else if (type==gradeType)
+	else if (type==Global::gradeType)
 	{
 		select_sql = "SELECT * FROM gradeinfo ";
 	}
@@ -594,7 +594,7 @@ bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
 			return false;
 		}
 
-		if (type==subjectType)
+		if (type==Global::subjectType)
 		{
 			while(sql_query.next())
 			{
@@ -608,7 +608,7 @@ bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
 				childItems.push_back(item);
 			}
 		}
-		if (type==gradeType)
+		if (type==Global::gradeType)
 		{
 			while(sql_query.next())
 			{
@@ -675,7 +675,7 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 	 selectItem = treeModel->itemFromIndex(modelIndex);
 	selectItemText = selectItem->text();
 
-	if (selectItemText == myFavorite || selectItemText == recentVideos || selectItemText == allType)
+	if (selectItemText == Global::myFavorite || selectItemText == Global::recentVideos || selectItemText == Global::allType)
 		selectType = selectItemText;			
 	if (selectItem->parent())
 		selectType = selectItem->parent()->text();
@@ -684,18 +684,18 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 	 if (!selectItem->parent())
 	 {
 		 SetSearchInfo();
-		 if (selectItem->text()==myFavorite)
+		 if (selectItem->text()==Global::myFavorite)
 		 {
-			 ShowAvailableMediaFromDb("", "", myFavorite);
-			 ShowSearchResult("My Favorite ...  ");
+			 ShowAvailableMediaFromDb("", "", Global::myFavorite);
+			 ShowSearchResult(Global::myFavorite+QString(" ..."));
 			 if (this->userName=="")
 				 QMessageBox::warning(this, QString("Warning"), QString("Please log in before watching your favorite videos!"), QMessageBox::Yes);
 			 return;
 		 }
-		 else if (selectItem->text()==recentVideos)
+		 else if (selectItem->text()==Global::recentVideos)
 		 {
-			 ShowAvailableMediaFromDb("", "", recentVideos);
-			 ShowSearchResult("Recent Videos ...  ");
+			 ShowAvailableMediaFromDb("", "", Global::recentVideos);
+			 ShowSearchResult(Global::recentVideos+QString(" ..."));
 			 if (this->userName=="")
 				 QMessageBox::warning(this, QString("Warning"), QString("Please log in before watching your recent videos!"), QMessageBox::Yes);
 			 return;
@@ -703,7 +703,7 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 		 else
 		 {
 			 ShowAvailableMediaFromDb();
-			 ShowSearchResult("Hot movies  ...  ");
+			 ShowSearchResult(Global::allType+QString(" ..."));
 		 }
 		 if (this->ui.treeView->isExpanded(modelIndex))
 			 this->ui.treeView->collapse(modelIndex);
@@ -713,17 +713,17 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 	 }
 
 	 //Select the child node
-	 if (selectType == subjectType)
+	 if (selectType == Global::subjectType)
 	 {
-		 ShowAvailableMediaFromDb("", selectItemText, subjectType);
+		 ShowAvailableMediaFromDb("", selectItemText, Global::subjectType);
 		 SetSearchInfo();
-		 ShowSearchResult("Hot movies  ...  ");
+		 ShowSearchResult(Global::allType+QString(" ..."));
 	 }
-	 else if (selectType == gradeType)
+	 else if (selectType == Global::gradeType)
 	 {
-		 ShowAvailableMediaFromDb("", selectItemText, gradeType);
+		 ShowAvailableMediaFromDb("", selectItemText, Global::gradeType);
 		 SetSearchInfo();
-		 ShowSearchResult("Hot movies  ...  ");
+		 ShowSearchResult(Global::allType+QString(" ..."));
 	 }
 	 
 }
@@ -750,7 +750,7 @@ void OnDemandGui::ShowSearchResult(QString text,  QString searchWord, QString se
 }
 void OnDemandGui::refreshMyFavoriteUI		()
 {
-	if (this->selectItemText == myFavorite)
+	if (this->selectItemText == Global::myFavorite)
 		this->ShowAvailableMediaFromDb(currentSearchKey, selectItemText, selectType);
 }
 void OnDemandGui::AddUserLastAccessVideoToDb		(QString userID, QString mediaID, int progress, int progressMax)
@@ -805,7 +805,7 @@ void OnDemandGui::AddUserLastAccessVideoToDb		(QString userID, QString mediaID, 
 		}
 
 		//Delete record from Db if more than 3 records are restored
-		if (recCount>=3)
+		if (recCount>3)
 		{
 			sql = QString("DELETE FROM userwatched WHERE UW_ID = " + earliestUW_ID + " ");
 			sql_query.prepare(sql);
@@ -820,6 +820,6 @@ void OnDemandGui::AddUserLastAccessVideoToDb		(QString userID, QString mediaID, 
 }
 void OnDemandGui::refreshRecentVideoUI			()
 {
-	if (this->selectItemText==recentVideos)
+	if (this->selectItemText==Global::recentVideos)
 		this->ShowAvailableMediaFromDb(currentSearchKey, selectItemText, selectType);
 }

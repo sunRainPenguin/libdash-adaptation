@@ -14,13 +14,8 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QUrl>
 #include "UI/DASHPlayer.h"
+#include "Global.h"
 using namespace sampleplayer;
-
-#define subjectType "Subject"
-#define gradeType   "Grade"
-#define allType		"Hot videos"
-#define myFavorite	"My favorite"
-#define recentVideos	"Recent videos"	  
 
 enum LabelType{
 	label_mediaName,

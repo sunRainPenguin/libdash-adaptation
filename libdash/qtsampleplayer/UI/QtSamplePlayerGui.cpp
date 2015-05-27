@@ -57,7 +57,7 @@ QtSamplePlayerGui::QtSamplePlayerGui    (bool hasLogedIn, QString userID, QStrin
 
 	if(qssFile.isOpen())
 	{
-		qss_mainWindow = QLatin1String(qssFile.readAll());
+		qss_mainWindow = QString::fromLocal8Bit(qssFile.readAll());
 		this->setStyleSheet(qss_mainWindow);
 		qssFile.close();
 	}
@@ -148,12 +148,12 @@ void			  QtSamplePlayerGui::SetProgressSlider		(int  segmentDisplayIndex)
 //2015.4.18 - php
 void         QtSamplePlayerGui::SetVideoProgressLabel  (int segmentDisplayIndex)
 {
-		this->ui->label_videoSegmentIndex->setText("Video Segment Index :"+ QString::number(segmentDisplayIndex, 10));
+		this->ui->label_videoSegmentIndex->setText(QString::fromLocal8Bit("当前视频播放分段：")+ QString::number(segmentDisplayIndex, 10));
 }
 
 void         QtSamplePlayerGui::SetAudioProgressLabel  (int segmentDisplayIndex)
 {
-	this->ui->label_audioSegmentIndex ->setText("Audio Segment Index :"+ QString::number(segmentDisplayIndex, 10));
+	this->ui->label_audioSegmentIndex ->setText(QString::fromLocal8Bit("当前音频播放分段：")+ QString::number(segmentDisplayIndex, 10));
 }
 
 void			QtSamplePlayerGui::SetProgressSliderRange	(int duration)

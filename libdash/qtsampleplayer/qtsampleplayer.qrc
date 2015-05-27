@@ -8,6 +8,7 @@
         <file>pic/smilely.png</file>
         <file>pic/refresh-clicked.png</file>
         <file>pic/search_clicked.png</file>
+        <file>pic/background.jpg</file>
     </qresource>
     <qresource prefix="/">
         <file>qss/qss_mainWindow.qss</file>

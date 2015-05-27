@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>OnDemandGui</string>
+   <string>天天向上</string>
   </property>
   <widget class="QPushButton" name="button_logout">
    <property name="geometry">
@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Log out</string>
+    <string>注销</string>
    </property>
   </widget>
   <widget class="QPushButton" name="button_login">
@@ -36,7 +36,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Log in</string>
+    <string>登录</string>
    </property>
   </widget>
   <widget class="QWidget" name="layoutWidget">
@@ -652,7 +652,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Search:</string>
+         <string>搜索：</string>
         </property>
        </widget>
       </item>

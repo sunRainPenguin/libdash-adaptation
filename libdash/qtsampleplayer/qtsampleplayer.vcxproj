@@ -126,6 +126,7 @@
     <ClCompile Include="GeneratedFiles\Release\moc_QSelectFaceWidget.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="Global.cpp" />
     <ClCompile Include="libdashframework\Buffer\AudioChunk.cpp" />
     <ClCompile Include="libdashframework\Buffer\AudioSamples.cpp" />
     <ClCompile Include="libdashframework\Buffer\VideoFrame.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="GeneratedFiles\ui_ondemandgui.h" />
     <ClInclude Include="GeneratedFiles\ui_QSelectFaceWidget.h" />
     <ClInclude Include="GeneratedFiles\ui_qtsampleplayer.h" />
+    <ClInclude Include="Global.h" />
     <ClInclude Include="libdashframework\Buffer\AudioChunk.h" />
     <ClInclude Include="libdashframework\Buffer\AudioSamples.h" />
     <ClInclude Include="libdashframework\Buffer\Buffer.h" />

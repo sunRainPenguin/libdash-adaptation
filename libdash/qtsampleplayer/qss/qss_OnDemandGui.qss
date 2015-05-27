@@ -1,3 +1,24 @@
+QPushButton
+{
+	color: rgb(255, 255, 255);
+	background-color: rgb(34, 77, 120);
+    font-family: "ºÚÌå";
+    font-size: 14px;
+    text-align: center;
+    font-weight:100
+}
+QPushButton:hover, QPushButton:pressed , QPushButton:checked
+{
+	color: rgb(255, 255, 255);
+    font-size: 16px;
+    font-weight:300
+}
+QPushButton:disabled
+{
+	color: rgb(62, 104, 150);
+    font-size: 14px;
+    font-weight:100
+}
 QPushButton#button_search
 {
 	border-image: url(:/QtSamplePlayer/pic/search.png);
@@ -7,4 +28,17 @@ QPushButton#button_search:hover, QPushButton#button_search:pressed, QPushButton#
 	border-image: url(:/QtSamplePlayer/pic/search_clicked.png);
 	width:50pt;
 	height:50pt;
+}
+QMainWindow#OnDemandGui
+{
+	border-image: url(:/QtSamplePlayer/pic/background.jpg);
+}
+QTreeView#treeView
+{
+	background: transparent;
+	color: #EBECF1;
+}
+QLabel
+{
+	color: #FFFFFF;
 }

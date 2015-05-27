@@ -1,65 +1,47 @@
 QMainWindow#QtSamplePlayerClass
 {
-	background-image: url(:/QtSamplePlayer/pic/88.jpg);
+	border-image: url(:/QtSamplePlayer/pic/background.jpg);
 }
 QPushButton
 {
-	background-color: rgb(0, 170, 127);
-	background-image: url(:/QtSamplePlayer/pic/88.jpg);
-    font-family: "Aharoni";
+	color: rgb(255, 255, 255);
+	background-color: rgb(34, 77, 120);
+    font-family: "ºÚÌå";
     font-size: 14px;
     text-align: center;
+    font-weight:100
+}
+QPushButton:hover, QPushButton:pressed , QPushButton:checked
+{
+	color: rgb(255, 255, 255);
+    font-size: 16px;
+    font-weight:300
+}
+QPushButton:disabled
+{
+	color: rgb(62, 104, 150);
+    font-size: 14px;
     font-weight:100
 }
 QPushButton#button_refresh_comment
 {
-	background-color: rgb(0, 170, 127);
 	border-image: url(:/QtSamplePlayer/pic/refresh.png);
-	font-family: "Aharoni";
-    font-size: 14px;
-    text-align: center;
-    font-weight:100
 }
 QPushButton#button_refresh_comment:hover, QPushButton#button_refresh_comment:pressed, QPushButton#button_refresh_comment:checked
 {
-	background-color: rgb(85, 170, 255);
 	border-image: url(:/QtSamplePlayer/pic/refresh-clicked.png);
-    font-size: 16px;
-    font-weight:200
 }
 QPushButton#button_favorite
 {
-	background-color: none;
+	background-color: transparent;
 	border-image: none;
-	font-family: "Aharoni";
-    font-size: 14px;
-    text-align: center;
-    font-weight:100
 }
 QPushButton#button_favorite:hover, QPushButton#button_favorite:pressed, QPushButton#button_favorite:checked
 {
 	background-color: none;
 	border-image: none;
-    font-size: 16px;
-    font-weight:200
 }
 
-QPushButton:hover, QPushButton:pressed , QPushButton:checked
-{
-    background-color: rgb(85, 170, 255);
-    font-size: 16px;
-    font-weight:200
-}
-QPushButton:disabled
-{
-	color: rgb(240, 240, 240);
-	background-color: rgb(240, 240, 240);
-	background-image: url(:/QtSamplePlayer/pic/88.jpg);
-    font-family: "Aharoni";
-    font-size: 14px;
-    text-align: center;
-    font-weight:100
-}
 QComboBox
 {
 	 font-family: "Arial";
@@ -69,6 +51,7 @@ QLabel
 {
 	 font-family: "Arial";
      font-size: 9pt;
+	 color: #FFFFFF;
 }
 QLabel#label_mediaName
 {
@@ -80,4 +63,9 @@ QProgressBar
 {
 	 font-family: "Arial";
      font-size: 9pt;
+	 color: #FFFFFF;
+}
+QStatusBar#statusBar
+{
+	color: #FFFFFF;
 }
