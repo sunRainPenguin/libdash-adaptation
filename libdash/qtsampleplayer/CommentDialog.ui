@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>CommentDialog</string>
+   <string>用户评论</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -36,7 +36,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Comment</string>
+    <string>提交评论</string>
    </property>
   </widget>
   <widget class="QPushButton" name="button_smilely">

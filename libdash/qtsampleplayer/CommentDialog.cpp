@@ -117,7 +117,7 @@ void CommentDialog::on_button_smilely_clicked()
 	QString emotionIconPath = GetEmotionPath();
 
 	QSelectFaceWidget* selectFace = new QSelectFaceWidget(emotionIconPath, this);
-
+	selectFace->setStyleSheet("QLabel{color: #000000}QPushButton{background-color: transparent}");
 	QPoint GlobalPoint(this->ui.button_smilely->mapToGlobal(QPoint(0, 0)));//获取控件在窗体中的坐标
 	int y = GlobalPoint.y();
 	selectFace->popUp(GlobalPoint, this->ui.button_smilely->height()+10);

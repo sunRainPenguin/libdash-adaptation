@@ -9,6 +9,8 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 {
 	ui.setupUi(this);
 	this->ui.button_logout->setEnabled(false);
+	this->ui.label_username->setAlignment(Qt::AlignCenter);
+	this->ui.label_picture->setAlignment(Qt::AlignCenter);
 	hasLogedIn = false;
 	this->selectItem = NULL;
 	SetSearchInfo();
@@ -73,8 +75,10 @@ void OnDemandGui::SetLoginState(QString userID, QString username)
 	this->hasLogedIn = true;
 	this->userID = userID;
 	this->userName = username;
-	this->ui.button_login->setText(username);
+	this->ui.button_login->setDisabled(true);
+	this->ui.label_username->setText(userName);
 	this->ui.button_logout->setEnabled(true);
+	this->SetAvatarIcon();
 	this->refreshMyFavoriteUI();
 	this->refreshRecentVideoUI();
 	if (playerGui)
@@ -259,7 +263,7 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 					reply->setProperty("buttonNumber", recCount);
 					reply->setProperty("MI_ID", MI_ID);
 					connect(manager, SIGNAL(finished(QNetworkReply*)),
-						this, SLOT(replyFinished(QNetworkReply*)));
+						this, SLOT(buttonPicReplyFinished(QNetworkReply*)));
 				}
 				recCount++;
 			}
@@ -487,8 +491,10 @@ void OnDemandGui::on_button_logout_clicked()
 	this->hasLogedIn = false;
 	this->userID = "";
 	this->userName = "";
-	this->ui.button_login->setText("Log in");
+	this->ui.label_username->setText("");
 	this->ui.button_logout->setEnabled(false);
+	this->ui.button_login->setEnabled(true);
+	this->ui.label_picture->setPixmap(QPixmap());
 	this->refreshMyFavoriteUI();
 	this->refreshRecentVideoUI();
 	if (playerGui)
@@ -627,7 +633,7 @@ bool OnDemandGui::LoadTreeViewData(QString type, QStandardItemModel * treeModel)
 items.at(0)->appendRows(childItems);
 return true;
 }
-void OnDemandGui::replyFinished(QNetworkReply *reply)
+void OnDemandGui::buttonPicReplyFinished(QNetworkReply *reply)
 {
 	if(reply->error() == QNetworkReply::NoError)
 	{
@@ -689,7 +695,7 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 			 ShowAvailableMediaFromDb("", "", Global::myFavorite);
 			 ShowSearchResult(Global::myFavorite+QString(" ..."));
 			 if (this->userName=="")
-				 QMessageBox::warning(this, QString("Warning"), QString("Please log in before watching your favorite videos!"), QMessageBox::Yes);
+				 QMessageBox::warning(NULL, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("查看您喜爱的视频之前，请先登录!"), QMessageBox::Yes);
 			 return;
 		 }
 		 else if (selectItem->text()==Global::recentVideos)
@@ -697,7 +703,7 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 			 ShowAvailableMediaFromDb("", "", Global::recentVideos);
 			 ShowSearchResult(Global::recentVideos+QString(" ..."));
 			 if (this->userName=="")
-				 QMessageBox::warning(this, QString("Warning"), QString("Please log in before watching your recent videos!"), QMessageBox::Yes);
+				 QMessageBox::warning(NULL, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("查看您的最近视频之前，请先登录!"), QMessageBox::Yes);
 			 return;
 		 }
 		 else
@@ -822,4 +828,48 @@ void OnDemandGui::refreshRecentVideoUI			()
 {
 	if (this->selectItemText==Global::recentVideos)
 		this->ShowAvailableMediaFromDb(currentSearchKey, selectItemText, selectType);
+}
+void OnDemandGui:: SetAvatarIcon()
+{
+	//save the select result to the temp dir
+	QString fileName =  Global::currUserTempPath + userName + ".jpg";
+	QFileInfo file(fileName);
+	if (!file.isFile())
+	{
+		//show picture on the server
+		QNetworkAccessManager *manager;
+		manager = new QNetworkAccessManager(this);
+		QNetworkReply *reply = manager->get(QNetworkRequest(QUrl(Global::avatarPath+ userName + ".jpg")));
+		connect(manager, SIGNAL(finished(QNetworkReply*)),
+			this, SLOT(avatarPicReplyFinished(QNetworkReply*)));
+	}
+	else
+	{
+		QPixmap pixmap(fileName);
+		pixmap = pixmap.scaled(this->ui.label_picture->size(), Qt::KeepAspectRatio, Qt::FastTransformation);
+		this->ui.label_picture->setPixmap(pixmap);
+	}
+}
+void OnDemandGui::avatarPicReplyFinished			(QNetworkReply *reply)
+{
+	if(reply->error() == QNetworkReply::NoError)
+	{
+		QPixmap* avatarPic= new QPixmap;
+		QByteArray jpegData = reply->readAll(); 
+		avatarPic->loadFromData(jpegData); 
+
+		if (userName!="")
+		{
+			QString fileName = userName + ".jpg";
+			QFileInfo file(Global::currUserTempPath);
+			if (file.isDir())
+				avatarPic->save(Global::currUserTempPath + fileName);
+			QPixmap pixmap(Global::currUserTempPath + fileName);
+			pixmap = pixmap.scaled(this->ui.label_picture->size(), Qt::KeepAspectRatio, Qt::FastTransformation);
+			this->ui.label_picture->setPixmap(pixmap);
+		}
+
+		delete(avatarPic);
+		avatarPic=NULL;
+	}
 }

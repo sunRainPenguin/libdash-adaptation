@@ -1,0 +1,26 @@
+
+QPushButton
+{
+	color: rgb(255, 255, 255);
+	background-color: rgb(18, 159, 221);
+    font-family: "ºÚÌå";
+    font-size: 14px;
+    text-align: center;
+    font-weight:100
+}
+QPushButton:hover, QPushButton:pressed , QPushButton:checked
+{
+    font-size: 16px;
+    font-weight:300;
+	background-color: rgb(39, 84, 130);
+}
+QPushButton:disabled
+{
+	font-size: 14px;
+    font-weight:100;
+	background-color: rgb(39, 84, 130);
+}
+QLabel
+{
+	color: #000000;
+}

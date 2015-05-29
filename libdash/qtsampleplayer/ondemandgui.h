@@ -3,10 +3,8 @@
 
 #include <QWidget>
 #include "ui_ondemandgui.h"
-#include "sqlconfig.h"
 #include "LoginDialog.h"
 #include "MyPushButton.h"
-#include <QMessageBox>
 #include <QtGui>
 #include <QMultiHash>
 #include <QtNetwork/QNetworkAccessManager>
@@ -61,13 +59,15 @@ private:
 	void ShowSearchResult(QString text,  QString searchWord="", QString searchCategory = "",  QString count="");
 	void AddUserLastAccessVideoToDb		(QString userID, QString mediaID, int progress,  int progressMax);
 	void refreshRecentVideoUI			();
+	void SetAvatarIcon						();
 
 private slots:
 	void on_button_login_clicked		();
 	void on_button_logout_clicked		();
 	void on_button_search_clicked		();
 	void on_treeView_clicked				(QModelIndex modelIndex);
-	void replyFinished							(QNetworkReply *reply);
+	void buttonPicReplyFinished			(QNetworkReply *reply);
+	void avatarPicReplyFinished			(QNetworkReply *reply);			
 	bool eventFilter								(QObject * object, QEvent * event);
 
 public slots:

@@ -1,6 +1,6 @@
 QPushButton
 {
-	color: rgb(255, 255, 255);
+	color: rgb(18, 170, 235);
 	background-color: rgb(34, 77, 120);
     font-family: "ºÚÌå";
     font-size: 14px;
@@ -21,6 +21,7 @@ QPushButton:disabled
 }
 QPushButton#button_search
 {
+	background: transparent;
 	border-image: url(:/QtSamplePlayer/pic/search.png);
 }
 QPushButton#button_search:hover, QPushButton#button_search:pressed, QPushButton#button_search:checked
