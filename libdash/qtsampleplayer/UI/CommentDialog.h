@@ -6,7 +6,8 @@
 #include "ui_CommentDialog.h"
 #include "QSelectFaceWidget.h"
 #include <QDateTime>
-#include "sqlconfig.h"
+#include "./Helpers/Global.h"
+#include "./Helpers/sqlconfig.h"
 
 class CommentDialog : public QDialog
 {

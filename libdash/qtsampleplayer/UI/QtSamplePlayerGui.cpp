@@ -134,10 +134,9 @@ void            QtSamplePlayerGui::AddWidgetObserver                            
 {
     this->observers.push_back(observer);
 }
-void            QtSamplePlayerGui::SetStatusBar                                     (const std::string& text)
+void            QtSamplePlayerGui::SetStatusBar                                     (const QString& text)
 {
-    QString str(text.c_str());
-    this->ui->statusBar->showMessage(str);
+    this->ui->statusBar->showMessage(text);
 }
 
 //2015.4.10 - php
@@ -461,11 +460,15 @@ void QtSamplePlayerGui::ClickButtonStart()
 	this->ui->button_pause->setEnabled(true);
 	this->ui->button_stop->setEnabled(true);
 	this->ui->progressSlider->setEnabled(true);				//2015.4.14 - php
-	int progress = this->GetProgressFromDb (this->userID, this->mediaID);
+	int progressMax = 0;
+	int progress = this->GetProgressFromDb (this->userID, this->mediaID, progressMax);
 	if (progress>0)
 	{
+		double  dpercent = (double)progress/(double)progressMax;
+		int ipercent = dpercent*100;
 		this->NotifyStartButtonPressed(progress);
 		this->SetProgressSlider(progress);
+		this->SetStatusBar(QString::fromLocal8Bit("从上次播放的 ")+ QString::number(ipercent, 10)+QString::fromLocal8Bit("%  继续播放。。。"));
 	}
 	else
 		this->NotifyStartButtonPressed();
@@ -578,7 +581,7 @@ void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
 		 else if (fiPng.isFile())
 		 {
 			 QImage image(emotionPng);
-			 image = image.scaled(15, 15, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			 image = image.scaled(30, 30, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 			 cursor.movePosition(QTextCursor::End);
 			 document->addResource(QTextDocument::ImageResource, QUrl(emotionPng), image);
 			 cursor.insertImage(emotionPng);
@@ -753,12 +756,12 @@ int QtSamplePlayerGui::GetProgressMax()
 	return this->ui->progressSlider->maximum();
 }
 
-int QtSamplePlayerGui::GetProgressFromDb				(QString userID, QString MI_ID)
+int QtSamplePlayerGui::GetProgressFromDb				(QString userID, QString MI_ID, int& progressMax)
 {
 	QSqlQuery sql_query;
 	QString sql;
 
-	sql = QString("SELECT DISTINCT MI_ID, UW_Progress FROM UserWatched WHERE UW_UserID=") + userID + " AND MI_ID =" + MI_ID;
+	sql = QString("SELECT DISTINCT MI_ID, UW_Progress, UW_ProgressMAX FROM UserWatched WHERE UW_UserID=") + userID + " AND MI_ID =" + MI_ID;
 	sql_query.prepare(sql);
 	if (!sql_query.exec())
 	{
@@ -770,6 +773,9 @@ int QtSamplePlayerGui::GetProgressFromDb				(QString userID, QString MI_ID)
 		QSqlRecord rec = sql_query.record();
 		int indexProgress = rec.indexOf("UW_Progress");
 		int progress = sql_query.value(indexProgress).toInt();
+		int indexProgressMax = rec.indexOf("UW_ProgressMAX");
+		progressMax = sql_query.value(indexProgressMax).toInt();
+
 		return progress;
 	}
 	return -1;

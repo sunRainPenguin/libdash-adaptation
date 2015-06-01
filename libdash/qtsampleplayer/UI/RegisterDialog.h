@@ -9,7 +9,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QHttpMultiPart>
-#include "Global.h"
+#include "./Helpers/Global.h"
 #include "ui_RegisterDialog.h"
 
 class RegisterDialog : public QDialog

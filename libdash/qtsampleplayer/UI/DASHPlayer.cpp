@@ -183,7 +183,7 @@ void DASHPlayer::OnDownloadMPDPressed               (const std::string &url)
 {
     if(!this->multimediaManager->Init(url))
     {
-        this->gui->SetStatusBar("Error parsing mpd at: " + url);
+        this->gui->SetStatusBar(QString::fromLocal8Bit("解析错误：") + QString(url.c_str()));
         return; // TODO dialog or symbol that indicates that error
     }
 
@@ -196,7 +196,7 @@ void DASHPlayer::OnDownloadMPDPressed               (const std::string &url)
 	//int segmentTotalSize = this->multimediaManager->GetMPD()->GetPeriods().at(0)->GetAdaptationSets().at(0)->GetRepresentation().at(0)->GetSegmentList()->GetSegmentURLs().size();
 	
     this->SetSettings(-1, -1, -1, -1, -1);
-    this->gui->SetStatusBar("Successfully parsed MPD at: " + url);
+    this->gui->SetStatusBar(QString::fromLocal8Bit("成功解析MPD: ") + QString(url.c_str()));
     this->gui->SetGuiFields(this->multimediaManager->GetMPD());
 }
 bool DASHPlayer::SettingsChanged                    (int period, int videoAdaptationSet, int videoRepresentation, int audioAdaptationSet, int audioRepresentation)

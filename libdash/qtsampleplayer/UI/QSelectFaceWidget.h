@@ -7,6 +7,11 @@
 #include <QDebug>
 #include <QGridLayout>
 #include <QPainter>
+#include <QtNetwork/QNetworkAccessManager>
+#include <QtNetwork/QNetworkReply>
+#include <QtNetwork/QNetworkRequest>
+#include <QUrl>
+#include "./Helpers/Global.h"
 #include "MyPushButton.h"
 
 class QSelectFaceWidget : public QWidget
@@ -24,9 +29,17 @@ public slots:
 
 private:
 	Ui::QSelectFaceWidget ui;
+	QString faceIconDir;
+	int iconNumber;
+	void DownloadEmotionIcons(QString iconName);
+	void SetEmotionGridLayout();
+
+private slots:
+	void OnEmotionDownloaded(QNetworkReply* reply);
 
 signals:
 	void FaceSelected(QString IconDir);
+
 };
 
 #endif // QSELECTFACEWIDGET_H

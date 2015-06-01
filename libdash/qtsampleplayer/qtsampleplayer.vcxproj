@@ -78,7 +78,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CommentDialog.cpp" />
+    <ClCompile Include="UI\CommentDialog.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_CommentDialog.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -132,7 +132,7 @@
     <ClCompile Include="GeneratedFiles\Release\moc_RegisterDialog.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Global.cpp" />
+    <ClCompile Include="Helpers\Global.cpp" />
     <ClCompile Include="libdashframework\Buffer\AudioChunk.cpp" />
     <ClCompile Include="libdashframework\Buffer\AudioSamples.cpp" />
     <ClCompile Include="libdashframework\Buffer\VideoFrame.cpp" />
@@ -157,11 +157,11 @@
     <ClCompile Include="libdashframework\MPD\SingleMediaSegmentStream.cpp" />
     <ClCompile Include="libdashframework\MPD\SegmentListStream.cpp" />
     <ClCompile Include="libdashframework\MPD\TimeResolver.cpp" />
-    <ClCompile Include="LoginDialog.cpp" />
-    <ClCompile Include="MyLineEdit.cpp" />
-    <ClCompile Include="ondemandgui.cpp" />
-    <ClCompile Include="QSelectFaceWidget.cpp" />
-    <ClCompile Include="RegisterDialog.cpp" />
+    <ClCompile Include="UI\LoginDialog.cpp" />
+    <ClCompile Include="UI\MyLineEdit.cpp" />
+    <ClCompile Include="UI\ondemandgui.cpp" />
+    <ClCompile Include="UI\QSelectFaceWidget.cpp" />
+    <ClCompile Include="UI\RegisterDialog.cpp" />
     <ClCompile Include="Renderer\QTAudioRenderer.cpp" />
     <ClCompile Include="UI\DASHPlayer.cpp" />
     <ClCompile Include="UI\QtSamplePlayerGui.cpp" />
@@ -187,7 +187,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="CommentDialog.h">
+    <CustomBuild Include="UI\CommentDialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing CommentDialog.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -197,14 +197,14 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_MULTIMEDIAWIDGETS_LIB "-I$(QTDIR)\include\QtANGLE" "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\..\qtmultimedia\include\QtMultimedia" "-I$(QTDIR)\..\qtmultimedia\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I.\libdashframework\Input" "-I.\libdashframework\MPD" "-I.\libdashframework\Buffer" "-I.\libdashframework\helpers"</Command>
     </CustomBuild>
-    <ClInclude Include="DebugLog.h" />
+    <ClInclude Include="debuglog\DebugLog.h" />
     <ClInclude Include="GeneratedFiles\ui_CommentDialog.h" />
     <ClInclude Include="GeneratedFiles\ui_LoginDialog.h" />
     <ClInclude Include="GeneratedFiles\ui_ondemandgui.h" />
     <ClInclude Include="GeneratedFiles\ui_QSelectFaceWidget.h" />
     <ClInclude Include="GeneratedFiles\ui_qtsampleplayer.h" />
     <ClInclude Include="GeneratedFiles\ui_RegisterDialog.h" />
-    <ClInclude Include="Global.h" />
+    <ClInclude Include="Helpers\Global.h" />
     <ClInclude Include="libdashframework\Buffer\AudioChunk.h" />
     <ClInclude Include="libdashframework\Buffer\AudioSamples.h" />
     <ClInclude Include="libdashframework\Buffer\Buffer.h" />
@@ -235,7 +235,7 @@
     <ClInclude Include="libdashframework\MPD\SegmentListStream.h" />
     <ClInclude Include="libdashframework\MPD\SegmentTemplateStream.h" />
     <ClInclude Include="libdashframework\MPD\TimeResolver.h" />
-    <CustomBuild Include="MyPushButton.h">
+    <CustomBuild Include="UI\MyPushButton.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing MyPushButton.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -245,7 +245,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_MULTIMEDIAWIDGETS_LIB "-I$(QTDIR)\include\QtANGLE" "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\..\qtmultimedia\include\QtMultimedia" "-I$(QTDIR)\..\qtmultimedia\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I.\libdashframework\Input" "-I.\libdashframework\MPD" "-I.\libdashframework\Buffer" "-I.\libdashframework\helpers"</Command>
     </CustomBuild>
-    <CustomBuild Include="QSelectFaceWidget.h">
+    <CustomBuild Include="UI\QSelectFaceWidget.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing QSelectFaceWidget.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -255,7 +255,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_MULTIMEDIAWIDGETS_LIB "-I$(QTDIR)\include\QtANGLE" "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\..\qtmultimedia\include\QtMultimedia" "-I$(QTDIR)\..\qtmultimedia\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I.\libdashframework\Input" "-I.\libdashframework\MPD" "-I.\libdashframework\Buffer" "-I.\libdashframework\helpers"</Command>
     </CustomBuild>
-    <CustomBuild Include="ondemandgui.h">
+    <CustomBuild Include="UI\ondemandgui.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ondemandgui.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -265,7 +265,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_MULTIMEDIAWIDGETS_LIB "-I$(QTDIR)\include\QtANGLE" "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\..\qtmultimedia\include\QtMultimedia" "-I$(QTDIR)\..\qtmultimedia\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I.\libdashframework\Input" "-I.\libdashframework\MPD" "-I.\libdashframework\Buffer" "-I.\libdashframework\helpers"</Command>
     </CustomBuild>
-    <CustomBuild Include="RegisterDialog.h">
+    <CustomBuild Include="UI\RegisterDialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing RegisterDialog.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -275,8 +275,8 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_MULTIMEDIAWIDGETS_LIB "-I$(QTDIR)\include\QtANGLE" "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\..\qtmultimedia\include\QtMultimedia" "-I$(QTDIR)\..\qtmultimedia\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I.\libdashframework\Input" "-I.\libdashframework\MPD" "-I.\libdashframework\Buffer" "-I.\libdashframework\helpers"</Command>
     </CustomBuild>
-    <ClInclude Include="sqlconfig.h" />
-    <CustomBuild Include="MyLineEdit.h">
+    <ClInclude Include="Helpers\sqlconfig.h" />
+    <CustomBuild Include="UI\MyLineEdit.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing MyLineEdit.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
@@ -286,7 +286,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_MULTIMEDIA_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_MULTIMEDIAWIDGETS_LIB "-I$(QTDIR)\include\QtANGLE" "-I.\GeneratedFiles" "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\..\qtmultimedia\include\QtMultimedia" "-I$(QTDIR)\..\qtmultimedia\include" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtMultimediaWidgets" "-I.\libdashframework\Input" "-I.\libdashframework\MPD" "-I.\libdashframework\Buffer" "-I.\libdashframework\helpers"</Command>
     </CustomBuild>
-    <CustomBuild Include="LoginDialog.h">
+    <CustomBuild Include="UI\LoginDialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing LoginDialog.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>

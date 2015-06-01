@@ -114,9 +114,7 @@ bool CommentDialog::AddCommentToDb(QString UC_CommentText, QString MI_ID, QStrin
 }
 void CommentDialog::on_button_smilely_clicked()
 {
-	QString emotionIconPath = GetEmotionPath();
-
-	QSelectFaceWidget* selectFace = new QSelectFaceWidget(emotionIconPath, this);
+	QSelectFaceWidget* selectFace = new QSelectFaceWidget(Global::emotionPathTemp, this);
 	selectFace->setStyleSheet("QLabel{color: #000000}QPushButton{background-color: transparent}");
 	QPoint GlobalPoint(this->ui.button_smilely->mapToGlobal(QPoint(0, 0)));//获取控件在窗体中的坐标
 	int y = GlobalPoint.y();
@@ -130,7 +128,7 @@ void CommentDialog::on_button_smilely_clicked()
 		if (fiPic.exists())
 		{
 			QImage image(filename);
-			image = image.scaled(15, 15, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			image = image.scaled(30, 30, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 			document->addResource(QTextDocument::ImageResource, QUrl(iconName), image);
 			cursor.insertImage(iconName);
 		}
@@ -153,7 +151,7 @@ QString CommentDialog::GetPicName(QString original)
 
 	if (indexOfJpg>=0)
 		charCount = indexOfJpg - indexOfDelimiter - 1;
-	else if (indexOfJpeg)
+	else if (indexOfJpeg>=0)
 		charCount = indexOfJpeg - indexOfDelimiter - 1;
 	else if (indexOfPng>=0)
 		charCount = indexOfPng - indexOfDelimiter - 1;

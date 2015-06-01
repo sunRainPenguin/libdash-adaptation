@@ -8,6 +8,13 @@ QString Global::avatarIconTemp = QString("./Temp/HeadPicture/HeadPicture.jpg");
 QUrl Global::uploadPicServlet = QUrl("http://localhost:8081/UploadPic/servlet/UploadPicServlet");
 QString Global::avatarPath =QString("http://localhost:8081/DDUVideoUsers/");
 QString Global::currUserTempPath = QString("./Temp/currUser/");
+QString Global::emotionPathServer = QString("http://localhost:8081/emotion/");
+QString Global::emotionPathTemp = QString("./Temp/emotion/");
+
+void Global::InitEmotionNameList(QList<QString>& emotionNameList)
+{
+	emotionNameList<<"dm.png"<<"eh.png"<<"kl.png"<<"mm.png"<<"oh.png"<<"qd.png"<<"qzy.png"<<"sj.png"<<"sk.png"<<"tx.png"<<"wi.png"<<"yi.png";
+}
 QString Global::QueryUserFromDb(QString username, QString password)
 {
 	int indexUserID;

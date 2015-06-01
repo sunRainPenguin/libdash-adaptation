@@ -12,12 +12,12 @@
 #include <QApplication>
 #include <qapplication.h>
 #include "UI/DASHPlayer.h"
-#include "ondemandgui.h"
+#include "UI/ondemandgui.h"
 using namespace sampleplayer;
 
 #include <QStringList>  
 #include <QString>
-#include "DebugLog.h"
+#include "./debuglog/DebugLog.h"
 
 /*#define  serverAddress   "http://192.168.23.2:8080/"*/
 /*#define  serverAddress   "http://192.168.253.5:8080/"*/

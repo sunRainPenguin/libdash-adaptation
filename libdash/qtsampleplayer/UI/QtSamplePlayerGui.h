@@ -20,7 +20,7 @@
 #include "libdash.h"
 #include "../libdashframework/MPD/AdaptationSetHelper.h"
 
-#include "sqlconfig.h"
+#include "./Helpers/sqlconfig.h"
 #include "CommentDialog.h"
 
 
@@ -44,7 +44,7 @@ namespace sampleplayer
 
             void                                    SetGuiFields            (dash::mpd::IMPD* mpd);
             virtual void                            AddWidgetObserver       (IDASHPlayerGuiObserver* observer);
-            virtual void                            SetStatusBar            (const std::string& text);
+            virtual void                            SetStatusBar            (const QString& text);
             sampleplayer::renderer::QTGLRenderer*   GetVideoElement         ();
 			void									SetMpdUrl(QString mpdUrl);				//2015.4.30 - php
 			void									SetCurrMediaInfo(QString mediaID, QString mediaName);	//2015.5.2 - php
@@ -128,7 +128,7 @@ namespace sampleplayer
 			QString GetEmotionPath();		//2015.5.25 - php
 			void SetFavoriteHeart	(IsFavorite favorite);		//2015.5.25 - php
 			void SetFavoriteToDb	(IsFavorite favorite);		//2015.5.26 - php
-			int	GetProgressFromDb				(QString userID, QString MI_ID);			//2015.5.26 - php
+			int	GetProgressFromDb				(QString userID, QString MI_ID, int& progressMax);			//2015.5.26 - php
 
 	signals:
 			void ClosePlayerGui(int progress, int progressMax);			//2015.5.1 - php

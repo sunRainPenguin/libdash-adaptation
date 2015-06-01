@@ -12,7 +12,7 @@
 #include <QtNetwork/QNetworkRequest>
 #include <QUrl>
 #include "UI/DASHPlayer.h"
-#include "Global.h"
+#include "./Helpers/Global.h"
 using namespace sampleplayer;
 
 enum LabelType{
