@@ -487,7 +487,7 @@
   <customwidget>
    <class>sampleplayer::renderer::QTGLRenderer</class>
    <extends>QWidget</extends>
-   <header>Renderer/QTGLRenderer.h</header>
+   <header location="global">Renderer/QTGLRenderer.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

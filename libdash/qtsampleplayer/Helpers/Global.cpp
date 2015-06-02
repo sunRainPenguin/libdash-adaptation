@@ -45,7 +45,7 @@ QString Global::QueryUserFromDb(QString username, QString password)
 
 bool Global::QueryUserFromDb(QString username)
 {
-	QString select_sql = "SELECT * FROM user WHERE BINARY username = '" + username + "'";
+	QString select_sql = "SELECT * FROM user WHERE username = '" + username + "'";
 	QSqlQuery sql_query; 
 	sql_query.prepare(select_sql);
 	if(!sql_query.exec() || sql_query.size()<1)

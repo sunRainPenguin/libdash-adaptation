@@ -126,7 +126,7 @@
   <customwidget>
    <class>MyLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global">MyLineEdit.h</header>
+   <header location="global">UI/MyLineEdit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

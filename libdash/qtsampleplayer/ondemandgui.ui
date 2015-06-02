@@ -728,23 +728,13 @@
     <string/>
    </property>
   </widget>
-  <zorder>button_logout</zorder>
-  <zorder>button_login</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>button_search</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>treeView</zorder>
-  <zorder>label_picture</zorder>
-  <zorder>label_username</zorder>
-  <zorder>lineEdit_search</zorder>
-  <zorder>label_search_state</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
    <class>MyPushButton</class>
    <extends>QPushButton</extends>
-   <header>MyPushButton.h</header>
+   <header>UI/MyPushButton.h</header>
   </customwidget>
  </customwidgets>
  <resources>
