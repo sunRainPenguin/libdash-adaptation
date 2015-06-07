@@ -205,6 +205,8 @@ void	   MultimediaManager::SetProgress(uint32_t  segmentDisplayIndex)
 
 bool    MultimediaManager::SetVideoQuality                  (IPeriod* period, IAdaptationSet *adaptationSet, IRepresentation *representation)
 {
+	if (this->monitorMutex.RecursionCount>=1)
+		return false;
     EnterCriticalSection(&this->monitorMutex);
 
     this->period                = period;
@@ -342,13 +344,17 @@ void MultimediaManager::OnRateChanged	(int segmentNumber, uint32_t downloadRate)
 		}
 	}
 	//std::cout << "BW " << bw << " " << downloadRate << std::endl;
-	if(segment != this->segmentsDownloaded || (bw - downloadRate*8 > 101492 && bw - downloadRate*8 != reps.at(0)->GetBandwidth())){
+	int minus = bw - downloadRate*8;
+	if(segment != segmentNumber && (minus > 101492 && minus != reps.at(0)->GetBandwidth()) ){
 
-		this->SetVideoQuality(this->period, this->videoAdaptationSet, this->videoRepresentation);
-		segment = this->segmentsDownloaded;
-		this->logger->rateLog(this->segmentsDownloaded, bw/8);
-		for (size_t i = 0; i < this->managerObservers.size(); i++)
-			this->managerObservers.at(i)->OnBWChanged(bw);
+		if (this->SetVideoQuality(this->period, this->videoAdaptationSet, this->videoRepresentation))
+		{
+			segment = segmentNumber;
+			// 		this->logger->rateLog(this->segmentsDownloaded, bw/8);
+			for (size_t i = 0; i < this->managerObservers.size(); i++)
+				this->managerObservers.at(i)->OnBWChanged(bw);
+		}
+		
 	}
 }
 void    MultimediaManager::SetFrameRate                     (double framerate)

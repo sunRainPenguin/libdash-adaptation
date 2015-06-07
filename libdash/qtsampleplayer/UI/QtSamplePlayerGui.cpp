@@ -519,7 +519,7 @@ void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
 	QString select_sql;
 	QSqlRecord rec;
 
-	select_sql =QString("SELECT user.username, uc.UC_CommentTime, uc.UC_CommentText FROM user, usercomment AS uc WHERE uc.MI_ID = ") + MI_ID + QString(" and uc.User_ID = user.ID ORDER BY uc.UC_ID DESC LIMIT 5");
+	select_sql =QString("SELECT user.username, uc.UC_CommentTime, uc.UC_CommentText FROM user, usercomment AS uc WHERE uc.MI_ID = ") + MI_ID + QString(" and uc.User_ID = user.ID ORDER BY uc.UC_ID DESC LIMIT 15");
 	sql_query.prepare(select_sql);
 	if (!sql_query.exec() || sql_query.size()<1)
 	{

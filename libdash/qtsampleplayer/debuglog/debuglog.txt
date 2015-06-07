@@ -1,44 +1,187 @@
-周二 六月 2 10:36:27 2015 Debug:  File:(main.cpp) Line:(70) 	 "QSQLITE"
-周二 六月 2 10:36:27 2015 Debug:  File:(main.cpp) Line:(70) 	 "QMYSQL"
-周二 六月 2 10:36:27 2015 Debug:  File:(main.cpp) Line:(70) 	 "QMYSQL3"
-周二 六月 2 10:36:27 2015 Debug:  File:(main.cpp) Line:(70) 	 "QODBC"
-周二 六月 2 10:36:27 2015 Debug:  File:(main.cpp) Line:(70) 	 "QODBC3"
-周二 六月 2 10:36:27 2015 Debug:  File:(main.cpp) Line:(70) 	 "QPSQL"
-周二 六月 2 10:36:27 2015 Debug:  File:(main.cpp) Line:(70) 	 "QPSQL7"
-周二 六月 2 10:36:28 2015 Debug:  File:(main.cpp) Line:(83) 	 Success
-周二 六月 2 10:36:29 2015 Warning:  File:(kernel\qobject.cpp) Line:(3512) QMetaObject::connectSlotsByName: No matching signal for on_playgui_closed(int,int)
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  146"
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  6  MI_MPDUrl:  http://localhost:8081/mp4-main-multi/mp4-main-multi-mpd-AV-NBS.mpd   MI_ShowPicUrl:   http://localhost:8081/woman_only/woman.jpg  MI_Name:  woman_only   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-05-16 18:49:21 MI_ClickThroughRate:  57"
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  49"
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  3  MI_MPDUrl:  http://localhost:8081/mp4-main-multi/mp4-main-multi-mpd-AV-NBS.mpd   MI_ShowPicUrl:   http://localhost:8081/mp4-main-multi/mp4-main-multi.png  MI_Name:  mp4-main-multi   MI_UploadAuthor:  php  MI_InsertTime:  2015-04-29 15:16:09 MI_ClickThroughRate:  47"
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  2  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/chendian/chendian.png  MI_Name:  沉淀   MI_UploadAuthor:  php  MI_InsertTime:  2015-04-29 15:04:46 MI_ClickThroughRate:  34"
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  5  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/cat/natsume.jpeg  MI_Name:  cat   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-05-16 18:43:00 MI_ClickThroughRate:  23"
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  7  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/oneday/oneday.jpg  MI_Name:  oneday   MI_UploadAuthor:  Lucy  MI_InsertTime:  2015-05-16 18:49:21 MI_ClickThroughRate:  20"
-周二 六月 2 10:36:29 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
-周二 六月 2 10:36:39 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  146"
-周二 六月 2 10:36:39 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
-周二 六月 2 10:36:39 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
-周二 六月 2 10:36:39 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  6  MI_MPDUrl:  http://localhost:8081/mp4-main-multi/mp4-main-multi-mpd-AV-NBS.mpd   MI_ShowPicUrl:   http://localhost:8081/woman_only/woman.jpg  MI_Name:  woman_only   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-05-16 18:49:21 MI_ClickThroughRate:  57"
-周二 六月 2 10:36:39 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
-周二 六月 2 10:36:39 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
-周二 六月 2 10:36:39 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  50"
-周二 六月 2 10:36:39 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
-周二 六月 2 10:36:39 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
-周二 六月 2 10:36:39 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  3  MI_MPDUrl:  http://localhost:8081/mp4-main-multi/mp4-main-multi-mpd-AV-NBS.mpd   MI_ShowPicUrl:   http://localhost:8081/mp4-main-multi/mp4-main-multi.png  MI_Name:  mp4-main-multi   MI_UploadAuthor:  php  MI_InsertTime:  2015-04-29 15:16:09 MI_ClickThroughRate:  47"
-周二 六月 2 10:36:39 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
-周二 六月 2 10:36:39 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
-周二 六月 2 10:36:39 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  2  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/chendian/chendian.png  MI_Name:  沉淀   MI_UploadAuthor:  php  MI_InsertTime:  2015-04-29 15:04:46 MI_ClickThroughRate:  34"
-周二 六月 2 10:36:39 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
-周二 六月 2 10:36:39 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
-周二 六月 2 10:36:39 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  5  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/cat/natsume.jpeg  MI_Name:  cat   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-05-16 18:43:00 MI_ClickThroughRate:  23"
-周二 六月 2 10:36:39 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
-周二 六月 2 10:36:39 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
-周二 六月 2 10:36:39 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  7  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/oneday/oneday.jpg  MI_Name:  oneday   MI_UploadAuthor:  Lucy  MI_InsertTime:  2015-05-16 18:49:21 MI_ClickThroughRate:  20"
-周二 六月 2 10:36:39 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
-周二 六月 2 10:36:39 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:00:05 2015 Debug:  File:(main.cpp) Line:(70) 	 "QSQLITE"
+周日 六月 7 21:00:05 2015 Debug:  File:(main.cpp) Line:(70) 	 "QMYSQL"
+周日 六月 7 21:00:05 2015 Debug:  File:(main.cpp) Line:(70) 	 "QMYSQL3"
+周日 六月 7 21:00:05 2015 Debug:  File:(main.cpp) Line:(70) 	 "QODBC"
+周日 六月 7 21:00:05 2015 Debug:  File:(main.cpp) Line:(70) 	 "QODBC3"
+周日 六月 7 21:00:05 2015 Debug:  File:(main.cpp) Line:(70) 	 "QPSQL"
+周日 六月 7 21:00:05 2015 Debug:  File:(main.cpp) Line:(70) 	 "QPSQL7"
+周日 六月 7 21:00:06 2015 Debug:  File:(main.cpp) Line:(83) 	 Success
+周日 六月 7 21:00:07 2015 Warning:  File:(kernel\qobject.cpp) Line:(3512) QMetaObject::connectSlotsByName: No matching signal for on_playgui_closed(int,int)
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  149"
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  6  MI_MPDUrl:  http://localhost:8081/mp4-main-multi/mp4-main-multi-mpd-AV-NBS.mpd   MI_ShowPicUrl:   http://localhost:8081/woman_only/woman.jpg  MI_Name:  woman_only   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-05-16 18:49:21 MI_ClickThroughRate:  57"
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  56"
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  52"
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  3  MI_MPDUrl:  http://localhost:8081/mp4-main-multi/mp4-main-multi-mpd-AV-NBS.mpd   MI_ShowPicUrl:   http://localhost:8081/mp4-main-multi/mp4-main-multi.png  MI_Name:  mp4-main-multi   MI_UploadAuthor:  php  MI_InsertTime:  2015-04-29 15:16:09 MI_ClickThroughRate:  47"
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  2  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/chendian/chendian.png  MI_Name:  沉淀   MI_UploadAuthor:  php  MI_InsertTime:  2015-04-29 15:04:46 MI_ClickThroughRate:  34"
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  5  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/cat/natsume.jpeg  MI_Name:  cat   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-05-16 18:43:00 MI_ClickThroughRate:  23"
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  7  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/oneday/oneday.jpg  MI_Name:  oneday   MI_UploadAuthor:  Lucy  MI_InsertTime:  2015-05-16 18:49:21 MI_ClickThroughRate:  22"
+周日 六月 7 21:00:07 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(317) 	 Load image failed ! 
+周日 六月 7 21:10:38 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  149"
+周日 六月 7 21:10:38 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:10:38 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:10:38 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  6  MI_MPDUrl:  http://localhost:8081/mp4-main-multi/mp4-main-multi-mpd-AV-NBS.mpd   MI_ShowPicUrl:   http://localhost:8081/woman_only/woman.jpg  MI_Name:  woman_only   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-05-16 18:49:21 MI_ClickThroughRate:  57"
+周日 六月 7 21:10:38 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:10:38 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:10:38 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  56"
+周日 六月 7 21:10:38 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:10:38 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:10:38 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  52"
+周日 六月 7 21:10:38 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:10:38 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:10:38 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  3  MI_MPDUrl:  http://localhost:8081/mp4-main-multi/mp4-main-multi-mpd-AV-NBS.mpd   MI_ShowPicUrl:   http://localhost:8081/mp4-main-multi/mp4-main-multi.png  MI_Name:  mp4-main-multi   MI_UploadAuthor:  php  MI_InsertTime:  2015-04-29 15:16:09 MI_ClickThroughRate:  47"
+周日 六月 7 21:10:38 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:10:38 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:10:38 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  2  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/chendian/chendian.png  MI_Name:  沉淀   MI_UploadAuthor:  php  MI_InsertTime:  2015-04-29 15:04:46 MI_ClickThroughRate:  34"
+周日 六月 7 21:10:38 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:10:38 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:10:38 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  5  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/cat/natsume.jpeg  MI_Name:  cat   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-05-16 18:43:00 MI_ClickThroughRate:  23"
+周日 六月 7 21:10:38 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:10:38 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:10:39 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  7  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/oneday/oneday.jpg  MI_Name:  oneday   MI_UploadAuthor:  Lucy  MI_InsertTime:  2015-05-16 18:49:21 MI_ClickThroughRate:  22"
+周日 六月 7 21:10:39 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:10:39 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:11:24 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  2  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/chendian/chendian.png  MI_Name:  沉淀   MI_UploadAuthor:  php  MI_InsertTime:  2015-04-29 15:04:46 MI_ClickThroughRate:  34"
+周日 六月 7 21:11:25 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:11:25 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:11:25 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  5  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/cat/natsume.jpeg  MI_Name:  cat   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-05-16 18:43:00 MI_ClickThroughRate:  23"
+周日 六月 7 21:11:25 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:11:25 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:11:27 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  149"
+周日 六月 7 21:11:27 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:11:27 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:11:27 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  52"
+周日 六月 7 21:11:27 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:11:27 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:12:21 2015 Warning:  File:(kernel\qsqlquery.cpp) Line:(425) QSqlQuery::value: not positioned on a valid record
+周日 六月 7 21:12:21 2015 Warning:  File:(kernel\qsqlquery.cpp) Line:(425) QSqlQuery::value: not positioned on a valid record
+周日 六月 7 21:12:21 2015 Warning:  File:(kernel\qsqlquery.cpp) Line:(425) QSqlQuery::value: not positioned on a valid record
+周日 六月 7 21:12:21 2015 Warning:  File:(kernel\qsqlquery.cpp) Line:(425) QSqlQuery::value: not positioned on a valid record
+周日 六月 7 21:12:21 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  149"
+周日 六月 7 21:12:21 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:12:21 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:12:21 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  56"
+周日 六月 7 21:12:21 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:12:21 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:12:26 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  149"
+周日 六月 7 21:12:26 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:12:26 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:12:26 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  56"
+周日 六月 7 21:12:26 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:12:26 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:12:26 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  52"
+周日 六月 7 21:12:26 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:12:26 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:12:36 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  149"
+周日 六月 7 21:12:37 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:12:37 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:12:37 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  56"
+周日 六月 7 21:12:37 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:12:37 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:12:37 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  53"
+周日 六月 7 21:12:37 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:12:37 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:12:38 2015 Debug:  File:(UI\QtSamplePlayerGui.cpp) Line:(676) 	 Select UserFavorite failed! 
+周日 六月 7 21:12:54 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  149"
+周日 六月 7 21:12:54 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:12:54 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:12:54 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  56"
+周日 六月 7 21:12:54 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:12:54 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:12:55 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  53"
+周日 六月 7 21:12:55 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:12:55 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:13:12 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  150"
+周日 六月 7 21:13:12 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:13:12 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:13:12 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  56"
+周日 六月 7 21:13:12 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:13:12 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:13:13 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  53"
+周日 六月 7 21:13:13 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:13:13 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:13:33 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  150"
+周日 六月 7 21:13:33 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:13:33 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:13:33 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  56"
+周日 六月 7 21:13:33 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:13:33 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:13:34 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  53"
+周日 六月 7 21:13:34 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:13:34 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:13:37 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  151"
+周日 六月 7 21:13:38 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:13:38 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:13:38 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  56"
+周日 六月 7 21:13:38 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:13:38 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:13:38 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  53"
+周日 六月 7 21:13:38 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:13:38 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:13:52 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  151"
+周日 六月 7 21:13:52 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:13:52 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:13:52 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  56"
+周日 六月 7 21:13:52 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:13:52 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:13:52 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  53"
+周日 六月 7 21:13:52 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:13:52 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:14:34 2015 Warning:  File:(kernel\qsqlquery.cpp) Line:(425) QSqlQuery::value: not positioned on a valid record
+周日 六月 7 21:14:34 2015 Warning:  File:(kernel\qsqlquery.cpp) Line:(425) QSqlQuery::value: not positioned on a valid record
+周日 六月 7 21:14:34 2015 Warning:  File:(kernel\qsqlquery.cpp) Line:(425) QSqlQuery::value: not positioned on a valid record
+周日 六月 7 21:14:34 2015 Warning:  File:(kernel\qsqlquery.cpp) Line:(425) QSqlQuery::value: not positioned on a valid record
+周日 六月 7 21:14:34 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  151"
+周日 六月 7 21:14:34 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:14:34 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:14:34 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  56"
+周日 六月 7 21:14:34 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:14:34 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:19:57 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  2  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/chendian/chendian.png  MI_Name:  沉淀   MI_UploadAuthor:  php  MI_InsertTime:  2015-04-29 15:04:46 MI_ClickThroughRate:  34"
+周日 六月 7 21:19:57 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:19:57 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:19:57 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  5  MI_MPDUrl:  http://localhost:8081/chendian/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/cat/natsume.jpeg  MI_Name:  cat   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-05-16 18:43:00 MI_ClickThroughRate:  23"
+周日 六月 7 21:19:57 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:19:57 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:19:59 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  151"
+周日 六月 7 21:19:59 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:19:59 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:19:59 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  53"
+周日 六月 7 21:19:59 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:19:59 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:20:06 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  53"
+周日 六月 7 21:20:06 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:20:06 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:26:56 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  151"
+周日 六月 7 21:26:56 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:26:56 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:26:56 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  56"
+周日 六月 7 21:26:56 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:26:56 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:26:56 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  53"
+周日 六月 7 21:26:57 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:26:57 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:26:58 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  151"
+周日 六月 7 21:26:58 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:26:58 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:26:58 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  57"
+周日 六月 7 21:26:59 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:26:59 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:26:59 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  53"
+周日 六月 7 21:26:59 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:26:59 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:28:22 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  1  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/babygirl/babygirl.png  MI_Name:  babygirl   MI_UploadAuthor:  Mary  MI_InsertTime:  2015-04-28 15:17:01 MI_ClickThroughRate:  151"
+周日 六月 7 21:28:22 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:28:22 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:28:22 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  8  MI_MPDUrl:  http://localhost:8081/bunny_2s_480p_only/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/bunny_2s_480p_only/bunny.png  MI_Name:  bunny_2s_480p_only   MI_UploadAuthor:  Bony  MI_InsertTime:  2015-06-06 22:58:48 MI_ClickThroughRate:  57"
+周日 六月 7 21:28:22 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:28:22 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1
+周日 六月 7 21:28:22 2015 Debug:  File:(UI\ondemandgui.cpp) Line:(243) 	 "Succeed Query! MI_ID:  4  MI_MPDUrl:  http://localhost:8081/babygirl/sintel_actVersion.mpd   MI_ShowPicUrl:   http://localhost:8081/big_buck_bunny/bunny.png  MI_Name:  big_buck_bunny   MI_UploadAuthor:  php  MI_InsertTime:  2015-05-13 15:12:27 MI_ClickThroughRate:  53"
+周日 六月 7 21:28:22 2015 Warning:  File:(kernel\qwidget.cpp) Line:(12225) QWidget::paintEngine: Should no longer be called
+周日 六月 7 21:28:22 2015 Warning:  File:(painting\qpainter.cpp) Line:(1738) QPainter::begin: Paint device returned engine == 0, type: 1

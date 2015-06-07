@@ -497,6 +497,7 @@ void OnDemandGui::on_button_logout_clicked()
 	this->ui.label_picture->setPixmap(QPixmap());
 	this->refreshMyFavoriteUI();
 	this->refreshRecentVideoUI();
+	QMessageBox::information(NULL, QString::fromLocal8Bit("注销"), QString::fromLocal8Bit("注销成功!"), QMessageBox::Yes); 
 	if (playerGui)
 	{
 		emit LogOut();

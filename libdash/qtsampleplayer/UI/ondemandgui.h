@@ -52,7 +52,6 @@ private:
 	QPushButton* FindButtonByNameIndex		(int number);
 	QLabel* FindLabelByNameIndex		(int type,  int number);
 	void UpdateClickThroughRateToDb		(QString mediaID);
-	bool StartUpdateOndemandGui		();
 	void ShowTreeView		();
 	bool LoadTreeViewData	(QString type, QStandardItemModel * treeModel);
 	void SetSearchInfo	    (QString currentSearchKey = "");

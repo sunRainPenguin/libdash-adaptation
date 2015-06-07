@@ -39,8 +39,8 @@ void LoginDialog::on_button_ok_clicked()
 		QString userID = Global::QueryUserFromDb(username, password);
 		if (userID!= QString(""))
 		{
-			QMessageBox::information(this, QString::fromLocal8Bit("»¶Ó­"), QString::fromLocal8Bit("µÇÂ¼³É¹¦!"), QMessageBox::Yes); 
 			emit enterSuccessfully(userID, username);
+			QMessageBox::information(this, QString::fromLocal8Bit("»¶Ó­"), QString::fromLocal8Bit("µÇÂ¼³É¹¦!"), QMessageBox::Yes); 
 			this->accept();
 		} 
 		else

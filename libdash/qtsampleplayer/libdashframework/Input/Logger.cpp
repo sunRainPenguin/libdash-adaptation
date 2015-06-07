@@ -32,9 +32,10 @@ uint32_t Logger::log   (int segmentNumber, uint64_t bytesDownloaded){
 			LogElement *newLog = new LogElement(segmentNumber, time, duration, bytesDownloaded, rate);
 			logs.push_back(newLog);
 		}
-		n = (logs.size() < 5) ? logs.size() : 5;
+		int size = logs.size();
+		n = (size< 5) ? size : 5;
 
-		for(int i = logs.size() - 1; i > logs.size() - n - 1 ; i--){
+		for(int i = size - 1; i > size - n - 1 ; i--){
 			//std::cout<< i << " "<< logs.size() << std::endl;
 			//dur += logs.at(i)->getDuration()/1000.0;
 
