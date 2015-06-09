@@ -38,6 +38,13 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 		qssFile.close();
 	}
 
+
+	QList<QString> emotionNameList;
+	Global::InitEmotionNameList(emotionNameList);
+	QString emotionName;
+	foreach(emotionName, emotionNameList)
+		this->DownloadEmotionIcons(emotionName);
+
 }
 OnDemandGui::~OnDemandGui()
 {
@@ -872,5 +879,43 @@ void OnDemandGui::avatarPicReplyFinished			(QNetworkReply *reply)
 
 		delete(avatarPic);
 		avatarPic=NULL;
+	}
+}
+
+void OnDemandGui::DownloadEmotionIcons(QString iconName)
+{
+	//save the select result to the temp dir
+	QString urlStr =  Global::emotionPathServer + iconName;
+
+	//show picture on the server
+	QNetworkAccessManager *manager;
+	manager = new QNetworkAccessManager(this);
+	QNetworkReply *reply = manager->get(QNetworkRequest(QUrl(urlStr)));
+	reply->setProperty("iconName", iconName);
+	connect(manager, SIGNAL(finished(QNetworkReply*)),
+		this, SLOT(OnEmotionDownloaded(QNetworkReply*)));
+
+}
+void OnDemandGui::OnEmotionDownloaded(QNetworkReply* reply)
+{
+	int error = reply->error();
+	if(reply->error() == QNetworkReply::NoError)
+	{
+		QPixmap* pixIcon= new QPixmap;
+		QByteArray picData = reply->readAll(); 
+		pixIcon->loadFromData(picData); 
+
+		QString faceIconDir = Global::emotionPathTemp;
+		QString iconName = reply->property("iconName").toString();
+		if (iconName!="")
+		{
+			QString fileName = faceIconDir + iconName;
+			QFileInfo file(faceIconDir);
+			if (file.isDir())
+				pixIcon->save(fileName);
+		}
+
+		delete(pixIcon);
+		pixIcon=NULL;
 	}
 }

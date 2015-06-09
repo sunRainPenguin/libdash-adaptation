@@ -563,9 +563,9 @@ void QtSamplePlayerGui::ShowCommentsFromDb		(QString MI_ID)
 		int indexSuffix = comment.indexOf(QString("]"), from);
 		int charCount =  indexSuffix - indexPrefix - 2;
 		QString emotionName = comment.mid(indexPrefix+2, charCount);
-		QString emotionJpg = GetEmotionPath() + QString("/") + emotionName +QString(".jpg");
-		QString emotionJpeg = GetEmotionPath() + QString("/") + emotionName +QString(".jpeg");
-		QString emotionPng= GetEmotionPath() + QString("/") + emotionName +QString(".png");
+		QString emotionJpg = Global::emotionPathTemp + QString("/") + emotionName +QString(".jpg");
+		QString emotionJpeg = Global::emotionPathTemp+ QString("/") + emotionName +QString(".jpeg");
+		QString emotionPng= Global::emotionPathTemp + QString("/") + emotionName +QString(".png");
 		 QFileInfo fiJpg(emotionJpg);
 		 QFileInfo fiJpeg(emotionJpeg);
 		 QFileInfo fiPng(emotionPng);
@@ -625,32 +625,6 @@ void QtSamplePlayerGui::SetLogoutState()
 	this->ui->label_userName->setText("");
 	this->favorite = this->GetFavoriteState(userID, mediaID);
 	this->SetFavoriteHeart(this->favorite);
-}
-
-QString QtSamplePlayerGui::GetEmotionPath()
-{
-	QString emotionIconPath;
-	QSqlQuery sql_query; 
-	QSqlRecord rec;
-
-	QString select_sql = "SELECT * FROM smilelyfaces LIMIT 1";
-	sql_query.prepare(select_sql);
-	if(!sql_query.exec())
-	{
-		qWarning() << "\t" <<"Select user failed! ";
-		return "";
-	}
-	else
-	{
-		rec = sql_query.record();
-		if (sql_query.next())
-		{
-			int index = rec.indexOf(QString("iconDir"));
-			emotionIconPath = sql_query.value(index).toString();
-			return emotionIconPath;
-		}
-		return "";
-	}
 }
 
 void QtSamplePlayerGui::UpdateComment()

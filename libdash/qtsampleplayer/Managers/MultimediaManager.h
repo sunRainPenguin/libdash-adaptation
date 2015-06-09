@@ -22,6 +22,8 @@
 #include "../libdashframework/Portable/MultiThreading.h"
 #include "../libdashframework/Buffer/AudioChunk.h"
 #include <QtMultimedia/qaudiooutput.h>
+#include <fstream>
+using namespace std;
 
 namespace sampleplayer
 {
@@ -79,6 +81,13 @@ namespace sampleplayer
                 uint64_t                                                    segmentsDownloaded;
 				uint32_t													segmentDisplayIndex;			//2015.4.10 - php
 				uint32_t													audioSegmentIndex;				//2015.4.18 - php
+
+                double											            OfillstateInPercent ;
+				double   													Orate ;//缓存下载预期起始目标速率
+				double    												    Yrate ;//自主添加的平滑处理结果记录器
+				double     												    NextT;
+				uint32_t													R ;
+
                 CRITICAL_SECTION                                            monitorMutex;
                 double                                                      frameRate;
 				 libdash::framework::input::Logger							*logger;

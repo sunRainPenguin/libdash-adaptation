@@ -125,7 +125,6 @@ namespace sampleplayer
 			void NotifyProgressSliderPressed   ();			//2015.4.13 - php
 			void ShowCommentsFromDb		(QString MI_ID);			//2015.5.25 - php
 			IsFavorite  GetFavoriteState				(QString userID, QString mediaID);		//2015.5.25 - php
-			QString GetEmotionPath();		//2015.5.25 - php
 			void SetFavoriteHeart	(IsFavorite favorite);		//2015.5.25 - php
 			void SetFavoriteToDb	(IsFavorite favorite);		//2015.5.26 - php
 			int	GetProgressFromDb				(QString userID, QString MI_ID, int& progressMax);			//2015.5.26 - php

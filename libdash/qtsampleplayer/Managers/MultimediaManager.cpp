@@ -22,7 +22,7 @@ using namespace libdash::framework::helpers;
 
 
 
-#define SEGMENTBUFFER_SIZE 2
+#define SEGMENTBUFFER_SIZE 5
 
 MultimediaManager::MultimediaManager            (QTGLRenderer *videoElement, QTAudioRenderer *audioElement) :
                    videoElement                 (videoElement),
@@ -42,7 +42,13 @@ MultimediaManager::MultimediaManager            (QTGLRenderer *videoElement, QTA
                    segmentsDownloaded           (0),
 				   segmentDisplayIndex			(0),
                    isVideoRendering             (false),
-                   isAudioRendering             (false)
+                   isAudioRendering             (false),
+				   Orate                        (0.3),
+				   Yrate                        (0.3),
+				   NextT                        (0),
+				   R                            (0),
+				   OfillstateInPercent           (0)
+
 {
     InitializeCriticalSection (&this->monitorMutex);
 	this->logger  = new Logger();
@@ -307,6 +313,7 @@ void    MultimediaManager::OnSegmentDownloaded              ()
 }
 void    MultimediaManager::OnSegmentBufferStateChanged    (StreamType type, uint32_t fillstateInPercent)
 {
+	OfillstateInPercent =  fillstateInPercent;			//wen
     switch (type)
     {
         case AUDIO:
@@ -330,26 +337,132 @@ void    MultimediaManager::OnAudioBufferStateChanged      (uint32_t fillstateInP
 void MultimediaManager::OnRateChanged	(int segmentNumber, uint32_t downloadRate){
 	//std::cout << "MMManager #" << segmentNumber << std::endl;
 	static uint64_t segment = 0;
-	uint32_t bw = 0;
+/*	uint32_t bw = 0;*/
 	this->NotifyRateChanged(segmentNumber, downloadRate);
 	const std::vector<IRepresentation *> reps = this->videoAdaptationSet->GetRepresentation();
-	int i;
-	//this->videoRepresentation = reps.at(0);
-	for(i = 0; i < reps.size(); i++){
-		bw = reps.at(i)->GetBandwidth();
-		this->videoRepresentation = reps.at(i);
-		if(bw > downloadRate*8){
-			//bw = reps.at(i-1)->GetBandwidth();
-			break;
-		}
-	}
+// 	int i;
+// 	//this->videoRepresentation = reps.at(0);
+// 	for(i = 0; i < reps.size(); i++){
+// 		bw = reps.at(i)->GetBandwidth();
+// 		this->videoRepresentation = reps.at(i);
+// 		if(bw > downloadRate*8){
+// 			//bw = reps.at(i-1)->GetBandwidth();
+// 			break;
+// 		}
+// 	}
 	//std::cout << "BW " << bw << " " << downloadRate << std::endl;
-	int minus = bw - downloadRate*8;
-	if(segment != segmentNumber && (minus > 101492 && minus != reps.at(0)->GetBandwidth()) ){
+	double k = 0.14;
+	double w = 0.03;
+	double afa = 0.2;
+	double bta = 0.2; 
+	double deta_up = 0 ;
+	double deta_down = 0;
+	double e = 0.15;
+	uint32_t R_up=0 ;
+	uint32_t R_down=0 ;
+	int temp;
+	int Tmin = 4;
+	this->videoRepresentation = reps.at(R);
+	int bw = reps.at(R)->GetBandwidth();
+	fstream foud;
+	foud.open("C:\\Users\\Administrator\\Desktop\\Out.txt",ios::app);
+
+
+	if(segmentsDownloaded != segmentNumber )
+	{
+		foud<<"downloadRate:"<<(double)downloadRate*8/1000<<'\t';
+
+
+		//Panda算法实现-第一步：估值，Orate为MultimediaManager自添成员，returnDur()为logger自添成员
+		Orate = Orate + NextT*k*(w-max(0,Orate-double(downloadRate)*8/1000/1000+w))   ;
+
+		foud<<"Orate:"<<Orate*1000<<'\t';
+
+		//Panda算法实现-第二步：平滑处理，Yrate为MultimediaManager自添成员
+		Yrate = Yrate + NextT*(-afa*(Yrate-Orate))  ;
+
+		foud<<"Yrate:"<<Yrate*1000<<'\t';
+
+
+		//Panda算法实现-第三步：量化处理
+		deta_up = e * Yrate ;
+		temp =(Yrate - deta_up)*1000*1000;
+		//		foud<<"R_up:"<<temp<<'\t';
+
+		for(int Ti=0;Ti<reps.size();Ti++)    
+		{
+			if(reps.at(Ti)->GetBandwidth()<= temp )
+				R_up=Ti;
+			if(Ti>R_up)
+				break;
+		}
+
+		temp = (Yrate - deta_down)*1000*1000;
+		//		foud<<"R_down:"<<temp<<'\t';
+
+		for(int Tii=0;Tii<reps.size();Tii++)    
+		{
+			if(reps.at(Tii)->GetBandwidth()<= temp )
+				R_down=Tii; 
+			if(Tii>R_down)
+				break;
+		}
+
+		if (R < R_up)
+			R = R_up;
+		else 
+			if(R <= R_down && R >= R_up)
+				R = R;
+			else
+				R = R_down ;
+		//Panda算法实现-第四步：调度下一次的下载 
+
+		NextT = (2*bw/(Yrate*1000*1000)+bta*(SEGMENTBUFFER_SIZE*2*OfillstateInPercent)/100-Tmin);
+
+
+		//		foud<<"Ro:"<<R<<'\t';
+		foud<<"Ro-BW:"<<reps.at(R)->GetBandwidth()<<'\t';
+
+
+
+		foud<<"OSetFrameRate:"<<frameRate<<'\t';
+		if(OfillstateInPercent<=Tmin*100/(SEGMENTBUFFER_SIZE*2))
+		{
+			SetFrameRate(20);
+		}
+		if(OfillstateInPercent>=2*Tmin*100/(SEGMENTBUFFER_SIZE*2))
+		{
+			if(R<reps.size()-1)
+				R++;
+		}
+
+		if(OfillstateInPercent>=3*Tmin*100/(SEGMENTBUFFER_SIZE*2))
+		{
+			if(R<reps.size()-1)
+				R++;
+			SetFrameRate(24);
+
+		}
+		foud<<"SetFrameRate:"<<frameRate<<'\t';  
+
+		OnSegmentDownloaded();
+		this->videoRepresentation = reps.at(R);
+		bw = reps.at(R)->GetBandwidth();
+
+		//		foud<<"Rr:"<<R<<'\t';
+		foud<<"Rr-BW:"<<reps.at(R)->GetBandwidth()<<'\t';
+
+		foud<<"OfillstateInPercent:"<<OfillstateInPercent<<'\t';
+
+		foud.close();
+
+	}
+
+	if(segment !=  this->segmentsDownloaded ){
 
 		if (this->SetVideoQuality(this->period, this->videoAdaptationSet, this->videoRepresentation))
 		{
-			segment = segmentNumber;
+			segment = this->segmentsDownloaded;
 			// 		this->logger->rateLog(this->segmentsDownloaded, bw/8);
 			for (size_t i = 0; i < this->managerObservers.size(); i++)
 				this->managerObservers.at(i)->OnBWChanged(bw);

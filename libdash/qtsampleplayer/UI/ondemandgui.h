@@ -59,6 +59,7 @@ private:
 	void AddUserLastAccessVideoToDb		(QString userID, QString mediaID, int progress,  int progressMax);
 	void refreshRecentVideoUI			();
 	void SetAvatarIcon						();
+	void DownloadEmotionIcons(QString iconName);
 
 private slots:
 	void on_button_login_clicked		();
@@ -68,6 +69,7 @@ private slots:
 	void buttonPicReplyFinished			(QNetworkReply *reply);
 	void avatarPicReplyFinished			(QNetworkReply *reply);			
 	bool eventFilter								(QObject * object, QEvent * event);
+	void OnEmotionDownloaded(QNetworkReply* reply);
 
 public slots:
 	void	SetLoginState		(QString userID, QString usesrName);
