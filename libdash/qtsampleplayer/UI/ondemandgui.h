@@ -39,6 +39,7 @@ private:
 	DASHPlayer* player;
 	QStandardItemModel *treeModel;
 	QStandardItem *selectItem;
+
 	QString selectItemText;
 	QString selectType;
 	QString   currentSearchKey;

@@ -23,10 +23,12 @@ public:
 private:
 	Ui::RegisterDialog ui;
 
+	bool UploadHeadPic(QString username);
+
 private slots:
 	void on_button_register_cpt_clicked();
 	void on_button_picture_clicked();
-	void replyFinished(QNetworkReply* reply);
+	void UploadPicFinished(QNetworkReply* reply);
 };
 
 #endif // REGISTERDIALOG_H

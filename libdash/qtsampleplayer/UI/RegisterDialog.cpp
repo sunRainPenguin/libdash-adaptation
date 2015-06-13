@@ -19,7 +19,7 @@ void RegisterDialog::on_button_register_cpt_clicked()
 	QString reEnterPassword = this->ui.lineEdit_password_reenter->text();
 	const QPixmap* headPic = this->ui.label_picture->pixmap();
 
-	//Error detecting
+	//检查有效性
 	if (username == "" || password == "" || reEnterPassword=="")
 	{
 		QMessageBox::warning(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("用户名或密码为空!"), QMessageBox::Yes);
@@ -48,7 +48,12 @@ void RegisterDialog::on_button_register_cpt_clicked()
 		return;
 	}else
 	{
-		//Add user to Db and send picture to server
+		if (!UploadHeadPic(username))
+		{
+			QMessageBox::warning(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("请重新选择头像!"), QMessageBox::Yes);
+			return;
+		}
+		//将用户添加到数据库
 		if (Global::AddUserToDb(username, password))
 		{
 			QMessageBox::information(this, QString::fromLocal8Bit("注册成功"),QString::fromLocal8Bit("注册成功，请重新登录!"));
@@ -58,27 +63,6 @@ void RegisterDialog::on_button_register_cpt_clicked()
 			QMessageBox::warning(this, QString::fromLocal8Bit("注册失败"), QString::fromLocal8Bit("注册失败，请重新输入!"));
 			return;
 		}	
-
-		QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
-
-		QHttpPart imagePart;
-		imagePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
-		QString header = QString("form-data; name=\"image\"; filename=\""+ username + ".jpg\"");
-		imagePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(header));
-		QFile *file = new QFile(Global::avatarIconTemp);
-		file->open(QIODevice::ReadOnly);
-		imagePart.setBodyDevice(file);
-		file->setParent(multiPart); // we cannot delete the file now, so delete it with the multiPart
-
-		multiPart->append(imagePart);
-
-		QNetworkAccessManager *uploadManager = new QNetworkAccessManager(this);
-		QNetworkReply *reply;
-		QObject::connect(uploadManager,SIGNAL(finished(QNetworkReply*)),this, SLOT(replyFinished(QNetworkReply*)));
-		QNetworkRequest request(Global::uploadPicServlet); 
-		reply = uploadManager->post(request, multiPart);
-		multiPart->setParent(reply); // delete the multiPart with the reply
-
 		this->accept();
 	}
 }
@@ -86,18 +70,53 @@ void RegisterDialog::on_button_register_cpt_clicked()
 void RegisterDialog::on_button_picture_clicked()
 {
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"),"", tr("Images (*.png *.jpeg *.jpg)"));
-	qDebug() << "Picture name:  " <<fileName;
+	qDebug() << "Select picture name:  " <<fileName;
+
 	QPixmap pixmap(fileName);
 	pixmap = pixmap.scaled(this->ui.label_picture->size(), Qt::KeepAspectRatio, Qt::FastTransformation);
 	this->ui.label_picture->setPixmap(pixmap);
-	pixmap.save(Global::avatarIconTemp, "JPG"); 
+	QDir registerAvatarTemp;
+	if (!registerAvatarTemp.exists(Global::registerAvatarTempPath))
+	{
+		registerAvatarTemp.mkpath(Global::registerAvatarTempPath);
+		registerAvatarTemp.setPath(Global::registerAvatarTempPath);
+	}
+	pixmap.save(Global::registerAvatarTemp, "JPG"); 
 	this->ui.lineEdit_picture->setText(fileName);
 }
-void RegisterDialog::replyFinished(QNetworkReply* reply)
+void RegisterDialog::UploadPicFinished(QNetworkReply* reply)
 {
 	int result = reply->error();
 	if(reply->error() == QNetworkReply::NoError)
 	{
 		qDebug() << "\t" <<"upload no error!";
 	}
+}
+
+bool RegisterDialog::UploadHeadPic(QString username)
+{
+	QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
+
+	QHttpPart imagePart;
+	imagePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("image/jpeg"));
+	QString header = QString("form-data; name=\"image\"; filename=\""+ username + ".jpg\"");
+	imagePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant(header));
+
+	QFileInfo fileInfo(Global::registerAvatarTemp);
+	if (!fileInfo.isFile())
+		return false;
+	QFile *file = new QFile(Global::registerAvatarTemp);
+	file->open(QIODevice::ReadOnly);
+	imagePart.setBodyDevice(file);
+	file->setParent(multiPart);		// 完成时用multipart来删除file
+
+	multiPart->append(imagePart);
+
+	QNetworkAccessManager *uploadManager = new QNetworkAccessManager(this);
+	QNetworkReply *reply;
+	QObject::connect(uploadManager,SIGNAL(finished(QNetworkReply*)),this, SLOT(UploadPicFinished(QNetworkReply*)));
+	QNetworkRequest request(Global::uploadPicServlet); 
+	reply = uploadManager->post(request, multiPart);
+	multiPart->setParent(reply);		// 用reply删除multipart
+	return true;
 }

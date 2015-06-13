@@ -29,15 +29,35 @@ using namespace sampleplayer;
 
 void ClearTemp()
 {
-	QDir tempDir("./Temp/");
-	tempDir.setFilter(QDir::Files);
+	QDir tempDir;
+	if (!tempDir.exists("./Temp/"))
+		tempDir.mkpath("./Temp/");
+	tempDir.setPath("./Temp/");
+
 	int i = 0, FileCount=tempDir.count();
 	if (FileCount>0)
 	{
 		for (i=0; i<=FileCount-1; i++)
-			tempDir.remove(tempDir[i]);
+		{
+			QString temp = tempDir[i];
+			tempDir.remove(tempDir[i]);			//移除所有在Temp目录下的视频图片
+			if (tempDir[i] == "Users" || tempDir[i] == "emotion" ||  tempDir[i] == "HeadPicture")
+			{
+				QDir childDir;
+				if (tempDir[i] == "Users")
+					childDir.setPath("./Temp/Users/");
+				else if (tempDir[i] == "emotion")
+					childDir.setPath("./Temp/emotion/");
+				else if (tempDir[i] == "HeadPicture")
+					childDir.setPath("./Temp/HeadPicture/");
+
+				childDir.setFilter(QDir::Files);
+				int childFileCnt = childDir.count();
+				for (int i=0; i<=childFileCnt-1; i++)
+					childDir.remove(childDir[i]);			//移除所有Temp目录下的子目录中的文件
+			}
+		}
 	}
-	
 }
 
 int main(int argc, char *argv[])
@@ -45,12 +65,13 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 	a.setWindowIcon(QIcon("project.ico"));
 	if (!ClearDebugLog())
-	{
 		qDebug() << "\t" <<"Clear debug log failed!";
-	}
-	ClearTemp();
+	else
+		qDebug() << "\t" <<"Clear debug log successfully!";
+	ClearTemp();				//清空上一次使用缓存
 	qInstallMessageHandler(CustomMessageHandler);
 
+	//检测是否能连接上服务器
 	QUrl url(serverAddress);
 	QNetworkAccessManager manager;
 	QEventLoop loop;
@@ -60,38 +81,31 @@ int main(int argc, char *argv[])
 	QString replyUrl = reply->request().url().toString();
 	if (reply->error() != QNetworkReply::NoError)
 	{
-		qCritical() << "\t" <<"Failed to connect to server! exit(-2).";
+		qCritical() << "\t" <<"Failed to connect server! exit(-2).";
 		QMessageBox::warning(NULL, QString("Warning"), QString("Can't connect the server!"), QMessageBox::Yes);
 		exit(-2);
 	}
+	else
+		qDebug() << "\t" <<"Connect server successfully!";
 
-	QStringList drivers = QSqlDatabase::drivers();    
-	foreach(QString driver, drivers) 
-		qDebug() << "\t" << driver;    
+	//检测是否能连接上数据库
 	QSqlDatabase data_base = QSqlDatabase::addDatabase("QMYSQL");
-	data_base.setHostName(dbHostName);  //设置主机地址192.168.23.3    localhost
+	data_base.setHostName(dbHostName);  //设置主机地址
 	data_base.setPort(3306);  //设置端口
 	data_base.setDatabaseName(dbName);  //设置数据库名称
 	data_base.setUserName(dbUserName);  //设置用户名
-	data_base.setPassword(dbPassword);  //设置密码qwe123
+	data_base.setPassword(dbPassword);  //设置密码
 	if(!data_base.open())
 	{
-		qCritical() << "\t" <<"Failed to connect to database! exit(1).";
+		qCritical() << "\t" <<"Failed to connect database! exit(1).";
 		exit(1);
 	}
 	else
-		qDebug() << "\t" <<"Success";
+		qDebug() << "\t" <<"Connect database successfully!";
 	
 
 	OnDemandGui onDemandWindow;
 	onDemandWindow.show();	
-
-
-	//QtSamplePlayerGui player;
-
-	//DASHPlayer p(player);
-
-	//player.show();
 
     return a.exec();
 }

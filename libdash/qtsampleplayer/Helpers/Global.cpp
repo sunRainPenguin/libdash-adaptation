@@ -4,10 +4,11 @@ QString Global::gradeType = QString::fromLocal8Bit("年级");
 QString Global::allType = QString::fromLocal8Bit("热门视频");
 QString Global::myFavorite = QString::fromLocal8Bit("我喜爱的视频");
 QString Global::recentVideos = QString::fromLocal8Bit("我最近观看的视频");
-QString Global::avatarIconTemp = QString("./Temp/HeadPicture/HeadPicture.jpg");
+QString Global::registerAvatarTemp = QString("./Temp/HeadPicture/HeadPicture.jpg");
+QString Global::registerAvatarTempPath = QString("./Temp/HeadPicture/");
 QUrl Global::uploadPicServlet = QUrl("http://localhost:8081/UploadPic/servlet/UploadPicServlet");
 QString Global::avatarPath =QString("http://localhost:8081/DDUVideoUsers/");
-QString Global::currUserTempPath = QString("./Temp/currUser/");
+QString Global::UsersTempPath = QString("./Temp/Users/");
 QString Global::emotionPathServer = QString("http://localhost:8081/emotion/");
 QString Global::emotionPathTemp = QString("./Temp/emotion/");
 

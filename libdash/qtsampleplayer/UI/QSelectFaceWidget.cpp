@@ -8,7 +8,10 @@ QSelectFaceWidget::QSelectFaceWidget(const QString &faceIconDir,  QWidget *paren
 	this->setWindowFlags(Qt::Popup);
 	QFileInfo iconDir(faceIconDir);
 	if (!iconDir.isDir())
-		return;
+	{
+		QDir dir;
+		dir.mkpath(faceIconDir);
+	}
 	QFileInfoList InfoList = QDir(faceIconDir).entryInfoList();
 
 	if (InfoList.size()<12)

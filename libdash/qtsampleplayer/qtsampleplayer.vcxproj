@@ -424,8 +424,6 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
-    <None Include="pic\88.jpg" />
-    <None Include="pic\93.jpg" />
     <None Include="pic\backGround.jpg" />
     <None Include="pic\refresh-clicked.png" />
     <None Include="pic\refresh.png" />

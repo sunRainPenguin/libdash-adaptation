@@ -5,19 +5,21 @@
 #define COUNT_COLUMNCONTAIN 3
 
 OnDemandGui::OnDemandGui(QWidget *parent)
-	: QMainWindow(parent)
+	: QMainWindow(parent),
+	loginDialog (NULL),
+	playerGui (NULL),
+	player (NULL),
+	treeModel (NULL),
+	selectItem (NULL),
+	hasLogedIn (false)
 {
 	ui.setupUi(this);
+
 	this->ui.button_logout->setEnabled(false);
 	this->ui.label_username->setAlignment(Qt::AlignCenter);
 	this->ui.label_picture->setAlignment(Qt::AlignCenter);
-	hasLogedIn = false;
-	this->selectItem = NULL;
-	SetSearchInfo();
-	loginDialog = NULL;
-	playerGui    = NULL;
-	player = NULL;
-
+	
+	SetSearchInfo();		//清空搜索信息
 	this->ShowTreeView();
 	if (this->ShowAvailableMediaFromDb()==-1)
 	{
@@ -27,10 +29,10 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 	ShowSearchResult(Global::allType+QString(" ..."));
 	this->ui.lineEdit_search->setFocus();
 	this->ui.lineEdit_search->installEventFilter(this);
+
 	QString qss_OnDemandGui;
 	QFile qssFile(":/qss/qss_OnDemandGui.qss");
 	qssFile.open(QFile::ReadOnly);
-
 	if(qssFile.isOpen())
 	{
 		qss_OnDemandGui = QLatin1String(qssFile.readAll());
@@ -38,7 +40,7 @@ OnDemandGui::OnDemandGui(QWidget *parent)
 		qssFile.close();
 	}
 
-
+	//点播界面打开时，表情初始化
 	QList<QString> emotionNameList;
 	Global::InitEmotionNameList(emotionNameList);
 	QString emotionName;
@@ -107,7 +109,7 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 	QString select_sql;
 	QSqlRecord rec;
 
-	//Get the sql statement
+	//获得sql语句
 	/**************************myFavorite/recentVideos**************************/
 	if (searchType==Global::myFavorite || searchType==Global::recentVideos)
 	{
@@ -144,7 +146,7 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 				progressInfo.insert(MI_ID, progressMax);
 				whereMI_ID = whereMI_ID + MI_ID +",";
 			}
-			whereMI_ID.remove(whereMI_ID.size()-1, 1);
+			whereMI_ID.remove(whereMI_ID.size()-1, 1);		//去除最后一个逗号
 			whereMI_ID.append(") ");
 			whereAndMI_ID = whereMI_ID;
 			whereAndMI_ID.insert(0, "AND ");
@@ -208,7 +210,7 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 				select_sql = QString("SELECT * FROM mediainfo WHERE MI_Name LIKE '%") + SearchKey + "%' ORDER BY MI_ClickThroughRate DESC LIMIT 12  ";	
 		}
 
-		/************************** show videos **************************/
+		//执行sql语句，并显示视频
 		sql_query.prepare(select_sql);
 		if (!sql_query.exec())
 		{
@@ -259,7 +261,7 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 				if (!this->SetMediaLayout(MI_ID, MI_MPDUrl, MI_ShowPicUrl, MI_Name, MI_UploadAuthor, MI_InsertTime, MI_ClickThroughRate, recCount/COUNT_ROWCONTAIN, recCount%COUNT_ROWCONTAIN, progress, progressMax))
 					return -1;
 
-				//save the select result to the temp dir
+				//判断某视频图像是否有缓存
 				QFileInfo file( "./Temp/" + MI_ID + ".png");
 				if (!file.isFile())
 				{
@@ -686,33 +688,33 @@ bool OnDemandGui::eventFilter(QObject * object, QEvent * event)
 }
 void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 {
-	 selectItem = treeModel->itemFromIndex(modelIndex);
+	selectItem = treeModel->itemFromIndex(modelIndex);
 	selectItemText = selectItem->text();
 
-	if (selectItemText == Global::myFavorite || selectItemText == Global::recentVideos || selectItemText == Global::allType)
-		selectType = selectItemText;			
+	//如果有父节点，则重新设置选择的type
+	selectType = selectItemText;			
 	if (selectItem->parent())
 		selectType = selectItem->parent()->text();
 
-	//Select the parent node
+	SetSearchInfo();		
+	//选中的是没有父节点的节点
 	 if (!selectItem->parent())
 	 {
-		 SetSearchInfo();
 		 if (selectItem->text()==Global::myFavorite)
 		 {
-			 ShowAvailableMediaFromDb("", "", Global::myFavorite);
-			 ShowSearchResult(Global::myFavorite+QString(" ..."));
 			 if (this->userName=="")
 				 QMessageBox::warning(NULL, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("查看您喜爱的视频之前，请先登录!"), QMessageBox::Yes);
 			 return;
+			 ShowAvailableMediaFromDb("", "", Global::myFavorite);
+			 ShowSearchResult(Global::myFavorite+QString(" ..."));
 		 }
 		 else if (selectItem->text()==Global::recentVideos)
 		 {
-			 ShowAvailableMediaFromDb("", "", Global::recentVideos);
-			 ShowSearchResult(Global::recentVideos+QString(" ..."));
 			 if (this->userName=="")
 				 QMessageBox::warning(NULL, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("查看您的最近视频之前，请先登录!"), QMessageBox::Yes);
 			 return;
+			 ShowAvailableMediaFromDb("", "", Global::recentVideos);
+			 ShowSearchResult(Global::recentVideos+QString(" ..."));
 		 }
 		 else
 		 {
@@ -726,17 +728,15 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 		 return;
 	 }
 
-	 //Select the child node
+	 //选中的有父节点的节点
 	 if (selectType == Global::subjectType)
 	 {
 		 ShowAvailableMediaFromDb("", selectItemText, Global::subjectType);
-		 SetSearchInfo();
 		 ShowSearchResult(Global::allType+QString(" ..."));
 	 }
 	 else if (selectType == Global::gradeType)
 	 {
 		 ShowAvailableMediaFromDb("", selectItemText, Global::gradeType);
-		 SetSearchInfo();
 		 ShowSearchResult(Global::allType+QString(" ..."));
 	 }
 	 
@@ -744,7 +744,7 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 void OnDemandGui::SetSearchInfo	    (QString currentSearchKey)
 {
 	if (currentSearchKey=="")
-		this->ui.lineEdit_search->setText("");
+		this->ui.lineEdit_search->setText("");			//为空时表示重置搜索信息
 	this->currentSearchKey = currentSearchKey;
 }
 void OnDemandGui::ShowSearchResult(QString text,  QString searchWord, QString searchCategory, QString count)
@@ -839,12 +839,12 @@ void OnDemandGui::refreshRecentVideoUI			()
 }
 void OnDemandGui:: SetAvatarIcon()
 {
-	//save the select result to the temp dir
-	QString fileName =  Global::currUserTempPath + userName + ".jpg";
+	//判断头像是否有缓存
+	QString fileName =  Global::UsersTempPath + userName + ".jpg";
 	QFileInfo file(fileName);
 	if (!file.isFile())
 	{
-		//show picture on the server
+		//显示服务器上的头像
 		QNetworkAccessManager *manager;
 		manager = new QNetworkAccessManager(this);
 		QNetworkReply *reply = manager->get(QNetworkRequest(QUrl(Global::avatarPath+ userName + ".jpg")));
@@ -869,10 +869,14 @@ void OnDemandGui::avatarPicReplyFinished			(QNetworkReply *reply)
 		if (userName!="")
 		{
 			QString fileName = userName + ".jpg";
-			QFileInfo file(Global::currUserTempPath);
-			if (file.isDir())
-				avatarPic->save(Global::currUserTempPath + fileName);
-			QPixmap pixmap(Global::currUserTempPath + fileName);
+			QFileInfo file(Global::UsersTempPath);
+			if (!file.isDir())
+			{
+				QDir dir;
+				dir.mkpath(Global::UsersTempPath);
+			}
+			avatarPic->save(Global::UsersTempPath + fileName);
+			QPixmap pixmap(Global::UsersTempPath + fileName);
 			pixmap = pixmap.scaled(this->ui.label_picture->size(), Qt::KeepAspectRatio, Qt::FastTransformation);
 			this->ui.label_picture->setPixmap(pixmap);
 		}
@@ -884,22 +888,20 @@ void OnDemandGui::avatarPicReplyFinished			(QNetworkReply *reply)
 
 void OnDemandGui::DownloadEmotionIcons(QString iconName)
 {
-	//save the select result to the temp dir
-	QString urlStr =  Global::emotionPathServer + iconName;
+	QString emotionUrlStr =  Global::emotionPathServer + iconName;
 
-	//show picture on the server
 	QNetworkAccessManager *manager;
 	manager = new QNetworkAccessManager(this);
-	QNetworkReply *reply = manager->get(QNetworkRequest(QUrl(urlStr)));
+	QNetworkReply *reply = manager->get(QNetworkRequest(QUrl(emotionUrlStr)));
 	reply->setProperty("iconName", iconName);
 	connect(manager, SIGNAL(finished(QNetworkReply*)),
 		this, SLOT(OnEmotionDownloaded(QNetworkReply*)));
-
 }
+
 void OnDemandGui::OnEmotionDownloaded(QNetworkReply* reply)
 {
 	int error = reply->error();
-	if(reply->error() == QNetworkReply::NoError)
+	if(error == QNetworkReply::NoError)
 	{
 		QPixmap* pixIcon= new QPixmap;
 		QByteArray picData = reply->readAll(); 
@@ -911,8 +913,12 @@ void OnDemandGui::OnEmotionDownloaded(QNetworkReply* reply)
 		{
 			QString fileName = faceIconDir + iconName;
 			QFileInfo file(faceIconDir);
-			if (file.isDir())
-				pixIcon->save(fileName);
+			if (!file.isDir())
+			{
+				QDir dir;
+				dir.mkpath(Global::emotionPathTemp);
+			}
+			pixIcon->save(fileName);
 		}
 
 		delete(pixIcon);

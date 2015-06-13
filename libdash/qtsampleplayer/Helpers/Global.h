@@ -13,10 +13,11 @@ public:
 	static QString allType;
 	static QString myFavorite;
 	static QString recentVideos;
-	static QString avatarIconTemp;
+	static QString registerAvatarTemp;
+	static QString registerAvatarTempPath;
 	static QUrl uploadPicServlet;
 	static QString avatarPath;
-	static QString currUserTempPath;
+	static QString UsersTempPath;
 	static QString emotionPathServer;
 	static QString emotionPathTemp;
 	static void InitEmotionNameList(QList<QString>& emotionNameList);
