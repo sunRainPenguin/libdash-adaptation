@@ -643,11 +643,11 @@ IsFavorite QtSamplePlayerGui::GetFavoriteState				(QString userID, QString media
 
 	if (userID=="" || mediaID=="")
 		return favorite_notSet;
-	select_sql =QString(" SELECT * FROM UserFavorite WHERE UF_UserID=") + userID +QString(" AND MI_ID=") + mediaID + QString(" ") ;
+	select_sql =QString(" SELECT * FROM userfavorite WHERE UF_UserID=") + userID +QString(" AND MI_ID=") + mediaID + QString(" ") ;
 	sql_query.prepare(select_sql);
 	if (!sql_query.exec() || sql_query.size()<1)
 	{
-		qDebug() << "\t" <<"Select UserFavorite failed! ";
+		qDebug() << "\t" <<"Select userfavorite failed! ";
 		return favorite_unchecked;
 	} 
 	else
@@ -701,7 +701,7 @@ void QtSamplePlayerGui::SetFavoriteToDb	(IsFavorite favorite)
 		QString select_sql;
 		if (favorite==favorite_checked)
 		{
-			select_sql =QString(" INSERT INTO UserFavorite(UF_UserID, MI_ID) VALUES(") + userID + "," + mediaID + ") ";
+			select_sql =QString(" INSERT INTO userfavorite(UF_UserID, MI_ID) VALUES(") + userID + "," + mediaID + ") ";
 			sql_query.prepare(select_sql);
 			if (!sql_query.exec())
 			{
@@ -711,7 +711,7 @@ void QtSamplePlayerGui::SetFavoriteToDb	(IsFavorite favorite)
 		}
 		else if (favorite==favorite_unchecked)
 		{
-			select_sql =QString(" DELETE FROM UserFavorite WHERE UF_UserID=") + userID + " AND MI_ID=" + mediaID + " ";
+			select_sql =QString(" DELETE FROM userfavorite WHERE UF_UserID=") + userID + " AND MI_ID=" + mediaID + " ";
 			sql_query.prepare(select_sql);
 			if (!sql_query.exec())
 			{
@@ -735,11 +735,11 @@ int QtSamplePlayerGui::GetProgressFromDb				(QString userID, QString MI_ID, int&
 	QSqlQuery sql_query;
 	QString sql;
 
-	sql = QString("SELECT DISTINCT MI_ID, UW_Progress, UW_ProgressMAX FROM UserWatched WHERE UW_UserID=") + userID + " AND MI_ID =" + MI_ID;
+	sql = QString("SELECT DISTINCT MI_ID, UW_Progress, UW_ProgressMAX FROM userwatched WHERE UW_UserID=") + userID + " AND MI_ID =" + MI_ID;
 	sql_query.prepare(sql);
 	if (!sql_query.exec())
 	{
-		qDebug() << "\t" << "Select progress from UserWatched failed! ";
+		qDebug() << "\t" << "Select progress from userwatched failed! ";
 		return -1;
 	}
 	else if (sql_query.next())

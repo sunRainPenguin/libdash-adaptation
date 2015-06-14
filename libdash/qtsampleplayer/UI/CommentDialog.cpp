@@ -74,12 +74,12 @@ void CommentDialog::on_button_comment_clicked()
 	qDebug() << "\t" <<comment;
 	if (comment.size()>300)
 	{
-		QMessageBox::warning(this, QString("Warning"), QString("In the comment 300 characters limited!"), QMessageBox::Yes);
+		QMessageBox::warning(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("评论超过300个字符！"), QMessageBox::Yes);
 		return;
 	}
 	if (comment.size()==0)
 	{
-		QMessageBox::warning(this, QString("Warning"), QString("Add comment failed, comment can't be empty"), QMessageBox::Yes);
+		QMessageBox::warning(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("评论不能为空！"), QMessageBox::Yes);
 		return;
 	}
 
@@ -88,11 +88,11 @@ void CommentDialog::on_button_comment_clicked()
 	QString currentDateTime = current_date_time.toString("yyyy-MM-dd hh:mm:ss");
 	if (!AddCommentToDb(comment, this->mediaID, currentDateTime, userID))
 	{
-		QMessageBox::warning(this, QString("Warning"), QString("Add comment failed!"), QMessageBox::Yes);
+		QMessageBox::warning(this, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("插入评论失败！"), QMessageBox::Yes);
 		return;
 	}else
 	{
-		QMessageBox::information(this, QString("Comment"),QString("Comment successfully!"));
+		QMessageBox::information(this, QString::fromLocal8Bit("评论"),QString::fromLocal8Bit("评论成功！"));
 		emit CommentSuccessfully();
 	}
 	this->accept();

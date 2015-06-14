@@ -116,13 +116,13 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 		if (userID!="")
 		{
 			if (searchType==Global::myFavorite)
-				select_sql = QString("SELECT DISTINCT MI_ID FROM UserFavorite WHERE UF_UserID=") + userID + " ";
+				select_sql = QString("SELECT DISTINCT MI_ID FROM userfavorite WHERE UF_UserID=") + userID + " ";
 			if (searchType==Global::recentVideos)
-				select_sql = QString("SELECT DISTINCT MI_ID, UW_Progress, UW_ProgressMax FROM UserWatched WHERE UW_UserID=") + userID + " ";
+				select_sql = QString("SELECT DISTINCT MI_ID, UW_Progress, UW_ProgressMax FROM userwatched WHERE UW_UserID=") + userID + " ";
 			sql_query.prepare(select_sql);
 			if (!sql_query.exec())
 			{
-				qWarning() << "\t" <<"Select UserFavorite failed! Return -3";
+				qWarning() << "\t" <<"Select userfavorite failed! Return -3";
 				return -1;
 			} 
 			if (sql_query.size()<1)
@@ -702,19 +702,19 @@ void OnDemandGui::on_treeView_clicked				(QModelIndex modelIndex)
 	 {
 		 if (selectItem->text()==Global::myFavorite)
 		 {
+			 ShowAvailableMediaFromDb("", "", Global::myFavorite);
+			 ShowSearchResult(Global::myFavorite+QString(" ..."));
 			 if (this->userName=="")
 				 QMessageBox::warning(NULL, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("查看您喜爱的视频之前，请先登录!"), QMessageBox::Yes);
 			 return;
-			 ShowAvailableMediaFromDb("", "", Global::myFavorite);
-			 ShowSearchResult(Global::myFavorite+QString(" ..."));
 		 }
 		 else if (selectItem->text()==Global::recentVideos)
 		 {
+			 ShowAvailableMediaFromDb("", "", Global::recentVideos);
+			 ShowSearchResult(Global::recentVideos+QString(" ..."));
 			 if (this->userName=="")
 				 QMessageBox::warning(NULL, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("查看您的最近视频之前，请先登录!"), QMessageBox::Yes);
 			 return;
-			 ShowAvailableMediaFromDb("", "", Global::recentVideos);
-			 ShowSearchResult(Global::recentVideos+QString(" ..."));
 		 }
 		 else
 		 {

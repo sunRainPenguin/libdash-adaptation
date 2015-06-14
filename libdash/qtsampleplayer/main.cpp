@@ -21,11 +21,11 @@ using namespace sampleplayer;
 
 /*#define  serverAddress   "http://192.168.23.2:8080/"*/
 /*#define  serverAddress   "http://192.168.253.5:8080/"*/
-#define serverAddress "http://localhost:8081/"
-#define dbHostName "localhost"
+#define serverAddress "http://192.168.191.2:8080/"
+#define dbHostName "192.168.191.2"
 #define  dbName "videomanagement"
 #define dbUserName "root"
-#define dbPassword "qwe123"
+#define dbPassword "mysql"
 
 void ClearTemp()
 {
