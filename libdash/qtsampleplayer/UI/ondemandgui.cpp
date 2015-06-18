@@ -275,6 +275,8 @@ int OnDemandGui::ShowAvailableMediaFromDb(QString SearchKey, QString typeValue, 
 						this, SLOT(buttonPicReplyFinished(QNetworkReply*)));
 				}
 				recCount++;
+				if (recCount>=8)
+					break;
 			}
 		}
 	}
@@ -379,6 +381,7 @@ bool OnDemandGui::SetMediaLayout(QString MI_ID, QString MI_MPDUrl, QString MI_Sh
 		int ipersent = dpercent*100;
 		labelProgress->setText(QString::fromLocal8Bit("已经观看了： ") + QString::number(ipersent,10) + "% ");
 	}
+
 	return true;
 }
 void OnDemandGui::StartPlayer(QString currMediaID)

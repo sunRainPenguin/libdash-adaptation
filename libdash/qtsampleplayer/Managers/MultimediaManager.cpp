@@ -337,20 +337,8 @@ void    MultimediaManager::OnAudioBufferStateChanged      (uint32_t fillstateInP
 void MultimediaManager::OnRateChanged	(int segmentNumber, uint32_t downloadRate){
 	//std::cout << "MMManager #" << segmentNumber << std::endl;
 	static uint64_t segment = 0;
-/*	uint32_t bw = 0;*/
 	this->NotifyRateChanged(segmentNumber, downloadRate);
 	const std::vector<IRepresentation *> reps = this->videoAdaptationSet->GetRepresentation();
-// 	int i;
-// 	//this->videoRepresentation = reps.at(0);
-// 	for(i = 0; i < reps.size(); i++){
-// 		bw = reps.at(i)->GetBandwidth();
-// 		this->videoRepresentation = reps.at(i);
-// 		if(bw > downloadRate*8){
-// 			//bw = reps.at(i-1)->GetBandwidth();
-// 			break;
-// 		}
-// 	}
-	//std::cout << "BW " << bw << " " << downloadRate << std::endl;
 	double k = 0.14;
 	double w = 0.03;
 	double afa = 0.2;
@@ -368,20 +356,27 @@ void MultimediaManager::OnRateChanged	(int segmentNumber, uint32_t downloadRate)
 	foud.open("C:\\Users\\Administrator\\Desktop\\Out.txt",ios::app);
 
 
-	if(segmentsDownloaded != segmentNumber )
+	if(segmentsDownloaded+1 == segmentNumber )
 	{
-		foud<<"downloadRate:"<<(double)downloadRate*8/1000<<'\t';
+		foud<<segmentNumber<<'\t';
 
 
+		foud<<downloadRate*8<<'\t';
+
+		if(segmentsDownloaded == 0)
+		{
+			Orate = double(downloadRate)*8/1000/1000 ;
+			Yrate = Orate ;
+		}
 		//Panda算法实现-第一步：估值，Orate为MultimediaManager自添成员，returnDur()为logger自添成员
 		Orate = Orate + NextT*k*(w-max(0,Orate-double(downloadRate)*8/1000/1000+w))   ;
 
-		foud<<"Orate:"<<Orate*1000<<'\t';
+		//	foud<<"Orate:"<<Orate*1000<<'\t';
 
 		//Panda算法实现-第二步：平滑处理，Yrate为MultimediaManager自添成员
 		Yrate = Yrate + NextT*(-afa*(Yrate-Orate))  ;
 
-		foud<<"Yrate:"<<Yrate*1000<<'\t';
+		foud<<Yrate*1000*1000<<'\t';
 
 
 		//Panda算法实现-第三步：量化处理
@@ -417,57 +412,50 @@ void MultimediaManager::OnRateChanged	(int segmentNumber, uint32_t downloadRate)
 				R = R_down ;
 		//Panda算法实现-第四步：调度下一次的下载 
 
-		NextT = (2*bw/(Yrate*1000*1000)+bta*(SEGMENTBUFFER_SIZE*2*OfillstateInPercent)/100-Tmin);
-
-
 		//		foud<<"Ro:"<<R<<'\t';
-		foud<<"Ro-BW:"<<reps.at(R)->GetBandwidth()<<'\t';
+		//foud<<"Ro-BW:"<<reps.at(R)->GetBandwidth()<<'\t';
+		//foud<<"OSetFrameRate:"<<frameRate<<'\t';
 
-
-
-		foud<<"OSetFrameRate:"<<frameRate<<'\t';
-		if(OfillstateInPercent<=Tmin*100/(SEGMENTBUFFER_SIZE*2))
+		if(OfillstateInPercent<=1.5*Tmin*100/(SEGMENTBUFFER_SIZE*2))
 		{
 			SetFrameRate(20);
+			if(R>=1)
+				R--;
 		}
-		if(OfillstateInPercent>=2*Tmin*100/(SEGMENTBUFFER_SIZE*2))
+		if(OfillstateInPercent>2*Tmin*100/(SEGMENTBUFFER_SIZE*2))
 		{
-			if(R<reps.size()-1)
-				R++;
-		}
-
-		if(OfillstateInPercent>=3*Tmin*100/(SEGMENTBUFFER_SIZE*2))
-		{
-			if(R<reps.size()-1)
-				R++;
 			SetFrameRate(24);
+		}
+
+		if(OfillstateInPercent>=4*Tmin*100/(SEGMENTBUFFER_SIZE*2))
+		{
+			if(R<reps.size()-1)
+				R++;
+
 
 		}
-		foud<<"SetFrameRate:"<<frameRate<<'\t';  
-
+		//		foud<<"Rr:"<<R<<'\t';
+		foud<<reps.at(R)->GetBandwidth()<<'\t';
+		//foud<<"SetFrameRate:"<<frameRate<<'\t'; 
+		foud<<OfillstateInPercent<<endl;	
 		OnSegmentDownloaded();
 		this->videoRepresentation = reps.at(R);
 		bw = reps.at(R)->GetBandwidth();
 
-		//		foud<<"Rr:"<<R<<'\t';
-		foud<<"Rr-BW:"<<reps.at(R)->GetBandwidth()<<'\t';
 
-		foud<<"OfillstateInPercent:"<<OfillstateInPercent<<'\t';
-
+		NextT = (2*bw)/(Yrate*1000*1000)+bta*((SEGMENTBUFFER_SIZE*2*OfillstateInPercent)/100-Tmin);
+		if(NextT<0)
+			NextT=0;	
+		//foud<<"NextT:"<<NextT<<endl; 
 		foud.close();
-
 	}
 
-	if(segment !=  this->segmentsDownloaded ){
-
-		if (this->SetVideoQuality(this->period, this->videoAdaptationSet, this->videoRepresentation))
-		{
-			segment = this->segmentsDownloaded;
-			// 		this->logger->rateLog(this->segmentsDownloaded, bw/8);
-			for (size_t i = 0; i < this->managerObservers.size(); i++)
-				this->managerObservers.at(i)->OnBWChanged(bw);
-		}
-		
+	if(segment!=segmentNumber && this->SetVideoQuality(this->period, this->videoAdaptationSet, this->videoRepresentation))	
+	{
+		segment = segmentNumber;
+		//this->logger->rateLog(this->segmentsDownloaded, bw/8);
+		for (size_t i = 0; i < this->managerObservers.size(); i++)
+			this->managerObservers.at(i)->OnBWChanged(bw);
 	}
 }
 void    MultimediaManager::SetFrameRate                     (double framerate)

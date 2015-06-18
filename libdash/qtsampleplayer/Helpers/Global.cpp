@@ -6,10 +6,10 @@ QString Global::myFavorite = QString::fromLocal8Bit("我喜爱的视频");
 QString Global::recentVideos = QString::fromLocal8Bit("我最近观看的视频");
 QString Global::registerAvatarTemp = QString("./Temp/HeadPicture/HeadPicture.jpg");
 QString Global::registerAvatarTempPath = QString("./Temp/HeadPicture/");
-QUrl Global::uploadPicServlet = QUrl("http://192.168.191.2:8080/VideoManagement/servlet/UploadPicServlet");		//http://localhost:8081/UploadPic/servlet/UploadPicServlet
-QString Global::avatarPath =QString("http://192.168.191.2:8080/DDUVideoUsers/");		//http://localhost:8081/DDUVideoUsers/
+QUrl Global::uploadPicServlet = QUrl("http://192.168.191.2:8080/VideoManagement/servlet/UploadPicServlet");		//     http://localhost:8081/UploadPic/servlet/UploadPicServlet
+QString Global::avatarPath =QString("http://192.168.191.2:8080/DDUVideoUsers/");		//     http://localhost:8081/DDUVideoUsers/
 QString Global::UsersTempPath = QString("./Temp/Users/");
-QString Global::emotionPathServer = QString("http://192.168.191.2:8080/emotion/");		//http://localhost:8081/emotion/
+QString Global::emotionPathServer = QString("http://192.168.191.2:8080/emotion/");		//    http://localhost:8081/emotion/
 QString Global::emotionPathTemp = QString("./Temp/emotion/");
 
 void Global::InitEmotionNameList(QList<QString>& emotionNameList)
